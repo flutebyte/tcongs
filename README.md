@@ -5,6 +5,10 @@ per the updated spec. Reference: https://estele.co
 
 No store functionality — cart, checkout and account are **UI only**, no backend logic.
 
+## Live
+
+https://tcongs-pi.vercel.app
+
 ## Structure
 
 ```
