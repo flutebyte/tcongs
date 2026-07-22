@@ -1,0 +1,6 @@
+node_modules/
+.vscode/
+.claude/
+.gstack/
+.DS_Store
+Thumbs.db
