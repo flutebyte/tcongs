@@ -375,7 +375,7 @@ import './app.css';
           '<a class="relative block aspect-square overflow-hidden bg-placeholder" href="product.html" aria-label="' + p.alt + '">' +
             '<img class="h-full w-full object-cover" src="' + p.img + '" alt="' + p.alt + '" loading="lazy" width="600" height="600">' +
             (p.del ? '<span class="absolute left-2.5 top-2.5 z-[2] flex flex-col gap-1.5"><span class="inline-block bg-salebadge px-2.5 py-1 text-[11px] font-medium uppercase leading-none tracking-[0.3px] text-white">Sale</span></span>' : '') +
-            '<button class="absolute right-2.5 top-2.5 z-[2] grid h-[34px] w-[34px] place-items-center rounded-full bg-white opacity-0 transition-opacity group-hover:opacity-100" type="button" aria-label="Add to wishlist">' +
+            '<button class="absolute right-2.5 top-2.5 z-[2] grid h-[34px] w-[34px] place-items-center rounded-full bg-white opacity-100 md:opacity-0 transition-opacity md:group-hover:opacity-100" type="button" aria-label="Add to wishlist">' +
               '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.2l7.7-7.7 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>' +
             '</button>' +
           '</a>' +
