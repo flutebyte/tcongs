@@ -47,6 +47,18 @@ return [
             'report' => false,
         ],
 
+        // Untouched originals of every admin-uploaded image (products, banners,
+        // categories, collections, homepage blocks) live here — never served
+        // directly to the frontend/CDN, only the generated conversions on the
+        // "public" disk are (spec §3.1).
+        'original_images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/original-images'),
+            'visibility' => 'private',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

@@ -48,15 +48,22 @@ class ProductForm
                     ->default(0),
                 Toggle::make('is_active')
                     ->required(),
+                Toggle::make('is_featured')
+                    ->helperText('Show this product in the homepage featured carousel.'),
 
                 CheckboxList::make('categories')
                     ->relationship('categories', 'name')
+                    ->columnSpanFull(),
+
+                CheckboxList::make('collections')
+                    ->relationship('collections', 'name')
                     ->columnSpanFull(),
 
                 Section::make('Images')
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('gallery')
                             ->collection('gallery')
+                            ->conversion('card')
                             ->image()
                             ->multiple()
                             ->reorderable()

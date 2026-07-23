@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
@@ -32,6 +33,12 @@ class CategoryForm
                     ->integer()
                     ->minValue(0)
                     ->default(0),
+
+                SpatieMediaLibraryFileUpload::make('image')
+                    ->collection('image')
+                    ->conversion('tile')
+                    ->image()
+                    ->columnSpanFull(),
 
                 Section::make('SEO')
                     ->description('Optional — leave blank to use the site defaults.')

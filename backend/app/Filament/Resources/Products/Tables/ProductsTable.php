@@ -18,6 +18,7 @@ class ProductsTable
             ->columns([
                 SpatieMediaLibraryImageColumn::make('gallery')
                     ->collection('gallery')
+                    ->conversion('card')
                     ->circular(),
                 TextColumn::make('title')
                     ->searchable(),

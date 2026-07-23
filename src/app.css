@@ -10,6 +10,7 @@
 /* Scan the generated HTML so Tailwind knows which utilities to emit. */
 @source '../*.html';
 @source '../pages/*.html';
+@source '../backend/resources/views/**/*.blade.php';
 
 /* --------------------------------------------------------------------------
    DESIGN TOKENS
