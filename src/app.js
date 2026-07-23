@@ -548,6 +548,7 @@ import './app.css';
       var min = parseInt(input.getAttribute('min'), 10) || 1;
       var val = (parseInt(input.value, 10) || min) + by;
       input.value = Math.max(min, val);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
     var minus = $('[data-qty-minus]', box);
@@ -790,6 +791,63 @@ import './app.css';
   });
 
   /* ------------------------------------------------------------------------
+     WISHLIST PAGE — every card here is already saved, so seed localStorage
+     with its key up front and show the heart as filled. Clicking a heart
+     un-saves it (via the shared toggle handler below) and this block drops
+     the card from the grid to match. Must run before the generic WISHLIST
+     toggle block so that handler reads the seeded localStorage on init.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var grid = $('[data-wishlist-grid]');
+    if (!grid) return;
+
+    var emptyEl = $('[data-wishlist-empty]');
+    var cards = $$('article', grid);
+
+    var saved = [];
+    try { saved = JSON.parse(localStorage.getItem('estele-wishlist') || '[]'); } catch (e) {}
+
+    function keyFor(card) {
+      var img = card.querySelector('img');
+      return (img && (img.getAttribute('alt') || img.getAttribute('src'))) || card;
+    }
+
+    cards.forEach(function (card) {
+      var key = keyFor(card);
+      if (saved.indexOf(key) === -1) saved.push(key);
+
+      var btn = $('[aria-label="Add to wishlist"]', card);
+      if (btn) {
+        btn.classList.add('opacity-100', 'text-accent');
+        var svg = btn.querySelector('svg');
+        if (svg) svg.setAttribute('fill', 'currentColor');
+      }
+    });
+    try { localStorage.setItem('estele-wishlist', JSON.stringify(saved)); } catch (e2) {}
+
+    function updateEmptyState() {
+      var remaining = grid.querySelectorAll('article').length;
+      grid.hidden = remaining === 0;
+      if (emptyEl) emptyEl.hidden = remaining !== 0;
+    }
+
+    grid.addEventListener('click', function (e) {
+      var btn = e.target.closest('[aria-label="Add to wishlist"]');
+      if (!btn) return;
+
+      var card = btn.closest('article');
+      if (!card) return;
+
+      // Deferred so the shared toggle handler (bound on document) finishes
+      // reading e.target before the card is removed from the DOM.
+      setTimeout(function () {
+        card.remove();
+        updateEmptyState();
+      }, 0);
+    });
+  })();
+
+  /* ------------------------------------------------------------------------
      WISHLIST — heart toggle on product cards, persisted per-browser so the
      header count is consistent across pages
      ---------------------------------------------------------------------- */
@@ -873,6 +931,80 @@ import './app.css';
         }, 1200);
       });
     });
+  })();
+
+  /* ------------------------------------------------------------------------
+     CART PAGE — remove items and keep row/order-summary totals and the
+     header badge in sync (front-end only, no persisted cart storage).
+     ---------------------------------------------------------------------- */
+  (function () {
+    var table = $('[data-cart-table]');
+    if (!table) return;
+
+    var grid = $('[data-cart-grid]');
+    var emptyEl = $('[data-cart-empty]');
+    var subtotalEl = $('[data-cart-subtotal]');
+    var totalEl = $('[data-cart-total]');
+    var countEls = $$('[data-cart-count]');
+    var rows = $$('[data-cart-row]', table);
+
+    function currency(n) {
+      return '₹' + n.toLocaleString('en-IN');
+    }
+
+    function bumpCartCount(delta) {
+      var count = 0;
+      try { count = parseInt(localStorage.getItem('estele-cart-count'), 10) || 0; } catch (e) {}
+      count = Math.max(0, count + delta);
+      try { localStorage.setItem('estele-cart-count', String(count)); } catch (e2) {}
+      countEls.forEach(function (el) {
+        el.textContent = count;
+        el.classList.toggle('hidden', count === 0);
+      });
+    }
+
+    function rowQty(row) {
+      var input = $('input[type="number"]', row);
+      return (input && parseInt(input.value, 10)) || 1;
+    }
+
+    function recalc() {
+      var subtotal = 0;
+      var remaining = 0;
+
+      rows.forEach(function (row) {
+        if (!row.isConnected) return;
+        remaining++;
+
+        var price = parseFloat(row.getAttribute('data-price')) || 0;
+        var rowTotal = price * rowQty(row);
+        var totalCell = $('[data-row-total]', row);
+        if (totalCell) totalCell.textContent = currency(rowTotal);
+        subtotal += rowTotal;
+      });
+
+      if (subtotalEl) subtotalEl.textContent = currency(subtotal);
+      if (totalEl) totalEl.textContent = currency(subtotal);
+
+      if (grid) grid.hidden = remaining === 0;
+      if (emptyEl) emptyEl.hidden = remaining !== 0;
+    }
+
+    rows.forEach(function (row) {
+      var removeBtn = $('[data-cart-remove]', row);
+      if (removeBtn) {
+        removeBtn.addEventListener('click', function () {
+          bumpCartCount(-rowQty(row));
+          row.remove();
+          recalc();
+        });
+      }
+
+      var qtyInput = $('input[type="number"]', row);
+      if (qtyInput) qtyInput.addEventListener('input', recalc);
+    });
+
+    recalc();
   })();
 
   /* ------------------------------------------------------------------------

@@ -339,7 +339,11 @@
   </nav>
   <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 pb-10 md:pb-[60px]">
     <h1 class="text-[20px] uppercase tracking-[0.5px] md:text-[26px] mb-5">Wishlist</h1>
-    <div class="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
+    <div class="py-16 text-center" data-wishlist-empty hidden>
+      <p class="mb-5 text-[14px] text-muted">Your wishlist is empty.</p>
+      <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" href="collection.html">Continue Shopping</a>
+    </div>
+    <div class="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5" data-wishlist-grid>
         <article class="group relative text-center">
           <a class="relative block aspect-square overflow-hidden bg-placeholder" href="product.html" aria-label="Bloom Radiance Necklace Set">
             <img class="h-full w-full object-cover" src="https://estele.co/cdn/shop/files/12_652a7dbc-3f6c-4f4d-bc49-d31a3f71c6dc.jpg?width=600"

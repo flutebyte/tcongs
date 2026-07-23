@@ -340,9 +340,14 @@
   <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 pb-10 md:pb-[60px]">
     <h1 class="text-[20px] uppercase tracking-[0.5px] md:text-[26px] mb-5">Your Bag</h1>
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-[1fr_340px] md:gap-[34px]">
+    <div class="py-16 text-center" data-cart-empty hidden>
+      <p class="mb-5 text-[14px] text-muted">Your bag is empty.</p>
+      <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" href="collection.html">Continue Shopping</a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-[1fr_340px] md:gap-[34px]" data-cart-grid>
       <div>
-        <table class="w-full [&_.cart-td]:align-middle max-md:[&_thead]:hidden max-md:[&_table]:block max-md:[&_tbody]:block max-md:[&_tr]:block max-md:[&_tr]:border-b max-md:[&_tr]:border-line max-md:[&_tr]:py-4 max-md:[&_.cart-td]:block max-md:[&_.cart-td]:border-0 max-md:[&_.cart-td]:py-1.5">
+        <table class="w-full [&_.cart-td]:align-middle max-md:[&_thead]:hidden max-md:[&_table]:block max-md:[&_tbody]:block max-md:[&_tr]:block max-md:[&_tr]:border-b max-md:[&_tr]:border-line max-md:[&_tr]:py-4 max-md:[&_.cart-td]:block max-md:[&_.cart-td]:border-0 max-md:[&_.cart-td]:py-1.5" data-cart-table>
           <thead>
             <tr class="border-b border-line-strong">
               <th class="pb-3 text-left text-[12px] font-medium uppercase tracking-[0.4px] text-muted" scope="col">Product</th>
@@ -352,7 +357,7 @@
             </tr>
           </thead>
           <tbody>
-      <tr class="border-b border-line">
+      <tr class="border-b border-line" data-cart-row data-price="2400">
         <td class="cart-td py-4.5">
           <div class="flex items-center gap-3.5">
             <a class="aspect-square w-[84px] shrink-0 overflow-hidden bg-placeholder" href="product.html">
@@ -361,7 +366,7 @@
             <div>
               <a class="mb-1 block text-[14px] transition-colors hover:text-accent" href="product.html">Bloom Radiance Necklace Set</a>
               <p class="mb-1.5 text-[12px] text-muted">Plating: Rose Gold</p>
-              <button class="text-[12px] text-muted underline transition-colors hover:text-[#eb001b]" type="button">Remove</button>
+              <button class="text-[12px] text-muted underline transition-colors hover:text-[#eb001b]" type="button" data-cart-remove>Remove</button>
             </div>
           </div>
         </td>
@@ -373,9 +378,9 @@
             <button class="grid h-11 w-10 place-items-center text-[16px] transition-colors hover:text-accent" type="button" data-qty-plus aria-label="Increase quantity">+</button>
           </div>
         </td>
-        <td class="cart-td py-4.5 text-[14px] font-medium" data-label="Total">₹2,400</td>
+        <td class="cart-td py-4.5 text-[14px] font-medium" data-label="Total" data-row-total>₹2,400</td>
       </tr>
-      <tr class="border-b border-line">
+      <tr class="border-b border-line" data-cart-row data-price="2900">
         <td class="cart-td py-4.5">
           <div class="flex items-center gap-3.5">
             <a class="aspect-square w-[84px] shrink-0 overflow-hidden bg-placeholder" href="product.html">
@@ -384,7 +389,7 @@
             <div>
               <a class="mb-1 block text-[14px] transition-colors hover:text-accent" href="product.html">Petal Glow Necklace Set</a>
               <p class="mb-1.5 text-[12px] text-muted">Plating: Rose Gold</p>
-              <button class="text-[12px] text-muted underline transition-colors hover:text-[#eb001b]" type="button">Remove</button>
+              <button class="text-[12px] text-muted underline transition-colors hover:text-[#eb001b]" type="button" data-cart-remove>Remove</button>
             </div>
           </div>
         </td>
@@ -396,9 +401,9 @@
             <button class="grid h-11 w-10 place-items-center text-[16px] transition-colors hover:text-accent" type="button" data-qty-plus aria-label="Increase quantity">+</button>
           </div>
         </td>
-        <td class="cart-td py-4.5 text-[14px] font-medium" data-label="Total">₹2,900</td>
+        <td class="cart-td py-4.5 text-[14px] font-medium" data-label="Total" data-row-total>₹2,900</td>
       </tr>
-      <tr class="border-b border-line">
+      <tr class="border-b border-line" data-cart-row data-price="2150">
         <td class="cart-td py-4.5">
           <div class="flex items-center gap-3.5">
             <a class="aspect-square w-[84px] shrink-0 overflow-hidden bg-placeholder" href="product.html">
@@ -407,7 +412,7 @@
             <div>
               <a class="mb-1 block text-[14px] transition-colors hover:text-accent" href="product.html">Crystal Harmony Necklace Set</a>
               <p class="mb-1.5 text-[12px] text-muted">Plating: Rose Gold</p>
-              <button class="text-[12px] text-muted underline transition-colors hover:text-[#eb001b]" type="button">Remove</button>
+              <button class="text-[12px] text-muted underline transition-colors hover:text-[#eb001b]" type="button" data-cart-remove>Remove</button>
             </div>
           </div>
         </td>
@@ -419,7 +424,7 @@
             <button class="grid h-11 w-10 place-items-center text-[16px] transition-colors hover:text-accent" type="button" data-qty-plus aria-label="Increase quantity">+</button>
           </div>
         </td>
-        <td class="cart-td py-4.5 text-[14px] font-medium" data-label="Total">₹2,150</td>
+        <td class="cart-td py-4.5 text-[14px] font-medium" data-label="Total" data-row-total>₹2,150</td>
       </tr>
           </tbody>
         </table>
@@ -433,9 +438,9 @@
       <aside class="rounded bg-pinksoft p-6 md:sticky md:top-[100px]">
         <h2 class="mb-4.5 text-[15px] uppercase tracking-[0.5px]">Order Summary</h2>
         <dl class="mb-4.5 space-y-2 text-[14px]">
-          <div class="flex justify-between"><dt class="text-muted">Subtotal</dt><dd>&#8377;7,450</dd></div>
+          <div class="flex justify-between"><dt class="text-muted">Subtotal</dt><dd data-cart-subtotal>&#8377;7,450</dd></div>
           <div class="flex justify-between"><dt class="text-muted">Shipping</dt><dd>Free</dd></div>
-          <div class="flex justify-between border-t border-line-strong pt-3.5 text-[16px] font-medium"><dt class="text-heading">Total</dt><dd>&#8377;7,450</dd></div>
+          <div class="flex justify-between border-t border-line-strong pt-3.5 text-[16px] font-medium"><dt class="text-heading">Total</dt><dd data-cart-total>&#8377;7,450</dd></div>
         </dl>
         <div class="mb-4.5">
           <label class="mb-1.5 block text-[13px] font-medium text-heading" for="coupon">Coupon code</label>
