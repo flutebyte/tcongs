@@ -25,9 +25,10 @@ class Product extends Model implements HasMedia
 
     public function registerMediaConversions(?\Spatie\MediaLibrary\MediaCollections\Models\Media $media = null): void
     {
-        // Sizes/quality follow the responsive image spec (§3.1): thumbnail for
-        // grid/listing use, desktop for the PDP main image and zoom targets.
+        // Sizes/quality follow the responsive image spec (§3.1).
         $this->addMediaConversion('card')->width(400)->format('webp')->quality(78);
+        $this->addMediaConversion('mobile')->width(768)->format('webp')->quality(80);
+        $this->addMediaConversion('tablet')->width(1024)->format('webp')->quality(82);
         $this->addMediaConversion('detail')->width(1600)->format('webp')->quality(83);
     }
 

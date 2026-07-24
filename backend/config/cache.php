@@ -131,6 +131,11 @@ return [
     |
     */
 
-    'serializable_classes' => false,
+    // This cache is populated only from our own trusted server-side queries
+    // (never from user-controlled input), so it's safe to allow full object
+    // caching here — needed to cache Eloquent models/Collections/Paginators
+    // directly for page-level caching (see HomeController/CategoryController/
+    // ProductController) without a plain-array rewrite of every view.
+    'serializable_classes' => true,
 
 ];

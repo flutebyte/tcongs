@@ -13,7 +13,10 @@
           <div class="hero-slide {{ $index === 0 ? 'is-active' : '' }}" data-carousel-slide>
             <a href="{{ $banner->link_url ?? '#' }}" aria-label="{{ $banner->title }}">
               @if($banner->hasMedia('image'))
-                <img class="h-full w-full object-cover" src="{{ $banner->getFirstMediaUrl('image', 'desktop') }}" alt="{{ $banner->title }}" loading="{{ $index === 0 ? 'eager' : 'lazy' }}" fetchpriority="{{ $index === 0 ? 'high' : 'auto' }}">
+                <picture>
+                  <source media="(max-width: 767px)" srcset="{{ $banner->getFirstMediaUrl('image', 'mobile') }}">
+                  <img class="h-full w-full object-cover" src="{{ $banner->getFirstMediaUrl('image', 'desktop') }}" alt="{{ $banner->title }}" loading="{{ $index === 0 ? 'eager' : 'lazy' }}" fetchpriority="{{ $index === 0 ? 'high' : 'auto' }}">
+                </picture>
               @endif
             </a>
           </div>

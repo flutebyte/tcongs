@@ -15,6 +15,7 @@
       ? (int) round((($product->compare_at_price - $product->price) / $product->compare_at_price) * 100)
       : null;
     $galleryImages = $product->getMedia('gallery');
+    $mainMedia = $galleryImages->first();
   @endphp
 
   <nav class="mx-auto w-full max-w-wrapper px-3 md:px-4 flex flex-wrap items-center gap-1.5 py-4 text-[13px] text-muted" aria-label="Breadcrumb">
@@ -28,8 +29,12 @@
 
     <div>
       <div class="aspect-square overflow-hidden rounded bg-placeholder">
-        @if($product->hasMedia('gallery'))
-          <img class="h-full w-full object-cover" id="pdp-main-img" src="{{ $product->getFirstMediaUrl('gallery', 'detail') }}" alt="{{ $product->title }}" width="1000" height="1000" fetchpriority="high">
+        @if($mainMedia)
+          <img class="h-full w-full object-cover" id="pdp-main-img"
+               src="{{ $mainMedia->getUrl('detail') }}"
+               srcset="{{ $mainMedia->getUrl('mobile') }} 768w, {{ $mainMedia->getUrl('tablet') }} 1024w, {{ $mainMedia->getUrl('detail') }} 1600w"
+               sizes="(max-width: 768px) 100vw, 50vw"
+               alt="{{ $product->title }}" width="1000" height="1000" fetchpriority="high">
         @endif
       </div>
       @if($galleryImages->count() > 1)

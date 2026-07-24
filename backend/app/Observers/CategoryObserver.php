@@ -10,10 +10,12 @@ class CategoryObserver
     public function saved(Category $category): void
     {
         Cache::forget('site.nav_categories');
+        Cache::tags(['home', 'category:' . $category->id])->flush();
     }
 
     public function deleted(Category $category): void
     {
         Cache::forget('site.nav_categories');
+        Cache::tags(['home', 'category:' . $category->id])->flush();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -10,15 +11,23 @@ class ProductController extends Controller
     {
         abort_unless($product->is_active, 404);
 
-        $product->load('variants', 'categories');
+        $relatedProducts = Cache::tags(['product:' . $product->id])->remember(
+            "product.{$product->id}.show",
+            now()->addMinutes(15),
+            function () use ($product) {
+                $product->load('variants', 'categories');
 
-        $relatedProducts = Product::where('is_active', true)
-            ->where('id', '!=', $product->id)
-            ->whereHas('categories', function ($query) use ($product) {
-                $query->whereIn('categories.id', $product->categories->pluck('id'));
-            })
-            ->take(8)
-            ->get();
+                return Product::where('is_active', true)
+                    ->where('id', '!=', $product->id)
+                    ->whereHas('categories', function ($query) use ($product) {
+                        $query->whereIn('categories.id', $product->categories->pluck('id'));
+                    })
+                    ->take(8)
+                    ->get();
+            }
+        );
+
+        $product->loadMissing('variants', 'categories');
 
         return view('products.show', compact('product', 'relatedProducts'));
     }
