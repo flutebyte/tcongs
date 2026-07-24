@@ -4,111 +4,107 @@
 
 @section('content')
 
-  <div class="mx-auto w-full max-w-wrapper px-3 py-8 md:px-4 md:py-10">
-    <h1 class="mb-6 text-[22px] md:text-[28px]">Checkout</h1>
+  <nav class="mx-auto w-full max-w-wrapper px-3 md:px-4 flex flex-wrap items-center gap-1.5 py-4 text-[13px] text-muted" aria-label="Breadcrumb">
+    <x-breadcrumb :items="[['label' => 'Cart', 'url' => route('cart.index')], ['label' => 'Checkout']]" />
+  </nav>
 
-    <form action="{{ route('checkout.store') }}" method="post" class="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
-      @csrf
+  <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 pb-10 md:pb-[60px]">
+    <h1 class="text-[20px] uppercase tracking-[0.5px] md:text-[26px] mb-5">Checkout</h1>
 
-      <div class="space-y-6">
-        <div class="rounded-lg border border-line p-5">
-          <h2 class="mb-4 text-[15px] font-medium uppercase tracking-[0.3px]">Contact Details</h2>
-          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div class="md:col-span-2">
-              <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted" for="customer_name">Full Name</label>
-              <input class="w-full border border-line-strong px-3.5 py-2.5 text-[14px] outline-none focus:border-heading" type="text" id="customer_name" name="customer_name" value="{{ old('customer_name') }}" required>
-              @error('customer_name') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-[1fr_340px] md:gap-[34px]">
+      <form action="{{ route('checkout.store') }}" method="post" class="[&_.field-set]:mb-7">
+        @csrf
+
+        <fieldset class="field-set">
+          <legend class="mb-3.5 text-[14px] font-medium uppercase tracking-[0.5px]">Contact</legend>
+          <label class="mb-1.5 block text-[13px] font-medium text-heading" for="customer_email">Email</label>
+          <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-3.5" id="customer_email" name="customer_email" type="email" placeholder="you@example.com" value="{{ old('customer_email') }}" required>
+          @error('customer_email') <p class="mb-3.5 -mt-2 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+          <label class="mb-1.5 block text-[13px] font-medium text-heading" for="customer_phone">Phone</label>
+          <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-3.5" id="customer_phone" name="customer_phone" type="tel" placeholder="+91" value="{{ old('customer_phone') }}" required>
+          @error('customer_phone') <p class="mb-3.5 -mt-2 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+        </fieldset>
+
+        <fieldset class="field-set">
+          <legend class="mb-3.5 text-[14px] font-medium uppercase tracking-[0.5px]">Shipping Address</legend>
+          <div class="mb-3.5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label class="mb-1.5 block text-[13px] font-medium text-heading" for="customer_first_name">First name</label>
+              <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="customer_first_name" name="customer_first_name" type="text" value="{{ old('customer_first_name') }}" required>
+              @error('customer_first_name') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
             </div>
             <div>
-              <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted" for="customer_email">Email</label>
-              <input class="w-full border border-line-strong px-3.5 py-2.5 text-[14px] outline-none focus:border-heading" type="email" id="customer_email" name="customer_email" value="{{ old('customer_email') }}" required>
-              @error('customer_email') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
-            </div>
-            <div>
-              <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted" for="customer_phone">Phone</label>
-              <input class="w-full border border-line-strong px-3.5 py-2.5 text-[14px] outline-none focus:border-heading" type="tel" id="customer_phone" name="customer_phone" value="{{ old('customer_phone') }}" required>
-              @error('customer_phone') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+              <label class="mb-1.5 block text-[13px] font-medium text-heading" for="customer_last_name">Last name</label>
+              <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="customer_last_name" name="customer_last_name" type="text" value="{{ old('customer_last_name') }}" required>
+              @error('customer_last_name') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
             </div>
           </div>
-        </div>
-
-        <div class="rounded-lg border border-line p-5">
-          <h2 class="mb-4 text-[15px] font-medium uppercase tracking-[0.3px]">Shipping Address</h2>
-          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div class="md:col-span-2">
-              <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted" for="shipping_address_line1">Address Line 1</label>
-              <input class="w-full border border-line-strong px-3.5 py-2.5 text-[14px] outline-none focus:border-heading" type="text" id="shipping_address_line1" name="shipping_address_line1" value="{{ old('shipping_address_line1') }}" required>
-              @error('shipping_address_line1') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
-            </div>
-            <div class="md:col-span-2">
-              <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted" for="shipping_address_line2">Address Line 2 (optional)</label>
-              <input class="w-full border border-line-strong px-3.5 py-2.5 text-[14px] outline-none focus:border-heading" type="text" id="shipping_address_line2" name="shipping_address_line2" value="{{ old('shipping_address_line2') }}">
-            </div>
+          <label class="mb-1.5 block text-[13px] font-medium text-heading" for="shipping_address_line1">Address</label>
+          <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-3.5" id="shipping_address_line1" name="shipping_address_line1" type="text" value="{{ old('shipping_address_line1') }}" required>
+          @error('shipping_address_line1') <p class="mb-3.5 -mt-2 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+          <div class="mb-3.5 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted" for="shipping_city">City</label>
-              <input class="w-full border border-line-strong px-3.5 py-2.5 text-[14px] outline-none focus:border-heading" type="text" id="shipping_city" name="shipping_city" value="{{ old('shipping_city') }}" required>
+              <label class="mb-1.5 block text-[13px] font-medium text-heading" for="shipping_city">City</label>
+              <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="shipping_city" name="shipping_city" type="text" value="{{ old('shipping_city') }}" required>
               @error('shipping_city') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
             </div>
             <div>
-              <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted" for="shipping_state">State</label>
-              <input class="w-full border border-line-strong px-3.5 py-2.5 text-[14px] outline-none focus:border-heading" type="text" id="shipping_state" name="shipping_state" value="{{ old('shipping_state') }}" required>
-              @error('shipping_state') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
-            </div>
-            <div>
-              <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted" for="shipping_postal_code">Postal Code</label>
-              <input class="w-full border border-line-strong px-3.5 py-2.5 text-[14px] outline-none focus:border-heading" type="text" id="shipping_postal_code" name="shipping_postal_code" value="{{ old('shipping_postal_code') }}" required>
+              <label class="mb-1.5 block text-[13px] font-medium text-heading" for="shipping_postal_code">PIN code</label>
+              <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="shipping_postal_code" name="shipping_postal_code" type="text" value="{{ old('shipping_postal_code') }}" required>
               @error('shipping_postal_code') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
             </div>
-            <div>
-              <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted">Country</label>
-              <input class="w-full border border-line-strong bg-placeholder px-3.5 py-2.5 text-[14px] text-muted" type="text" value="India" disabled>
-            </div>
           </div>
+          <label class="mb-1.5 block text-[13px] font-medium text-heading" for="shipping_state">State</label>
+          <select class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="shipping_state" name="shipping_state" required>
+            @foreach(['Telangana', 'Maharashtra', 'Karnataka', 'Delhi'] as $state)
+              <option value="{{ $state }}" {{ old('shipping_state') === $state ? 'selected' : '' }}>{{ $state }}</option>
+            @endforeach
+          </select>
+          @error('shipping_state') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+        </fieldset>
+
+        <fieldset class="field-set">
+          <legend class="mb-3.5 text-[14px] font-medium uppercase tracking-[0.5px]">Payment</legend>
+          <ul class="space-y-2.5">
+            <li>
+              <label class="flex cursor-not-allowed items-center gap-2.5 border border-line-strong p-3.5 text-[14px] opacity-50">
+                <input class="accent-accent" type="radio" name="pay" disabled> UPI / Card / Netbanking
+              </label>
+            </li>
+            <li>
+              <label class="flex cursor-pointer items-center gap-2.5 border border-line-strong p-3.5 text-[14px]">
+                <input class="accent-accent" type="radio" name="pay" checked> Cash on Delivery
+              </label>
+            </li>
+          </ul>
+          <p class="mt-2 text-[12px] text-muted">Online payment is coming soon.</p>
+        </fieldset>
+
+        <div class="field-set">
+          <label class="mb-1.5 block text-[13px] font-medium text-heading" for="order_note">Order note (optional)</label>
+          <textarea class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="order_note" name="order_note" rows="3">{{ old('order_note') }}</textarea>
         </div>
 
-        <div class="rounded-lg border border-line p-5">
-          <label class="mb-1.5 block text-[12px] uppercase tracking-[0.3px] text-muted" for="order_note">Order Note (optional)</label>
-          <textarea class="w-full border border-line-strong px-3.5 py-2.5 text-[14px] outline-none focus:border-heading" id="order_note" name="order_note" rows="3">{{ old('order_note') }}</textarea>
-        </div>
-      </div>
+        <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent w-full" type="submit">Place Order</button>
+      </form>
 
-      <div class="h-fit space-y-5 rounded-lg border border-line p-5">
-        <h2 class="text-[15px] font-medium uppercase tracking-[0.3px]">Order Summary</h2>
-        <div class="divide-y divide-line">
+      <aside class="rounded bg-pinksoft p-6 md:sticky md:top-[100px]">
+        <h2 class="mb-4.5 text-[15px] uppercase tracking-[0.5px]">Order Summary</h2>
+        <div class="mb-4.5 divide-y divide-line-strong/40">
           @foreach($items as $item)
-            <div class="flex items-center justify-between gap-3 py-2.5 text-[13px]">
+            <div class="flex items-center justify-between gap-3 py-2 text-[13px]">
               <span class="text-heading">{{ $item->product->title }} &times; {{ $item->quantity }}</span>
-              <span class="shrink-0 font-medium text-price">₹{{ number_format($item->unitPrice() * $item->quantity, 0) }}</span>
+              <span class="shrink-0 font-medium">₹{{ number_format($item->unitPrice() * $item->quantity, 0) }}</span>
             </div>
           @endforeach
         </div>
-        <div class="flex items-center justify-between border-t border-line pt-3 text-[14px]">
-          <span class="text-muted">Subtotal</span>
-          <span class="font-medium text-price">₹{{ number_format($subtotal, 0) }}</span>
-        </div>
-        <div class="flex items-center justify-between text-[14px]">
-          <span class="text-muted">Shipping</span>
-          <span class="font-medium text-price">Free</span>
-        </div>
-        <div class="flex items-center justify-between border-t border-line pt-3 text-[16px]">
-          <span class="font-medium text-heading">Total</span>
-          <span class="font-medium text-price">₹{{ number_format($subtotal, 0) }}</span>
-        </div>
-
-        <div class="border-t border-line pt-4">
-          <p class="mb-3 text-[12px] font-medium uppercase tracking-[0.3px] text-muted">Payment Method</p>
-          <label class="flex items-center gap-2 text-[13px] text-heading">
-            <input type="radio" name="payment_method" value="cod" checked disabled>
-            Cash on Delivery
-          </label>
-          <p class="mt-1 text-[11px] text-muted">Online payment is coming soon.</p>
-        </div>
-
-        <button class="flex w-full items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
-          Place Order
-        </button>
-      </div>
-    </form>
+        <dl class="mb-4.5 space-y-2 text-[14px]">
+          <div class="flex justify-between"><dt class="text-muted">Subtotal</dt><dd>₹{{ number_format($subtotal, 0) }}</dd></div>
+          <div class="flex justify-between"><dt class="text-muted">Shipping</dt><dd>Free</dd></div>
+          <div class="flex justify-between border-t border-line-strong pt-3.5 text-[16px] font-medium"><dt class="text-heading">Total</dt><dd>₹{{ number_format($subtotal, 0) }}</dd></div>
+        </dl>
+      </aside>
+    </div>
   </div>
 
 @endsection

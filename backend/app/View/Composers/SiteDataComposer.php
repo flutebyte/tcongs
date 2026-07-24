@@ -14,7 +14,11 @@ class SiteDataComposer
     public function compose(View $view): void
     {
         $cart = Cart::where('session_id', session()->getId())->first();
-        $view->with('cartCount', $cart ? (int) $cart->items()->sum('quantity') : 0);
+        $cartItems = $cart ? $cart->items()->with(['product.media', 'variant'])->get() : collect();
+
+        $view->with('cartCount', (int) $cartItems->sum('quantity'));
+        $view->with('cartItems', $cartItems);
+        $view->with('cartSubtotal', $cartItems->sum(fn ($item) => $item->unitPrice() * $item->quantity));
 
         // Laravel's database/file cache stores refuse to unserialize objects by default
         // (config('cache.serializable_classes') === false) — cache plain arrays, not

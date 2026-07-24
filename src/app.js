@@ -456,6 +456,146 @@ import './app.css';
   })();
 
   /* ------------------------------------------------------------------------
+     CART DRAWER — mini-cart that slides in from the right on "Add to Cart"
+     and via the header cart icon. The server renders the same Blade partial
+     for both this drawer and the full /cart page, so every mutation (add,
+     qty change, remove) just fetches fresh HTML for the drawer body instead
+     of duplicating cart-item markup in JS.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var drawer = $('[data-cart-drawer]');
+    if (!drawer) return;
+
+    var backdrop = $('[data-cart-backdrop]', drawer);
+    var panel    = $('[data-cart-panel]', drawer);
+    var body     = $('[data-cart-body]', drawer);
+    var isOpen   = false;
+
+    function csrfToken() {
+      var meta = $('meta[name="csrf-token"]');
+      return meta ? meta.getAttribute('content') : '';
+    }
+
+    function open() {
+      drawer.hidden = false;
+      requestAnimationFrame(function () {
+        if (backdrop) backdrop.classList.add('opacity-100');
+        if (panel) panel.classList.remove('translate-x-full');
+      });
+      document.body.style.overflow = 'hidden';
+      isOpen = true;
+    }
+
+    function close() {
+      if (backdrop) backdrop.classList.remove('opacity-100');
+      if (panel) panel.classList.add('translate-x-full');
+      document.body.style.overflow = '';
+      isOpen = false;
+      setTimeout(function () { drawer.hidden = true; }, 300);
+    }
+
+    function updateCount(count) {
+      $$('[data-cart-count-badge]').forEach(function (badge) {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'grid' : 'none';
+      });
+    }
+
+    function render(html, count) {
+      if (body) body.innerHTML = html;
+      if (typeof count === 'number') updateCount(count);
+    }
+
+    function request(url, options) {
+      options = options || {};
+      options.headers = Object.assign({
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': csrfToken(),
+        'X-Requested-With': 'XMLHttpRequest',
+      }, options.headers || {});
+      return fetch(url, options).then(function (res) { return res.json(); });
+    }
+
+    $$('[data-cart-open]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        open();
+      });
+    });
+
+    $$('[data-cart-close]').forEach(function (el) { el.addEventListener('click', close); });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isOpen) close();
+    });
+
+    // Add-to-cart forms (product page) — submit over fetch so the drawer
+    // opens with fresh contents instead of a full page reload.
+    $$('[data-add-to-cart]').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var buyNow = e.submitter && e.submitter.name === 'buy_now';
+        var submitButtons = $$('button[type="submit"]', form);
+        submitButtons.forEach(function (btn) { btn.disabled = true; });
+
+        request(form.getAttribute('action'), { method: 'POST', body: new FormData(form) })
+          .then(function (data) {
+            if (data.success === false) {
+              alert(data.message || 'Could not add to cart.');
+              return;
+            }
+            if (buyNow) {
+              window.location.href = form.getAttribute('data-checkout-url') || '/checkout';
+              return;
+            }
+            render(data.html, data.cartCount);
+            open();
+          })
+          .finally(function () {
+            submitButtons.forEach(function (btn) { btn.disabled = false; });
+          });
+      });
+    });
+
+    // Delegate qty +/- and remove — the drawer body's HTML is replaced
+    // wholesale on every update, so per-element listeners would go stale.
+    if (body) {
+      body.addEventListener('click', function (e) {
+        var decrement = e.target.closest('[data-cart-qty-decrement]');
+        var increment = e.target.closest('[data-cart-qty-increment]');
+        var remove    = e.target.closest('[data-cart-remove]');
+
+        if (decrement || increment) {
+          var stepper = e.target.closest('[data-cart-qty-stepper]');
+          var itemId  = stepper.getAttribute('data-item-id');
+          var max     = parseInt(stepper.getAttribute('data-max'), 10) || 1;
+          var valueEl = $('[data-cart-qty-value]', stepper);
+          var current = parseInt(valueEl.textContent, 10) || 1;
+          var next    = increment ? Math.min(max, current + 1) : Math.max(1, current - 1);
+
+          if (next === current) return;
+
+          request('/cart/items/' + itemId, {
+            method: 'PATCH',
+            body: new URLSearchParams({ quantity: next }),
+          }).then(function (data) {
+            if (data.success === false) return;
+            render(data.html, data.cartCount);
+          });
+        }
+
+        if (remove) {
+          request('/cart/items/' + remove.getAttribute('data-item-id'), { method: 'DELETE' })
+            .then(function (data) {
+              if (data.success === false) return;
+              render(data.html, data.cartCount);
+            });
+        }
+      });
+    }
+  })();
+
+  /* ------------------------------------------------------------------------
      SEARCH OVERLAY
      ---------------------------------------------------------------------- */
   (function () {
@@ -546,15 +686,31 @@ import './app.css';
 
     function bump(by) {
       var min = parseInt(input.getAttribute('min'), 10) || 1;
+      var maxAttr = input.getAttribute('max');
+      var max = maxAttr ? parseInt(maxAttr, 10) : null;
       var val = (parseInt(input.value, 10) || min) + by;
-      input.value = Math.max(min, val);
+      val = Math.max(min, val);
+      if (max !== null) val = Math.min(max, val);
+      input.value = val;
       input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
     var minus = $('[data-qty-minus]', box);
     var plus  = $('[data-qty-plus]', box);
     if (minus) minus.addEventListener('click', function () { bump(-1); });
     if (plus)  plus.addEventListener('click',  function () { bump(1); });
+  });
+
+  /* ------------------------------------------------------------------------
+     CART PAGE QTY FORMS — the full /cart page has no visible "Update"
+     button (matching the original design); the stepper commits the change
+     straight to the server as soon as it fires a `change` event.
+     ---------------------------------------------------------------------- */
+  $$('[data-cart-qty-form]').forEach(function (form) {
+    var input = $('input[type="number"]', form);
+    if (!input) return;
+    input.addEventListener('change', function () { form.submit(); });
   });
 
   /* ------------------------------------------------------------------------

@@ -16,6 +16,8 @@ class CollectionController extends Controller
 
     public function show(Collection $collection, Request $request)
     {
+        abort_unless($collection->is_active, 404);
+
         $sort = $request->query('sort', 'featured');
 
         $query = $collection->products()->where('is_active', true);

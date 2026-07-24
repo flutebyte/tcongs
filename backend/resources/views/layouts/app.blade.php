@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('meta_title', ($siteSettings['site_name'] ?? 'Estele').' — '.($siteSettings['site_tagline'] ?? ''))</title>
   <meta name="description" content="@yield('meta_description', $siteSettings['site_tagline'] ?? '')">
   <link rel="canonical" href="@yield('canonical', url()->current())">
@@ -72,11 +73,9 @@
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.2l7.7-7.7 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
         <span class="absolute right-0.5 top-0.5 hidden h-4 min-w-4 place-items-center rounded-lg bg-accent px-1 text-[10px] leading-none text-white" data-wishlist-count>0</span>
       </a>
-      <a class="relative grid h-[38px] w-[38px] place-items-center text-heading transition-colors hover:[color:var(--nav-hover-color)]" href="{{ route('cart.index') }}" aria-label="Cart">
+      <a class="relative grid h-[38px] w-[38px] place-items-center text-heading transition-colors hover:[color:var(--nav-hover-color)]" href="{{ route('cart.index') }}" aria-label="Cart" data-cart-open>
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        @if($cartCount > 0)
-          <span class="absolute right-0.5 top-0.5 grid h-4 min-w-4 place-items-center rounded-lg bg-accent px-1 text-[10px] leading-none text-white">{{ $cartCount }}</span>
-        @endif
+        <span class="absolute right-0.5 top-0.5 grid h-4 min-w-4 place-items-center rounded-lg bg-accent px-1 text-[10px] leading-none text-white" style="{{ $cartCount > 0 ? '' : 'display:none' }}" data-cart-count-badge>{{ $cartCount }}</span>
       </a>
       <a class="relative grid h-[38px] w-[38px] place-items-center text-heading transition-colors hover:[color:var(--nav-hover-color)]" href="/account.html" aria-label="Account">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1"/></svg>
@@ -228,6 +227,8 @@
     </div>
   </nav>
 </div>
+
+@include('partials.cart-drawer')
 
 <div class="fixed inset-0 z-[200]" data-search hidden>
   <div class="absolute inset-0 bg-black/45" data-search-close></div>

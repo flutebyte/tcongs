@@ -24,6 +24,7 @@ class HomepageBlockItem extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('card')->width(768)->format('webp')->quality(80);
+        $this->addMediaConversion('banner')->width(1600)->format('webp')->quality(83);
     }
 
     protected $fillable = [

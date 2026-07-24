@@ -19,16 +19,25 @@
   <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
     <header class="pb-6 pt-2 text-center md:pb-[30px]">
       <h1 class="text-[20px] uppercase tracking-[0.5px] md:text-[26px] mb-2.5">{{ $category->name }}</h1>
-      @if($category->description)
-        <p class="mx-auto max-w-[70ch] text-[13.5px] text-muted">{{ $category->description }}</p>
-      @endif
+      <p class="mx-auto max-w-[70ch] text-[13.5px] text-muted">
+        @if($category->description)
+          {{ $category->description }}
+        @endif
+        {{ $products->total() }} {{ \Illuminate\Support\Str::plural('product', $products->total()) }}.
+      </p>
     </header>
   </div>
 
   <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 pb-10 md:pb-[60px]">
 
     <div class="mb-5 flex flex-wrap items-center gap-3.5 border-b border-line pb-4.5">
-      <p class="w-full text-[13px] text-muted md:mr-auto md:w-auto">{{ $products->total() }} {{ \Illuminate\Support\Str::plural('product', $products->total()) }}</p>
+      <p class="w-full text-[13px] text-muted md:mr-auto md:w-auto">
+        @if($products->total() > 0)
+          Showing {{ $products->firstItem() }}&ndash;{{ $products->lastItem() }} of {{ $products->total() }}
+        @else
+          No products
+        @endif
+      </p>
       <label class="ml-auto">
         <span class="sr-only-custom">Sort by</span>
         <select class="border border-line-strong bg-white px-3 py-2 text-[13px] outline-none transition-colors focus:border-heading" onchange="window.location.href=this.value">

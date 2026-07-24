@@ -31,7 +31,8 @@ class CheckoutController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'customer_name' => ['required', 'string', 'max:255'],
+            'customer_first_name' => ['required', 'string', 'max:255'],
+            'customer_last_name' => ['required', 'string', 'max:255'],
             'customer_email' => ['required', 'email', 'max:255'],
             'customer_phone' => ['required', 'string', 'max:20'],
             'shipping_address_line1' => ['required', 'string', 'max:255'],
@@ -40,7 +41,20 @@ class CheckoutController extends Controller
             'shipping_state' => ['required', 'string', 'max:120'],
             'shipping_postal_code' => ['required', 'string', 'max:20'],
             'order_note' => ['nullable', 'string', 'max:1000'],
+        ], [], [
+            'customer_first_name' => 'first name',
+            'customer_last_name' => 'last name',
+            'customer_email' => 'email',
+            'customer_phone' => 'phone',
+            'shipping_address_line1' => 'address',
+            'shipping_address_line2' => 'address line 2',
+            'shipping_city' => 'city',
+            'shipping_state' => 'state',
+            'shipping_postal_code' => 'PIN code',
         ]);
+
+        $validated['customer_name'] = trim($validated['customer_first_name'].' '.$validated['customer_last_name']);
+        unset($validated['customer_first_name'], $validated['customer_last_name']);
 
         $cart = $this->currentCart($request);
         $items = $cart->items()->with(['product', 'variant'])->get();

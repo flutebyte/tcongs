@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Banner;
-use App\Models\Category;
+use App\Models\Collection as CollectionModel;
 use App\Models\HomepageBlock;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
@@ -16,12 +16,52 @@ class HomepageContentSeeder extends Seeder
     public function run(): void
     {
         $this->seedBanners();
+        $this->seedCollectionBanner();
         $this->seedProductCarousel();
+        $this->seedNewArrivalsCarousel();
+        $this->seedPriceTiers();
+        $this->seedBestsellersCarousel();
         $this->seedCelebrities();
         $this->seedUsp();
         $this->seedTestimonials();
         $this->seedBrandStory();
         $this->seedNewsletter();
+    }
+
+    private function seedCollectionBanner(): void
+    {
+        if (HomepageBlock::where('type', 'collection_banner')->exists()) {
+            return;
+        }
+
+        $rose = CollectionModel::where('slug', 'rose-collection')->first();
+        if (! $rose) {
+            return;
+        }
+
+        $block = HomepageBlock::create([
+            'type' => 'collection_banner',
+            'title' => 'Rose Gold Collection',
+            'sort_order' => 12,
+            'is_active' => true,
+        ]);
+
+        $item = $block->items()->create([
+            'itemable_type' => CollectionModel::class,
+            'itemable_id' => $rose->id,
+            'sort_order' => 0,
+        ]);
+
+        // Real wide banner photography from the original homepage's own Rose Gold
+        // Collection section — distinct from the Collection's own square/tile image
+        // used in the "Shop by Collection" grid, which is the wrong crop for a banner.
+        try {
+            $item->addMediaFromUrl('https://estele.co/cdn/shop/files/Rose_Gold_jpg.jpg?width=1400')
+                ->usingFileName('rose-gold-collection-banner.jpg')
+                ->toMediaCollection('image');
+        } catch (\Throwable $e) {
+            $this->command?->warn("Could not fetch Rose Gold Collection banner image: {$e->getMessage()}");
+        }
     }
 
     private function seedBanners(): void
@@ -60,28 +100,124 @@ class HomepageContentSeeder extends Seeder
 
     private function seedProductCarousel(): void
     {
-        if (HomepageBlock::where('type', 'product_carousel')->exists()) {
+        if (HomepageBlock::where('type', 'product_carousel')->where('sort_order', 15)->exists()) {
+            return;
+        }
+
+        // No heading on the original homepage — this carousel sits directly
+        // under the Rose Gold Collection banner above it, products only.
+        $block = HomepageBlock::create([
+            'type' => 'product_carousel',
+            'title' => null,
+            'sort_order' => 15,
+            'is_active' => true,
+        ]);
+
+        $rose = CollectionModel::where('slug', 'rose-collection')->first();
+        $products = $rose ? $rose->products()->take(10)->get() : Product::where('is_featured', true)->orderBy('id')->take(10)->get();
+
+        $products->each(function (Product $product, int $index) use ($block) {
+            $block->items()->create([
+                'itemable_type' => Product::class,
+                'itemable_id' => $product->id,
+                'sort_order' => $index,
+            ]);
+        });
+    }
+
+    private function seedNewArrivalsCarousel(): void
+    {
+        if (HomepageBlock::where('type', 'product_carousel')->where('title', 'New Arrivals')->exists()) {
+            return;
+        }
+
+        $collection = CollectionModel::where('slug', 'new-arrivals')->first();
+        if (! $collection) {
             return;
         }
 
         $block = HomepageBlock::create([
             'type' => 'product_carousel',
-            'title' => 'Featured',
-            'subtitle' => 'Handpicked pieces from across our collections.',
-            'cta_label' => 'View All',
-            'cta_url' => null,
-            'sort_order' => 10,
+            'title' => 'New Arrivals',
+            'sort_order' => 25,
             'is_active' => true,
         ]);
 
-        Product::where('is_featured', true)->orderBy('id')->take(10)->get()
-            ->each(function (Product $product, int $index) use ($block) {
-                $block->items()->create([
-                    'itemable_type' => Product::class,
-                    'itemable_id' => $product->id,
-                    'sort_order' => $index,
-                ]);
-            });
+        $collection->products()->take(10)->get()->each(function (Product $product, int $index) use ($block) {
+            $block->items()->create([
+                'itemable_type' => Product::class,
+                'itemable_id' => $product->id,
+                'sort_order' => $index,
+            ]);
+        });
+    }
+
+    private function seedPriceTiers(): void
+    {
+        if (HomepageBlock::where('type', 'price_tiers')->exists()) {
+            return;
+        }
+
+        $block = HomepageBlock::create([
+            'type' => 'price_tiers',
+            'sort_order' => 27,
+            'is_active' => true,
+        ]);
+
+        // Decorative price-range tiles from the original site — links are generic
+        // (no real price-filtered collection query on the original either).
+        $tiers = [
+            ['title' => 'Under', 'body' => '₹999', 'image' => 'https://estele.co/cdn/shop/files/Path_84397_2x_c51eb4f5-4c4f-4ee3-a489-d5daec626af9.png?width=600'],
+            ['title' => 'Under', 'body' => '₹1,499', 'image' => 'https://estele.co/cdn/shop/files/Path_84397_2x_c51eb4f5-4c4f-4ee3-a489-d5daec626af9.png?width=600'],
+            ['title' => 'Under', 'body' => '₹2,999', 'image' => 'https://estele.co/cdn/shop/files/Path_84397_2x_c51eb4f5-4c4f-4ee3-a489-d5daec626af9.png?width=600'],
+            ['title' => 'Premium', 'body' => 'Pearls', 'image' => 'https://estele.co/cdn/shop/files/Mask_Group_406_2x_02f982e3-943b-4bbb-ba34-450e126d2bc5.png?width=600'],
+        ];
+
+        foreach ($tiers as $index => $tier) {
+            $item = $block->items()->create([
+                'title' => $tier['title'],
+                'body' => $tier['body'],
+                'link_url' => route('home'),
+                'sort_order' => $index,
+            ]);
+
+            try {
+                $item->addMediaFromUrl($tier['image'])
+                    ->usingFileName('price-tier-'.$index.'.png')
+                    ->toMediaCollection('image');
+            } catch (\Throwable $e) {
+                $this->command?->warn("Could not fetch price tier image: {$e->getMessage()}");
+            }
+        }
+    }
+
+    private function seedBestsellersCarousel(): void
+    {
+        if (HomepageBlock::where('type', 'product_carousel')->where('title', 'Bestsellers')->exists()) {
+            return;
+        }
+
+        $collection = CollectionModel::where('slug', 'best-seller')->first();
+        if (! $collection) {
+            return;
+        }
+
+        $block = HomepageBlock::create([
+            'type' => 'product_carousel',
+            'title' => 'Bestsellers',
+            'cta_label' => 'View All',
+            'cta_url' => route('collections.show', $collection),
+            'sort_order' => 29,
+            'is_active' => true,
+        ]);
+
+        $collection->products()->take(10)->get()->each(function (Product $product, int $index) use ($block) {
+            $block->items()->create([
+                'itemable_type' => Product::class,
+                'itemable_id' => $product->id,
+                'sort_order' => $index,
+            ]);
+        });
     }
 
     private function seedCelebrities(): void

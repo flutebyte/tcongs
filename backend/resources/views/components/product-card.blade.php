@@ -4,6 +4,9 @@
   <a class="relative block aspect-square overflow-hidden bg-placeholder" href="{{ route('products.show', $product) }}" aria-label="{{ $product->title }}">
     @if($product->hasMedia('gallery'))
       <img class="h-full w-full object-cover" src="{{ $product->getFirstMediaUrl('gallery', 'card') }}" alt="{{ $product->title }}" loading="lazy" width="600" height="600">
+      @if($product->getMedia('gallery')->count() > 1)
+        <img class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100" src="{{ $product->getMedia('gallery')[1]->getUrl('card') }}" alt="" loading="lazy" width="600" height="600">
+      @endif
     @endif
     @if($product->compare_at_price)
       <span class="absolute left-2.5 top-2.5 z-[2] flex flex-col gap-1.5">

@@ -56,7 +56,7 @@
       </div>
       <p class="mb-5 text-[12px] text-muted">Inclusive of all taxes</p>
 
-      <form action="{{ route('cart.store', $product) }}" method="post">
+      <form action="{{ route('cart.store', $product) }}" method="post" data-add-to-cart data-checkout-url="{{ route('checkout.index') }}">
         @csrf
 
         @if($product->variants->isNotEmpty())
@@ -82,6 +82,10 @@
             {{ $product->stock_quantity > 0 ? 'Add to Cart' : 'Out of Stock' }}
           </button>
         </div>
+        <button class="inline-flex items-center justify-center gap-2 border border-black bg-transparent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-black transition-colors hover:bg-black hover:text-white w-full py-3.5" type="submit" name="buy_now" value="1"
+                {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
+          Buy It Now
+        </button>
       </form>
 
       <ul class="mt-6 space-y-2">
