@@ -30,6 +30,13 @@ Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy'])->nam
 
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+// Looked up server-side (not straight from the browser) because
+// api.postalpincode.in doesn't send CORS headers, so a direct client fetch
+// is blocked; this also keeps the lookup rate-limited from one place.
+Route::get('/checkout/pincode/{postalCode}', [CheckoutController::class, 'pincodeLookup'])
+    ->name('checkout.pincode-lookup')
+    ->middleware('throttle:30,1')
+    ->where('postalCode', '[0-9]{6}');
 // Rate-limited: order_number is a guessable-ish slug and the only "credential"
 // for viewing a guest order — this isn't full auth, just enumeration friction.
 Route::get('/checkout/confirmation/{order:order_number}', [CheckoutController::class, 'confirmation'])

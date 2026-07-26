@@ -50,13 +50,22 @@
             </div>
             <div>
               <label class="mb-1.5 block text-[13px] font-medium text-heading" for="shipping_postal_code">PIN code</label>
-              <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="shipping_postal_code" name="shipping_postal_code" type="text" value="{{ old('shipping_postal_code') }}" required>
+              <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="shipping_postal_code" name="shipping_postal_code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" value="{{ old('shipping_postal_code') }}" required>
               @error('shipping_postal_code') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+              <p id="shipping_postal_code_status" class="mt-1 text-[12px] text-muted"></p>
             </div>
           </div>
           <label class="mb-1.5 block text-[13px] font-medium text-heading" for="shipping_state">State</label>
           <select class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="shipping_state" name="shipping_state" required>
-            @foreach(['Telangana', 'Maharashtra', 'Karnataka', 'Delhi'] as $state)
+            <option value="" disabled {{ old('shipping_state') ? '' : 'selected' }}>Select state</option>
+            @foreach([
+              'Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar',
+              'Chandigarh', 'Chhattisgarh', 'Dadra and Nagar Haveli and Daman and Diu', 'Delhi', 'Goa',
+              'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jammu and Kashmir', 'Jharkhand', 'Karnataka',
+              'Kerala', 'Ladakh', 'Lakshadweep', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
+              'Mizoram', 'Nagaland', 'Odisha', 'Puducherry', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
+              'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+            ] as $state)
               <option value="{{ $state }}" {{ old('shipping_state') === $state ? 'selected' : '' }}>{{ $state }}</option>
             @endforeach
           </select>
@@ -140,4 +149,123 @@
     </div>
   </div>
 
+  @push('scripts')
+    <script>
+      (function () {
+        var postalInput = document.getElementById('shipping_postal_code');
+        var cityInput = document.getElementById('shipping_city');
+        var stateSelect = document.getElementById('shipping_state');
+        var statusEl = document.getElementById('shipping_postal_code_status');
+        var lastLookedUp = null;
+
+        function setStatus(text) {
+          statusEl.textContent = text;
+        }
+
+        function lookup(pincode) {
+          if (pincode === lastLookedUp) return;
+          lastLookedUp = pincode;
+          setStatus('Looking up city/state…');
+
+          fetch('{{ url('/checkout/pincode') }}/' + pincode, { headers: { 'Accept': 'application/json' } })
+            .then(function (res) {
+              if (!res.ok) throw new Error('not found');
+              return res.json();
+            })
+            .then(function (data) {
+              if (data.city && !cityInput.value) cityInput.value = data.city;
+              if (data.state) {
+                var matched = Array.from(stateSelect.options).some(function (opt) {
+                  if (opt.value.toLowerCase() === data.state.toLowerCase()) {
+                    stateSelect.value = opt.value;
+                    return true;
+                  }
+                  return false;
+                });
+                setStatus(matched ? 'City/state auto-filled from PIN code.' : '');
+              }
+            })
+            .catch(function () {
+              setStatus('Could not find this PIN code — please fill city/state manually.');
+            });
+        }
+
+        postalInput.addEventListener('input', function () {
+          var value = postalInput.value.trim();
+          if (/^[0-9]{6}$/.test(value)) {
+            lookup(value);
+          } else {
+            setStatus('');
+            lastLookedUp = null;
+          }
+        });
+      })();
+    </script>
+
+    <script>
+      // Autosaves the checkout form to localStorage as the customer types, and
+      // restores it on the next load — a refresh (or an accidental tab close)
+      // shouldn't cost someone their whole address entry. Only fills fields
+      // that are still blank, so it never overrides old() values Laravel has
+      // already repopulated after a failed-validation redirect.
+      (function () {
+        var STORAGE_KEY = 'checkout_form_draft';
+        var form = document.querySelector('form[action="{{ route('checkout.store') }}"]');
+        if (!form) return;
+
+        var fields = Array.prototype.filter.call(form.elements, function (el) {
+          return el.name && el.name !== '_token';
+        });
+
+        var draft = {};
+        try {
+          draft = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        } catch (e) {
+          draft = {};
+        }
+
+        // Radios/checkboxes are restored per group, and only when nothing in
+        // the group is already checked — Blade's old() already renders a
+        // checked attribute after a failed-validation redirect, and that
+        // server value must win over a possibly-stale draft.
+        var restoredGroups = {};
+
+        fields.forEach(function (el) {
+          if (!(el.name in draft)) return;
+
+          if (el.type === 'radio' || el.type === 'checkbox') {
+            if (restoredGroups[el.name]) return;
+            var groupAlreadyChecked = fields.some(function (other) {
+              return other.name === el.name && other.checked;
+            });
+            if (groupAlreadyChecked) {
+              restoredGroups[el.name] = true;
+              return;
+            }
+            el.checked = el.value === draft[el.name];
+          } else if (!el.value) {
+            el.value = draft[el.name];
+          }
+        });
+
+        function save() {
+          var data = {};
+          fields.forEach(function (el) {
+            if (el.type === 'radio' || el.type === 'checkbox') {
+              if (el.checked) data[el.name] = el.value;
+            } else {
+              data[el.name] = el.value;
+            }
+          });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        form.addEventListener('input', save);
+        form.addEventListener('change', save);
+        form.addEventListener('submit', function () {
+          localStorage.removeItem(STORAGE_KEY);
+        });
+      })();
+    </script>
+  @endpush
 @endsection

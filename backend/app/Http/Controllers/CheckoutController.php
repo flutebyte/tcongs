@@ -12,7 +12,9 @@ use App\Services\Payment\PaymentManager;
 use App\Services\Shipping\ShippingManager;
 use App\Services\Shipping\UnserviceableAddressException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
@@ -57,6 +59,45 @@ class CheckoutController extends Controller
             // page's own @section('content') body, which executes first.
             'onlinePaymentEnabled' => $this->payments->isOnlinePaymentEnabled(),
         ]);
+    }
+
+    /**
+     * Backs the PIN code field's auto-fill: looks up city/state from India
+     * Post's public directory so the checkout form doesn't default every
+     * order to whatever state happens to be first in a hardcoded list.
+     */
+    public function pincodeLookup(string $postalCode)
+    {
+        $result = Cache::remember("pincode.{$postalCode}", now()->addDays(30), function () use ($postalCode) {
+            try {
+                // Without a User-Agent header this API resets the connection
+                // (PHP's cURL default sends none, unlike a browser or the curl CLI).
+                $response = Http::timeout(5)
+                    ->withHeaders(['User-Agent' => 'Mozilla/5.0'])
+                    ->get("https://api.postalpincode.in/pincode/{$postalCode}")
+                    ->throw()
+                    ->json();
+            } catch (\Throwable) {
+                return null;
+            }
+
+            $postOffice = $response[0]['PostOffice'][0] ?? null;
+
+            if (! $postOffice) {
+                return null;
+            }
+
+            return [
+                'city' => $postOffice['District'] ?? '',
+                'state' => $postOffice['State'] ?? '',
+            ];
+        });
+
+        if (! $result) {
+            return response()->json(['message' => 'PIN code not found.'], 404);
+        }
+
+        return response()->json($result);
     }
 
     public function store(Request $request)
