@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CmsPageController;
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
@@ -17,6 +20,11 @@ Route::get('/collections', [CollectionController::class, 'index'])->name('collec
 Route::get('/collections/{collection:slug}', [CollectionController::class, 'show'])->name('collections.show');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
+Route::get('/blogs/{blog:slug}', [BlogController::class, 'show'])->name('blogs.show');
+Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
+Route::get('/pages/{cmsPage:slug}', [CmsPageController::class, 'show'])->name('pages.show');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 // Registered before the {product:slug} wildcard below — otherwise a POST to

@@ -24,6 +24,7 @@ class ShieldSeeder extends Seeder
     private const RESOURCES = [
         'Banner', 'Category', 'Collection', 'Coupon', 'Offer',
         'HomepageBlock', 'Order', 'Product', 'Role', 'Setting',
+        'BlogCategory', 'Blog', 'CmsPage', 'FaqCategory', 'Faq',
     ];
 
     private const ACTIONS = [
@@ -51,13 +52,18 @@ class ShieldSeeder extends Seeder
         $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
         $superAdmin->syncPermissions($permissionNames);
 
-        // Product/Category management only — explicitly no Order/Coupon
+        // Product/Category/content management only — explicitly no Order/Coupon
         // (financial/operational data) or Settings access.
         $marketing = Role::firstOrCreate(['name' => 'marketing', 'guard_name' => 'web']);
         $marketing->syncPermissions([
             'ViewAny:Banner', 'View:Banner',
             'ViewAny:Category', 'View:Category', 'Create:Category', 'Update:Category',
             'ViewAny:Product', 'View:Product', 'Create:Product', 'Update:Product',
+            'ViewAny:BlogCategory', 'View:BlogCategory', 'Create:BlogCategory', 'Update:BlogCategory',
+            'ViewAny:Blog', 'View:Blog', 'Create:Blog', 'Update:Blog',
+            'ViewAny:CmsPage', 'View:CmsPage', 'Create:CmsPage', 'Update:CmsPage',
+            'ViewAny:FaqCategory', 'View:FaqCategory', 'Create:FaqCategory', 'Update:FaqCategory',
+            'ViewAny:Faq', 'View:Faq', 'Create:Faq', 'Update:Faq',
         ]);
     }
 }

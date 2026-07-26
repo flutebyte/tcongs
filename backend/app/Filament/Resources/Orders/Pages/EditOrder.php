@@ -130,13 +130,7 @@ class EditOrder extends EditRecord
                         return;
                     }
 
-                    $newRefunded = $alreadyRefunded + $amount;
-
-                    $record->update([
-                        'refunded_amount' => $newRefunded,
-                        'refund_reason' => $data['reason'],
-                        'payment_status' => $newRefunded >= (float) $record->total ? 'refunded' : 'partially_refunded',
-                    ]);
+                    $record->applyRefund($amount, $data['reason']);
 
                     Notification::make()
                         ->title('Refund recorded.')

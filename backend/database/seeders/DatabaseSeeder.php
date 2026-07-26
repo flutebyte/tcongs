@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             HomepageContentSeeder::class,
             CollectionSeeder::class,
             CouponOfferSeeder::class,
+            ContentSeeder::class,
         ]);
     }
 }

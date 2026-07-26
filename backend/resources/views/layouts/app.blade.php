@@ -264,6 +264,8 @@
         <ul class="space-y-2.5 text-[13px] text-muted">
           <li><a class="transition-colors hover:text-accent" href="{{ route('home') }}">Home</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('search') }}">Search</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ route('blogs.index') }}">Blog</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'about-us') }}">About Us</a></li>
         </ul>
       </div>
       <div>
@@ -280,6 +282,10 @@
           <li><a class="transition-colors hover:text-accent" href="/account.html">Find Your Order</a></li>
           <li><a class="transition-colors hover:text-accent" href="/account.html">Track Order</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('cart.index') }}">Cart</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ route('faq.index') }}">FAQ</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'shipping-policy') }}">Shipping Policy</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'return-policy') }}">Return Policy</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'privacy-policy') }}">Privacy Policy</a></li>
         </ul>
       </div>
       <div>

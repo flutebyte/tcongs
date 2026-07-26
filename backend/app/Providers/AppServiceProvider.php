@@ -3,18 +3,28 @@
 namespace App\Providers;
 
 use App\Models\Banner;
+use App\Models\Blog;
+use App\Models\BlogCategory;
 use App\Models\Category;
+use App\Models\CmsPage;
 use App\Models\Collection;
 use App\Models\Coupon;
+use App\Models\Faq;
+use App\Models\FaqCategory;
 use App\Models\HomepageBlock;
 use App\Models\HomepageBlockItem;
 use App\Models\Offer;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Observers\BannerObserver;
+use App\Observers\BlogCategoryObserver;
+use App\Observers\BlogObserver;
 use App\Observers\CategoryObserver;
+use App\Observers\CmsPageObserver;
 use App\Observers\CollectionObserver;
 use App\Observers\CouponObserver;
+use App\Observers\FaqCategoryObserver;
+use App\Observers\FaqObserver;
 use App\Observers\HomepageBlockItemObserver;
 use App\Observers\HomepageBlockObserver;
 use App\Observers\OfferObserver;
@@ -55,5 +65,10 @@ class AppServiceProvider extends ServiceProvider
         HomepageBlockItem::observe(HomepageBlockItemObserver::class);
         Offer::observe(OfferObserver::class);
         Coupon::observe(CouponObserver::class);
+        BlogCategory::observe(BlogCategoryObserver::class);
+        Blog::observe(BlogObserver::class);
+        CmsPage::observe(CmsPageObserver::class);
+        FaqCategory::observe(FaqCategoryObserver::class);
+        Faq::observe(FaqObserver::class);
     }
 }

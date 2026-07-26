@@ -133,4 +133,22 @@ class Order extends Model
             }
         }
     }
+
+    /**
+     * Records a (possibly partial) refund against the order. Callers must
+     * validate $amount against the remaining refundable balance themselves
+     * (EditOrder's "Refund" action does this before calling in) — this
+     * method only applies the already-validated amount and flips
+     * payment_status accordingly.
+     */
+    public function applyRefund(float $amount, string $reason): void
+    {
+        $newRefunded = (float) $this->refunded_amount + $amount;
+
+        $this->update([
+            'refunded_amount' => $newRefunded,
+            'refund_reason' => $reason,
+            'payment_status' => $newRefunded >= (float) $this->total ? 'refunded' : 'partially_refunded',
+        ]);
+    }
 }
