@@ -36,7 +36,12 @@
         <span class="font-medium text-heading">Total</span>
         <span class="font-medium text-price">₹{{ number_format($order->total, 0) }}</span>
       </div>
-      <p class="mt-4 text-[12px] text-muted">Payment method: Cash on Delivery</p>
+      <p class="mt-4 text-[12px] text-muted">
+        Payment method: {{ $order->payment_method === 'razorpay' ? 'Online Payment (Razorpay)' : 'Cash on Delivery' }}
+        @if($order->payment_method === 'razorpay' && $order->payment_reference)
+          &middot; Ref: {{ $order->payment_reference }}
+        @endif
+      </p>
       <p class="mt-3 text-[13px] text-muted">
         Shipping to {{ $order->shipping_address_line1 }}{{ $order->shipping_address_line2 ? ', '.$order->shipping_address_line2 : '' }},
         {{ $order->shipping_city }}, {{ $order->shipping_state }} {{ $order->shipping_postal_code }}, {{ $order->shipping_country }}

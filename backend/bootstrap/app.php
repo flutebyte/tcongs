@@ -24,6 +24,13 @@ return Application::configure(basePath: dirname(__DIR__))
                 | SymfonyRequest::HEADER_X_FORWARDED_PORT
                 | SymfonyRequest::HEADER_X_FORWARDED_PROTO,
         );
+
+        // Razorpay posts this server-to-server with no CSRF token — the
+        // webhook signature check (PaymentController::webhook) is what
+        // authenticates the request instead.
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/razorpay',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

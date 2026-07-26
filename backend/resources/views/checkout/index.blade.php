@@ -67,17 +67,19 @@
           <legend class="mb-3.5 text-[14px] font-medium uppercase tracking-[0.5px]">Payment</legend>
           <ul class="space-y-2.5">
             <li>
-              <label class="flex cursor-not-allowed items-center gap-2.5 border border-line-strong p-3.5 text-[14px] opacity-50">
-                <input class="accent-accent" type="radio" name="pay" disabled> UPI / Card / Netbanking
+              <label class="flex items-center gap-2.5 border border-line-strong p-3.5 text-[14px] {{ $onlinePaymentEnabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50' }}">
+                <input class="accent-accent" type="radio" name="payment_method" value="razorpay" {{ ! $onlinePaymentEnabled ? 'disabled' : '' }} {{ old('payment_method') === 'razorpay' ? 'checked' : '' }}> UPI / Card / Netbanking
               </label>
             </li>
             <li>
               <label class="flex cursor-pointer items-center gap-2.5 border border-line-strong p-3.5 text-[14px]">
-                <input class="accent-accent" type="radio" name="pay" checked> Cash on Delivery
+                <input class="accent-accent" type="radio" name="payment_method" value="cod" {{ old('payment_method', 'cod') === 'cod' ? 'checked' : '' }}> Cash on Delivery
               </label>
             </li>
           </ul>
-          <p class="mt-2 text-[12px] text-muted">Online payment is coming soon.</p>
+          @unless($onlinePaymentEnabled)
+            <p class="mt-2 text-[12px] text-muted">Online payment is coming soon.</p>
+          @endunless
         </fieldset>
 
         <div class="field-set">

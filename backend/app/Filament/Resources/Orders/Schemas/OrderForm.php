@@ -73,6 +73,15 @@ class OrderForm
                             ->required(fn (Get $get) => in_array($get('status'), ['shipped', 'delivered', 'returned'])),
                         TextInput::make('carrier')
                             ->maxLength(255),
+                        TextInput::make('tracking_status')
+                            ->label('Last known Shiprocket status')
+                            ->disabled()
+                            ->visible(fn (?Order $record) => filled($record?->shiprocket_awb_code)),
+                        TextInput::make('tracking_synced_at')
+                            ->label('Tracking last refreshed')
+                            ->disabled()
+                            ->formatStateUsing(fn (?string $state) => $state ? \Illuminate\Support\Carbon::parse($state)->diffForHumans() : null)
+                            ->visible(fn (?Order $record) => filled($record?->shiprocket_awb_code)),
                     ]),
 
                 Section::make('Admin Notes')

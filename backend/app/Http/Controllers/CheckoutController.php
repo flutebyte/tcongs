@@ -8,6 +8,7 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Services\Payment\PaymentManager;
 use App\Services\Shipping\ShippingManager;
 use App\Services\Shipping\UnserviceableAddressException;
 use Illuminate\Http\Request;
@@ -16,7 +17,10 @@ use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
-    public function __construct(private readonly ShippingManager $shipping) {}
+    public function __construct(
+        private readonly ShippingManager $shipping,
+        private readonly PaymentManager $payments,
+    ) {}
 
     public function index(Request $request)
     {
@@ -46,6 +50,12 @@ class CheckoutController extends Controller
             'discount' => $discount,
             'shipping' => $shipping,
             'couponCode' => $cart->coupon?->code,
+            // Passed explicitly rather than via SiteDataComposer: that composer
+            // is bound to the 'layouts.app' view, which @extends only renders
+            // at the very end of the compiled child template — its data is
+            // visible inside layouts/app.blade.php itself, but never inside a
+            // page's own @section('content') body, which executes first.
+            'onlinePaymentEnabled' => $this->payments->isOnlinePaymentEnabled(),
         ]);
     }
 
@@ -62,6 +72,7 @@ class CheckoutController extends Controller
             'shipping_state' => ['required', 'string', 'max:120'],
             'shipping_postal_code' => ['required', 'string', 'max:20'],
             'order_note' => ['nullable', 'string', 'max:1000'],
+            'payment_method' => ['required', 'in:cod,razorpay'],
         ], [], [
             'customer_first_name' => 'first name',
             'customer_last_name' => 'last name',
@@ -76,6 +87,14 @@ class CheckoutController extends Controller
 
         $validated['customer_name'] = trim($validated['customer_first_name'].' '.$validated['customer_last_name']);
         unset($validated['customer_first_name'], $validated['customer_last_name']);
+
+        // Defends a stale page (online payment was enabled when the checkout
+        // form loaded, then disabled) or a crafted POST — never silently fall
+        // back to COD for a customer who didn't choose it.
+        if ($validated['payment_method'] === 'razorpay' && ! $this->payments->isOnlinePaymentEnabled()) {
+            return redirect()->route('checkout.index')->withInput()
+                ->with('error', 'Online payment is currently unavailable. Please choose Cash on Delivery.');
+        }
 
         $cart = $this->currentCart($request);
         $items = $cart->items()->with(['product', 'variant'])->get();
@@ -159,7 +178,6 @@ class CheckoutController extends Controller
                     'discount_amount' => $discountAmount,
                     'shipping_fee' => $shippingFee,
                     'total' => $subtotal - $discountAmount + $shippingFee,
-                    'payment_method' => 'cod',
                     'payment_status' => 'pending',
                     'status' => 'placed',
                 ]);
@@ -195,11 +213,33 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', $e->getMessage());
         }
 
-        return redirect()->route('checkout.confirmation', $order)->with('success', 'Order placed successfully.');
+        if ($order->payment_method !== 'razorpay') {
+            return redirect()->route('checkout.confirmation', $order)->with('success', 'Order placed successfully.');
+        }
+
+        // Stock/coupon are already committed above — same as COD. The
+        // Razorpay order-id call is a separate outbound HTTP request and
+        // deliberately happens after the transaction, so it never holds the
+        // stock/coupon row locks open (same reasoning as the shipping quote
+        // above). A failure here doesn't lose the order: PaymentController's
+        // "show" action retries createOrder() once for a still-blank
+        // razorpay_order_id before giving up.
+        try {
+            $razorpayOrder = $this->payments->createOrder($order);
+            $order->update(['razorpay_order_id' => $razorpayOrder['id']]);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        return redirect()->route('payment.show', $order);
     }
 
     public function confirmation(Order $order)
     {
+        if ($order->payment_method === 'razorpay' && $order->payment_status === 'pending') {
+            return redirect()->route('payment.show', $order);
+        }
+
         $order->load('items');
 
         return view('checkout.confirmation', compact('order'));

@@ -21,6 +21,10 @@ class SettingForm
             'flat' => 'Flat rate (default — no external account needed)',
             'shiprocket' => 'Shiprocket (requires SHIPROCKET_EMAIL/PASSWORD in .env)',
         ],
+        'payment_provider' => [
+            'cod' => 'Cash on Delivery only (default)',
+            'razorpay' => 'Razorpay (requires RAZORPAY_KEY_ID/KEY_SECRET in .env)',
+        ],
     ];
 
     public static function configure(Schema $schema): Schema

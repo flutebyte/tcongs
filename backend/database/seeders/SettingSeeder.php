@@ -32,6 +32,11 @@ class SettingSeeder extends Seeder
             'shipping_flat_rate' => '79',
             'shipping_pickup_pincode' => '500001',
             'shipping_avg_item_weight_grams' => '100',
+
+            // Payment — see App\Services\Payment. 'cod' needs no external
+            // account; set to 'razorpay' once RAZORPAY_KEY_ID/KEY_SECRET
+            // are configured to accept online payments at checkout.
+            'payment_provider' => 'cod',
         ];
 
         foreach ($settings as $key => $value) {

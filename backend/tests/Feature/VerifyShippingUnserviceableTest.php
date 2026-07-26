@@ -74,6 +74,7 @@ class VerifyShippingUnserviceableTest extends TestCase
                 'shipping_city' => 'Hyderabad',
                 'shipping_state' => 'Telangana',
                 'shipping_postal_code' => '999999',
+                'payment_method' => 'cod',
             ]);
 
         $response->assertRedirect(route('checkout.index'));

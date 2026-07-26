@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
@@ -34,3 +35,14 @@ Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.s
 Route::get('/checkout/confirmation/{order:order_number}', [CheckoutController::class, 'confirmation'])
     ->name('checkout.confirmation')
     ->middleware('throttle:20,1');
+
+Route::get('/payment/{order:order_number}', [PaymentController::class, 'show'])
+    ->name('payment.show')
+    ->middleware('throttle:20,1');
+Route::post('/payment/{order:order_number}/callback', [PaymentController::class, 'callback'])
+    ->name('payment.callback')
+    ->middleware('throttle:20,1');
+// No CSRF/throttle here on purpose — Razorpay's servers post this directly
+// (see bootstrap/app.php's validateCsrfTokens except-list) and the signature
+// check inside the handler is what authenticates it, not a session-bound token.
+Route::post('/webhooks/razorpay', [PaymentController::class, 'webhook'])->name('webhooks.razorpay');

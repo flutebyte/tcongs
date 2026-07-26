@@ -43,11 +43,16 @@ class Order extends Model
         'payment_method',
         'payment_status',
         'payment_reference',
+        'razorpay_order_id',
         'refunded_amount',
         'refund_reason',
         'status',
         'tracking_number',
         'carrier',
+        'shiprocket_shipment_id',
+        'shiprocket_awb_code',
+        'tracking_status',
+        'tracking_synced_at',
         'admin_notes',
     ];
 
@@ -59,6 +64,7 @@ class Order extends Model
             'shipping_fee' => 'decimal:2',
             'total' => 'decimal:2',
             'refunded_amount' => 'decimal:2',
+            'tracking_synced_at' => 'datetime',
         ];
     }
 
