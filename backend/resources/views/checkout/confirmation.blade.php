@@ -28,6 +28,10 @@
           <span>&minus;₹{{ number_format($order->discount_amount, 0) }}</span>
         </div>
       @endif
+      <div class="flex items-center justify-between py-2.5 text-[13px]">
+        <span class="text-muted">Shipping</span>
+        <span>{{ $order->shipping_fee > 0 ? '₹'.number_format($order->shipping_fee, 0) : 'Free' }}</span>
+      </div>
       <div class="flex items-center justify-between border-t border-line pt-3 text-[15px]">
         <span class="font-medium text-heading">Total</span>
         <span class="font-medium text-price">₹{{ number_format($order->total, 0) }}</span>

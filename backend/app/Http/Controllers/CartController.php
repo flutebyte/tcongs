@@ -7,6 +7,7 @@ use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\Offer;
 use App\Models\Product;
+use App\Services\Shipping\ShippingManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
+    public function __construct(private readonly ShippingManager $shipping) {}
+
     public function index(Request $request)
     {
         $cart = $this->currentCart($request);
@@ -23,11 +26,13 @@ class CartController extends Controller
 
         $subtotal = $items->sum(fn (CartItem $item) => $item->unitPrice() * $item->quantity);
         $discount = $this->currentDiscount($cart);
+        $shipping = $this->shipping->quote($subtotal, (int) $items->sum('quantity'));
 
         return view('cart.index', [
             'items' => $items,
             'subtotal' => $subtotal,
             'discount' => $discount,
+            'shipping' => $shipping,
             'couponCode' => $cart->coupon?->code,
         ]);
     }

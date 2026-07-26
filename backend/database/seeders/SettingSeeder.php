@@ -23,6 +23,15 @@ class SettingSeeder extends Seeder
             'contact_email' => 'support@example.com',
             'contact_phone' => '+91 00000 00000',
             'footer_copyright' => '© '.date('Y').' Estele. All rights reserved.',
+
+            // Shipping — see App\Services\Shipping. 'flat' needs no external
+            // account; set to 'shiprocket' once SHIPROCKET_EMAIL/PASSWORD
+            // are configured to switch to live courier rate checks.
+            'shipping_provider' => 'flat',
+            'shipping_free_threshold' => '999',
+            'shipping_flat_rate' => '79',
+            'shipping_pickup_pincode' => '500001',
+            'shipping_avg_item_weight_grams' => '100',
         ];
 
         foreach ($settings as $key => $value) {

@@ -8,12 +8,16 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Services\Shipping\ShippingManager;
+use App\Services\Shipping\UnserviceableAddressException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
+    public function __construct(private readonly ShippingManager $shipping) {}
+
     public function index(Request $request)
     {
         $cart = $this->currentCart($request);
@@ -31,10 +35,16 @@ class CheckoutController extends Controller
             $discount = $result['valid'] ? $result['discount'] : 0.0;
         }
 
+        // No delivery pincode yet at this point (same form collects address
+        // and places the order) — quote on subtotal alone. store() below
+        // re-quotes with the submitted pincode for the amount actually charged.
+        $shipping = $this->shipping->quote($subtotal, (int) $items->sum('quantity'));
+
         return view('checkout.index', [
             'items' => $items,
             'subtotal' => $subtotal,
             'discount' => $discount,
+            'shipping' => $shipping,
             'couponCode' => $cart->coupon?->code,
         ]);
     }
@@ -84,8 +94,22 @@ class CheckoutController extends Controller
             }
         }
 
+        // Quoted outside the transaction below: a Shiprocket rate check is an
+        // outbound HTTP call, and it shouldn't hold the stock/coupon row
+        // locks open for however long that takes.
         try {
-            $order = DB::transaction(function () use ($validated, $cart, $items) {
+            $shippingFee = $this->shipping->quote(
+                $items->sum(fn (CartItem $item) => $item->unitPrice() * $item->quantity),
+                (int) $items->sum('quantity'),
+                $validated['shipping_postal_code']
+            )['fee'];
+        } catch (UnserviceableAddressException) {
+            return redirect()->route('checkout.index')->withInput()
+                ->with('error', 'We\'re unable to deliver to this address. Please double check the PIN code or try a different address.');
+        }
+
+        try {
+            $order = DB::transaction(function () use ($validated, $cart, $items, $shippingFee) {
                 // Lock in a fixed order (coupon, then products by id) across
                 // every checkout so two concurrent transactions can never
                 // deadlock each other waiting on the same rows in reverse order.
@@ -125,8 +149,6 @@ class CheckoutController extends Controller
                     }
                 }
                 $discountAmount = min($discountAmount, $subtotal);
-
-                $shippingFee = 0;
 
                 $order = Order::create([
                     ...$validated,

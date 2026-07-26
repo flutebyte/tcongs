@@ -103,9 +103,12 @@
           @if($discount > 0)
             <div class="flex justify-between text-[#1a7d3f]"><dt>Discount ({{ $couponCode }})</dt><dd>&minus;₹{{ number_format($discount, 0) }}</dd></div>
           @endif
-          <div class="flex justify-between"><dt class="text-muted">Shipping</dt><dd>Free</dd></div>
-          <div class="flex justify-between border-t border-line-strong pt-3.5 text-[16px] font-medium"><dt class="text-heading">Total</dt><dd>₹{{ number_format($subtotal - $discount, 0) }}</dd></div>
+          <div class="flex justify-between"><dt class="text-muted">Shipping{{ ($shipping['estimated'] ?? false) ? ' (estimated)' : '' }}</dt><dd>{{ $shipping['fee'] > 0 ? '₹'.number_format($shipping['fee'], 0) : 'Free' }}</dd></div>
+          <div class="flex justify-between border-t border-line-strong pt-3.5 text-[16px] font-medium"><dt class="text-heading">Total</dt><dd>₹{{ number_format($subtotal - $discount + $shipping['fee'], 0) }}</dd></div>
         </dl>
+        @if($shipping['estimated'] ?? false)
+          <p class="-mt-3 mb-4.5 text-[11.5px] text-muted">Final shipping cost is confirmed once you enter your delivery address below.</p>
+        @endif
 
         @include('partials.offers-banner')
 
