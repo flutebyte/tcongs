@@ -519,6 +519,13 @@ import './app.css';
       if (typeof count === 'number') updateCount(count);
     }
 
+    // Lets other modules (the available-coupons modal, which lives in its
+    // own closure with no reference to this drawer's `render`) patch the
+    // drawer in place instead of reloading the page.
+    document.addEventListener('cart:sync', function (e) {
+      render(e.detail.html, e.detail.count);
+    });
+
     $$('[data-cart-open]').forEach(function (el) {
       el.addEventListener('click', function (e) {
         e.preventDefault();
@@ -672,9 +679,13 @@ import './app.css';
      fetched), opened from any "View all coupons" link on the cart/checkout
      pages or the cart drawer. "Apply" applies the coupon immediately (only
      one can ever be applied at a time — applying a new one just replaces
-     whatever was there) and reloads so every coupon box on the page (cart
-     page, checkout page, drawer) picks up the new state from the server
-     rather than trying to patch each of those locations individually.
+     whatever was there). On the /cart and /checkout pages, their own
+     server-rendered summary block (subtotal/discount/coupon box) also needs
+     the new numbers, which only a reload gives us cheaply. Everywhere else
+     (e.g. modal opened from the drawer while browsing) there's no such
+     block to worry about, so we just sync the drawer in place via the
+     `cart:sync` event and keep it open, instead of reloading the page out
+     from under the user.
      ---------------------------------------------------------------------- */
   (function () {
     var modal = $('[data-coupons-modal]');
@@ -721,7 +732,12 @@ import './app.css';
           alert(data.message || 'Could not apply this coupon.');
           return;
         }
-        window.location.reload();
+        if (/^\/(cart|checkout)(\/|$)/.test(window.location.pathname)) {
+          window.location.reload();
+          return;
+        }
+        document.dispatchEvent(new CustomEvent('cart:sync', { detail: { html: data.html, count: data.cartCount } }));
+        close();
       });
     });
   })();
