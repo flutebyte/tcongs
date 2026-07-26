@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -14,6 +17,7 @@ class CheckoutController extends Controller
     public function index(Request $request)
     {
         $cart = $this->currentCart($request);
+        $cart->loadMissing('coupon');
         $items = $cart->items()->with(['product', 'variant'])->get();
 
         if ($items->isEmpty()) {
@@ -21,10 +25,17 @@ class CheckoutController extends Controller
         }
 
         $subtotal = $items->sum(fn (CartItem $item) => $item->unitPrice() * $item->quantity);
+        $discount = 0.0;
+        if ($cart->coupon) {
+            $result = $cart->coupon->isValidFor($cart);
+            $discount = $result['valid'] ? $result['discount'] : 0.0;
+        }
 
         return view('checkout.index', [
             'items' => $items,
             'subtotal' => $subtotal,
+            'discount' => $discount,
+            'couponCode' => $cart->coupon?->code,
         ]);
     }
 
@@ -63,6 +74,9 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
+        // Fast pre-lock check: avoids opening a transaction for the common
+        // case where the cart is already obviously stale. The authoritative
+        // check happens inside the transaction below, under row locks.
         foreach ($items as $item) {
             if ($item->quantity > $item->availableStock()) {
                 return redirect()->route('cart.index')
@@ -70,43 +84,94 @@ class CheckoutController extends Controller
             }
         }
 
-        $subtotal = $items->sum(fn (CartItem $item) => $item->unitPrice() * $item->quantity);
-        $shippingFee = 0;
+        try {
+            $order = DB::transaction(function () use ($validated, $cart, $items) {
+                // Lock in a fixed order (coupon, then products by id) across
+                // every checkout so two concurrent transactions can never
+                // deadlock each other waiting on the same rows in reverse order.
+                $coupon = $cart->coupon_id
+                    ? Coupon::where('id', $cart->coupon_id)->lockForUpdate()->first()
+                    : null;
 
-        $order = DB::transaction(function () use ($validated, $items, $subtotal, $shippingFee, $cart) {
-            $order = Order::create([
-                ...$validated,
-                'order_number' => $this->generateOrderNumber(),
-                'shipping_country' => 'India',
-                'subtotal' => $subtotal,
-                'shipping_fee' => $shippingFee,
-                'total' => $subtotal + $shippingFee,
-                'payment_method' => 'cod',
-                'status' => 'placed',
-            ]);
+                $lockedStock = [];
+                foreach ($items->sortBy('product_id') as $item) {
+                    if ($item->product_variant_id) {
+                        $locked = ProductVariant::where('id', $item->product_variant_id)->lockForUpdate()->first();
+                    } else {
+                        $locked = Product::where('id', $item->product_id)->lockForUpdate()->first();
+                    }
 
-            foreach ($items as $item) {
-                $order->items()->create([
-                    'product_id' => $item->product_id,
-                    'product_variant_id' => $item->product_variant_id,
-                    'product_title' => $item->product->title,
-                    'sku' => $item->variant?->sku ?? $item->product->sku,
-                    'price' => $item->unitPrice(),
-                    'quantity' => $item->quantity,
-                    'subtotal' => $item->unitPrice() * $item->quantity,
+                    if (! $locked || $item->quantity > $locked->stock_quantity) {
+                        throw new \DomainException("\"{$item->product->title}\" no longer has enough stock.");
+                    }
+
+                    $lockedStock[$item->id] = $locked;
+                }
+
+                $subtotal = $items->sum(fn (CartItem $item) => $item->unitPrice() * $item->quantity);
+
+                // Re-validate the applied coupon now that it (and the cart's
+                // contents) are locked — never trust anything computed earlier
+                // in the request. If it's since expired / been exhausted /
+                // deleted / no longer meets the min order value, drop it
+                // silently and let checkout proceed at full price rather than
+                // failing the whole order over a stale coupon.
+                $discountAmount = 0.0;
+                if ($coupon) {
+                    $result = $coupon->isValidFor($cart);
+                    $discountAmount = $result['valid'] ? $result['discount'] : 0.0;
+                    if (! $result['valid']) {
+                        $coupon = null;
+                    }
+                }
+                $discountAmount = min($discountAmount, $subtotal);
+
+                $shippingFee = 0;
+
+                $order = Order::create([
+                    ...$validated,
+                    'order_number' => $this->generateOrderNumber(),
+                    'shipping_country' => 'India',
+                    'subtotal' => $subtotal,
+                    'coupon_code' => $coupon?->code,
+                    'discount_amount' => $discountAmount,
+                    'shipping_fee' => $shippingFee,
+                    'total' => $subtotal - $discountAmount + $shippingFee,
+                    'payment_method' => 'cod',
+                    'payment_status' => 'pending',
+                    'status' => 'placed',
                 ]);
 
-                if ($item->variant) {
-                    $item->variant->decrement('stock_quantity', $item->quantity);
-                } else {
-                    $item->product->decrement('stock_quantity', $item->quantity);
+                foreach ($items as $item) {
+                    $order->items()->create([
+                        'product_id' => $item->product_id,
+                        'product_variant_id' => $item->product_variant_id,
+                        'product_title' => $item->product->title,
+                        'sku' => $item->variant?->sku ?? $item->product->sku,
+                        'price' => $item->unitPrice(),
+                        'quantity' => $item->quantity,
+                        'subtotal' => $item->unitPrice() * $item->quantity,
+                    ]);
+
+                    $lockedStock[$item->id]->decrement('stock_quantity', $item->quantity);
                 }
-            }
 
-            $cart->items()->delete();
+                if ($coupon) {
+                    $coupon->increment('used_count');
+                    $order->couponUsages()->create([
+                        'coupon_id' => $coupon->id,
+                        'discount_amount' => $discountAmount,
+                    ]);
+                }
 
-            return $order;
-        });
+                $cart->items()->delete();
+                $cart->update(['coupon_id' => null]);
+
+                return $order;
+            }, 3);
+        } catch (\DomainException $e) {
+            return redirect()->route('cart.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('checkout.confirmation', $order)->with('success', 'Order placed successfully.');
     }

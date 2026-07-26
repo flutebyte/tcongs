@@ -39,8 +39,8 @@ class StoreStatsWidget extends StatsOverviewWidget
                 label: 'Pending Orders',
                 icon: Heroicon::OutlinedClock,
                 color: 'warning',
-                current: Order::whereBetween('created_at', [$periodStart, now()])->whereIn('status', ['placed', 'processing'])->count(),
-                previous: Order::whereBetween('created_at', [$previousStart, $previousEnd])->whereIn('status', ['placed', 'processing'])->count(),
+                current: Order::whereBetween('created_at', [$periodStart, now()])->whereIn('status', ['placed', 'packed'])->count(),
+                previous: Order::whereBetween('created_at', [$previousStart, $previousEnd])->whereIn('status', ['placed', 'packed'])->count(),
             ),
 
             $this->makeStat(

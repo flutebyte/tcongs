@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Coupon;
+use App\Models\Offer;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
@@ -15,14 +18,53 @@ class CartController extends Controller
     public function index(Request $request)
     {
         $cart = $this->currentCart($request);
+        $cart->loadMissing('coupon');
         $items = $cart->items()->with(['product.media', 'variant'])->get();
 
         $subtotal = $items->sum(fn (CartItem $item) => $item->unitPrice() * $item->quantity);
+        $discount = $this->currentDiscount($cart);
 
         return view('cart.index', [
             'items' => $items,
             'subtotal' => $subtotal,
+            'discount' => $discount,
+            'couponCode' => $cart->coupon?->code,
         ]);
+    }
+
+    public function applyCoupon(Request $request): RedirectResponse|JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => ['required', 'string', 'max:50'],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->respondError($request, $validator->errors()->first());
+        }
+
+        $cart = $this->currentCart($request);
+        $coupon = Coupon::where('code', strtoupper(trim($validator->validated()['code'])))->first();
+
+        if (! $coupon) {
+            return $this->respondError($request, 'Invalid coupon code.');
+        }
+
+        $result = $coupon->isValidFor($cart);
+        if (! $result['valid']) {
+            return $this->respondError($request, $result['message']);
+        }
+
+        $cart->update(['coupon_id' => $coupon->id]);
+
+        return $this->respondSuccess($request, $cart, 'Coupon applied.');
+    }
+
+    public function removeCoupon(Request $request): RedirectResponse|JsonResponse
+    {
+        $cart = $this->currentCart($request);
+        $cart->update(['coupon_id' => null]);
+
+        return $this->respondSuccess($request, $cart, 'Coupon removed.');
     }
 
     public function store(Request $request, Product $product): RedirectResponse|JsonResponse
@@ -101,6 +143,17 @@ class CartController extends Controller
         return Cart::firstOrCreate(['session_id' => $request->session()->getId()]);
     }
 
+    private function currentDiscount(Cart $cart): float
+    {
+        if (! $cart->coupon) {
+            return 0.0;
+        }
+
+        $result = $cart->coupon->isValidFor($cart);
+
+        return $result['valid'] ? $result['discount'] : 0.0;
+    }
+
     private function authorizeItem(Request $request, CartItem $cartItem): void
     {
         abort_unless($cartItem->cart->session_id === $request->session()->getId(), 403);
@@ -112,6 +165,7 @@ class CartController extends Controller
             return back()->with('success', $message);
         }
 
+        $cart->loadMissing('coupon');
         $items = $cart->items()->with(['product.media', 'variant'])->get();
         $subtotal = $items->sum(fn (CartItem $item) => $item->unitPrice() * $item->quantity);
 
@@ -122,8 +176,22 @@ class CartController extends Controller
             'html' => view('partials.cart-drawer-items', [
                 'items' => $items,
                 'subtotal' => $subtotal,
+                'discount' => $this->currentDiscount($cart),
+                'couponCode' => $cart->coupon?->code,
+                'activeOffers' => $this->cachedActiveOffers(),
             ])->render(),
         ]);
+    }
+
+    // Same cache keys as SiteDataComposer — this partial is rendered
+    // standalone here (fetch responses), bypassing the layout's composer.
+    private function cachedActiveOffers(): array
+    {
+        return Cache::remember(
+            'site.active_offers',
+            3600,
+            fn () => Offer::active()->ordered()->pluck('text')->toArray()
+        );
     }
 
     private function respondError(Request $request, string $message): RedirectResponse|JsonResponse

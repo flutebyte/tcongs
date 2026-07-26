@@ -100,9 +100,37 @@
         </div>
         <dl class="mb-4.5 space-y-2 text-[14px]">
           <div class="flex justify-between"><dt class="text-muted">Subtotal</dt><dd>₹{{ number_format($subtotal, 0) }}</dd></div>
+          @if($discount > 0)
+            <div class="flex justify-between text-[#1a7d3f]"><dt>Discount ({{ $couponCode }})</dt><dd>&minus;₹{{ number_format($discount, 0) }}</dd></div>
+          @endif
           <div class="flex justify-between"><dt class="text-muted">Shipping</dt><dd>Free</dd></div>
-          <div class="flex justify-between border-t border-line-strong pt-3.5 text-[16px] font-medium"><dt class="text-heading">Total</dt><dd>₹{{ number_format($subtotal, 0) }}</dd></div>
+          <div class="flex justify-between border-t border-line-strong pt-3.5 text-[16px] font-medium"><dt class="text-heading">Total</dt><dd>₹{{ number_format($subtotal - $discount, 0) }}</dd></div>
         </dl>
+
+        @include('partials.offers-banner')
+
+        <div class="mb-1">
+          <div class="mb-1.5 flex items-center justify-between">
+            <label class="text-[13px] font-medium text-heading" for="checkout-coupon">Coupon code</label>
+            <button class="text-[12px] text-muted underline transition-colors hover:text-accent" type="button" data-coupons-modal-open>View all coupons</button>
+          </div>
+          @if($couponCode)
+            <div class="flex items-center justify-between border border-line-strong bg-white px-4 py-3 text-[14px]">
+              <span>Applied: <strong>{{ $couponCode }}</strong></span>
+              <form action="{{ route('cart.coupon.remove') }}" method="post">
+                @csrf
+                @method('delete')
+                <button class="text-[12px] text-muted underline transition-colors hover:text-[#eb001b]" type="submit">Remove</button>
+              </form>
+            </div>
+          @else
+            <form action="{{ route('cart.coupon.apply') }}" method="post" class="flex gap-2">
+              @csrf
+              <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading flex-1" id="checkout-coupon" name="code" type="text" placeholder="Enter code" required>
+              <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-5 py-3 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">Apply</button>
+            </form>
+          @endif
+        </div>
       </aside>
     </div>
   </div>

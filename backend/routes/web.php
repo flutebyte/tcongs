@@ -18,10 +18,19 @@ Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+// Registered before the {product:slug} wildcard below — otherwise a POST to
+// /cart/coupon would match /cart/{product:slug} first, with "coupon" bound
+// as the slug (and 404 on lookup) instead of ever reaching applyCoupon().
+Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->name('cart.coupon.apply')->middleware('throttle:20,1');
+Route::delete('/cart/coupon', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove')->middleware('throttle:20,1');
 Route::post('/cart/{product:slug}', [CartController::class, 'store'])->name('cart.store');
 Route::patch('/cart/items/{cartItem}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
 
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
-Route::get('/checkout/confirmation/{order:order_number}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
+// Rate-limited: order_number is a guessable-ish slug and the only "credential"
+// for viewing a guest order — this isn't full auth, just enumeration friction.
+Route::get('/checkout/confirmation/{order:order_number}', [CheckoutController::class, 'confirmation'])
+    ->name('checkout.confirmation')
+    ->middleware('throttle:20,1');

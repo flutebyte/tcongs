@@ -15,12 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([ShieldSeeder::class]);
+
         // Not User::factory(): fakerphp/faker is a require-dev package, unavailable
         // in a `composer install --no-dev` production build (e.g. the Railway deploy).
-        User::firstOrCreate(
+        $admin = User::firstOrCreate(
             ['email' => 'lavanyagarg500@gmail.com'],
             ['name' => 'Admin', 'password' => 'changeme123']
         );
+        $admin->assignRole('super_admin');
 
         $this->call([
             CategorySeeder::class,

@@ -1,0 +1,63 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+/**
+ * Reproduces the two admin roles from source instead of requiring someone to
+ * hand-click them in /admin/shield/roles. Previously these only existed in
+ * whatever live database the app happened to be pointed at — a `migrate:fresh`
+ * silently wiped them with nothing to regenerate them from (bit the Railway
+ * deploy once). This seeder is self-sufficient: it creates the permission
+ * rows itself rather than assuming `shield:generate` has already been run
+ * against this database.
+ *
+ * If a new Filament resource/widget is added later, either add its name to
+ * RESOURCES below, or re-run `php artisan shield:generate --all
+ * --panel=admin` and copy the new permission names in here.
+ */
+class ShieldSeeder extends Seeder
+{
+    private const RESOURCES = [
+        'Banner', 'Category', 'Collection', 'Coupon', 'Offer',
+        'HomepageBlock', 'Order', 'Product', 'Role', 'Setting',
+    ];
+
+    private const ACTIONS = [
+        'ViewAny', 'View', 'Create', 'Update', 'Delete', 'DeleteAny',
+        'Restore', 'RestoreAny', 'ForceDelete', 'ForceDeleteAny',
+        'Replicate', 'Reorder',
+    ];
+
+    private const WIDGET_PERMISSIONS = [
+        'View:StoreStatsWidget',
+    ];
+
+    public function run(): void
+    {
+        $permissionNames = collect(self::RESOURCES)
+            ->crossJoin(self::ACTIONS)
+            ->map(fn (array $pair) => "{$pair[1]}:{$pair[0]}")
+            ->concat(self::WIDGET_PERMISSIONS)
+            ->all();
+
+        foreach ($permissionNames as $name) {
+            Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
+        }
+
+        $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $superAdmin->syncPermissions($permissionNames);
+
+        // Product/Category management only — explicitly no Order/Coupon
+        // (financial/operational data) or Settings access.
+        $marketing = Role::firstOrCreate(['name' => 'marketing', 'guard_name' => 'web']);
+        $marketing->syncPermissions([
+            'ViewAny:Banner', 'View:Banner',
+            'ViewAny:Category', 'View:Category', 'Create:Category', 'Update:Category',
+            'ViewAny:Product', 'View:Product', 'Create:Product', 'Update:Product',
+        ]);
+    }
+}

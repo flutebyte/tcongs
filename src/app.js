@@ -11,6 +11,24 @@ import './app.css';
   var $  = function (sel, ctx) { return (ctx || document).querySelector(sel); };
   var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
 
+  // Shared by the cart drawer and the available-coupons modal — both call
+  // the same JSON cart/coupon endpoints, so the fetch+CSRF plumbing lives
+  // once at this outer scope instead of being duplicated per widget.
+  function csrfToken() {
+    var meta = $('meta[name="csrf-token"]');
+    return meta ? meta.getAttribute('content') : '';
+  }
+
+  function request(url, options) {
+    options = options || {};
+    options.headers = Object.assign({
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN': csrfToken(),
+      'X-Requested-With': 'XMLHttpRequest',
+    }, options.headers || {});
+    return fetch(url, options).then(function (res) { return res.json(); });
+  }
+
   /* ------------------------------------------------------------------------
      CAROUSEL
      Scroll-snap based: CSS does the layout, JS only moves scrollLeft and
@@ -471,11 +489,6 @@ import './app.css';
     var body     = $('[data-cart-body]', drawer);
     var isOpen   = false;
 
-    function csrfToken() {
-      var meta = $('meta[name="csrf-token"]');
-      return meta ? meta.getAttribute('content') : '';
-    }
-
     function open() {
       drawer.hidden = false;
       requestAnimationFrame(function () {
@@ -504,16 +517,6 @@ import './app.css';
     function render(html, count) {
       if (body) body.innerHTML = html;
       if (typeof count === 'number') updateCount(count);
-    }
-
-    function request(url, options) {
-      options = options || {};
-      options.headers = Object.assign({
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': csrfToken(),
-        'X-Requested-With': 'XMLHttpRequest',
-      }, options.headers || {});
-      return fetch(url, options).then(function (res) { return res.json(); });
     }
 
     $$('[data-cart-open]').forEach(function (el) {
@@ -591,6 +594,50 @@ import './app.css';
               render(data.html, data.cartCount);
             });
         }
+
+        var couponApply  = e.target.closest('[data-coupon-apply]');
+        var couponRemove = e.target.closest('[data-coupon-remove]');
+
+        if (couponApply) {
+          var box   = e.target.closest('[data-cart-coupon-box]');
+          var input = $('[data-coupon-input]', box);
+          var errEl = $('[data-coupon-error]', box);
+          var code  = input ? input.value.trim() : '';
+          if (!code) return;
+
+          couponApply.disabled = true;
+          request('/cart/coupon', {
+            method: 'POST',
+            body: new URLSearchParams({ code: code }),
+          }).then(function (data) {
+            if (data.success === false) {
+              if (errEl) {
+                errEl.textContent = data.message || 'Invalid coupon.';
+                errEl.classList.remove('hidden');
+              }
+              return;
+            }
+            render(data.html, data.cartCount);
+          }).finally(function () {
+            couponApply.disabled = false;
+          });
+        }
+
+        if (couponRemove) {
+          request('/cart/coupon', { method: 'DELETE' }).then(function (data) {
+            if (data.success === false) return;
+            render(data.html, data.cartCount);
+          });
+        }
+      });
+
+      // Enter key in the coupon input submits without needing a <form>.
+      body.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' || !e.target.matches('[data-coupon-input]')) return;
+        e.preventDefault();
+        var box = e.target.closest('[data-cart-coupon-box]');
+        var applyBtn = box && $('[data-coupon-apply]', box);
+        if (applyBtn) applyBtn.click();
       });
     }
   })();
@@ -617,6 +664,65 @@ import './app.css';
     $$('[data-search-close]').forEach(function (el) { el.addEventListener('click', close); });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !overlay.hidden) close();
+    });
+  })();
+
+  /* ------------------------------------------------------------------------
+     AVAILABLE COUPONS MODAL — server-rendered once in the layout (not
+     fetched), opened from any "View all coupons" link on the cart/checkout
+     pages or the cart drawer. "Apply" applies the coupon immediately (only
+     one can ever be applied at a time — applying a new one just replaces
+     whatever was there) and reloads so every coupon box on the page (cart
+     page, checkout page, drawer) picks up the new state from the server
+     rather than trying to patch each of those locations individually.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var modal = $('[data-coupons-modal]');
+    if (!modal) return;
+
+    function open() {
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      modal.hidden = true;
+      document.body.style.overflow = '';
+    }
+
+    // Delegated on document, not attached directly to each opener element:
+    // the cart drawer's "View all coupons" button lives inside HTML that gets
+    // wholesale-replaced on every cart update (see the CART DRAWER block
+    // above), so a directly-attached listener would go stale after the first
+    // add-to-cart/qty-change/coupon action.
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-coupons-modal-open]')) open();
+      if (e.target.closest('[data-coupons-modal-close]')) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) close();
+    });
+
+    modal.addEventListener('click', function (e) {
+      var applyBtn = e.target.closest('[data-coupons-modal-apply]');
+      if (!applyBtn) return;
+
+      var code = applyBtn.getAttribute('data-coupons-modal-apply');
+      var original = applyBtn.textContent;
+      applyBtn.disabled = true;
+      applyBtn.textContent = 'Applying...';
+
+      request('/cart/coupon', {
+        method: 'POST',
+        body: new URLSearchParams({ code: code }),
+      }).then(function (data) {
+        if (data.success === false) {
+          applyBtn.disabled = false;
+          applyBtn.textContent = original;
+          alert(data.message || 'Could not apply this coupon.');
+          return;
+        }
+        window.location.reload();
+      });
     });
   })();
 
