@@ -59,9 +59,12 @@ class SiteDataComposer
             fn () => Offer::active()->ordered()->get(['text'])->pluck('text')->toArray()
         ));
 
-        // Shorter TTL than the other site-wide caches above — usage limits and
-        // expiry make a coupon's "listable" status change more often than nav
-        // categories or settings do.
+        // Coupon::booted() forgets this key on every save/update/delete
+        // (including the increment('used_count') at checkout), so edits
+        // show up immediately. This TTL still has to stay short, though —
+        // a coupon's starts_at/expires_at crossing "now" isn't a write, so
+        // nothing invalidates the cache when a scheduled coupon goes live
+        // or an old one lapses. This is the safety net for that case.
         $view->with('publicCoupons', Cache::remember(
             'site.public_coupons',
             300,

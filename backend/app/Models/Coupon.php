@@ -7,9 +7,26 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 
 class Coupon extends Model
 {
+    /**
+     * Keeps the storefront's public-coupon cache (see SiteDataComposer)
+     * correct immediately rather than relying solely on its TTL. Hooks both
+     * `saved` (covers normal create/update via Filament) and `updated`
+     * (covers `increment('used_count')` at checkout, which fires `updated`
+     * but never `saved`).
+     */
+    protected static function booted(): void
+    {
+        $forgetPublicCache = fn () => Cache::forget('site.public_coupons');
+
+        static::saved($forgetPublicCache);
+        static::updated($forgetPublicCache);
+        static::deleted($forgetPublicCache);
+    }
+
     protected $fillable = [
         'code',
         'type',
