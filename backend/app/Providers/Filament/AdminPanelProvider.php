@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->timezone('Asia/Kolkata')
             ->colors([
                 'primary' => Color::Amber,
             ])
