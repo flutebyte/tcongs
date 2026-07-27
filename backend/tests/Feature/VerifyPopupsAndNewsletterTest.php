@@ -86,6 +86,34 @@ class VerifyPopupsAndNewsletterTest extends TestCase
         $response->assertSee('Shown To Everyone');
     }
 
+    /**
+     * Regression test for a real bug caught in mentor-style self-review: the
+     * composer used to fetch only the single highest-priority eligible popup
+     * and return null if targeting excluded it, even when a second, untargeted
+     * popup was eligible and should have shown instead.
+     */
+    public function test_returning_visitor_falls_back_to_a_lower_priority_untargeted_popup(): void
+    {
+        $this->makePopup([
+            'name' => 'Top priority, new visitors only',
+            'title' => 'New Visitor Exclusive',
+            'target_new_visitors_only' => true,
+            'sort_order' => 0,
+        ]);
+        $this->makePopup([
+            'name' => 'Lower priority, everyone',
+            'title' => 'Everyone Gets This One',
+            'target_new_visitors_only' => false,
+            'sort_order' => 1,
+        ]);
+
+        $response = $this->withCookie('estele_visited', '1')->get(route('home'));
+
+        $response->assertOk();
+        $response->assertDontSee('New Visitor Exclusive');
+        $response->assertSee('Everyone Gets This One');
+    }
+
     public function test_newsletter_subscription_is_recorded(): void
     {
         $popup = $this->makePopup();

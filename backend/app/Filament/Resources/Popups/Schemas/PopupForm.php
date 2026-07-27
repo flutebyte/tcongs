@@ -33,7 +33,19 @@ class PopupForm
                                 'exit_intent' => 'Exit intent',
                             ])
                             ->native(false)
-                            ->live(),
+                            ->live()
+                            // Only pre-fills sensible defaults on create — doesn't fight
+                            // an admin who deliberately wants email collection on a
+                            // "free gift" popup, but stops the common mistake of picking
+                            // a type and leaving the unrelated fields on their defaults.
+                            ->afterStateUpdated(function (string $state, Get $get, \Filament\Schemas\Components\Utilities\Set $set, string $operation) {
+                                if ($operation !== 'create') {
+                                    return;
+                                }
+
+                                $set('show_email_field', $state === 'newsletter');
+                                $set('trigger', $state === 'exit_intent' ? 'exit_intent' : 'delay');
+                            }),
                         Select::make('trigger')
                             ->required()
                             ->options([
@@ -88,8 +100,11 @@ class PopupForm
                 Section::make('Schedule & Targeting')
                     ->columns(2)
                     ->schema([
-                        DateTimePicker::make('starts_at'),
-                        DateTimePicker::make('ends_at'),
+                        DateTimePicker::make('starts_at')
+                            ->live(),
+                        DateTimePicker::make('ends_at')
+                            ->after('starts_at')
+                            ->helperText('Must be after the start date, if both are set.'),
                         Toggle::make('target_new_visitors_only')
                             ->label('Show to new visitors only')
                             ->helperText('Off shows it to every visitor.'),

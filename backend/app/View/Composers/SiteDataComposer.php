@@ -76,34 +76,39 @@ class SiteDataComposer
     }
 
     /**
-     * The eligible popup's content (schedule/is_active-gated) is the same for
-     * every visitor, so it's safe to cache site-wide — but whether *this*
-     * visitor should actually see it (new-visitor targeting) depends on a
-     * per-request cookie, so that check happens after the cache read, not
-     * inside it.
+     * The eligible *set* of popups (schedule/is_active-gated) is the same for
+     * every visitor, so it's safe to cache site-wide — but whether a given
+     * popup is right for *this* visitor (new-visitor targeting) depends on a
+     * per-request cookie, so that filtering happens after the cache read,
+     * not inside it. Caching the whole ordered list (not just the top one)
+     * matters: if the top-priority popup is new-visitor-only and this is a
+     * returning visitor, a lower-priority "show to everyone" popup must
+     * still get a chance to show instead of nothing rendering at all.
      */
     private function resolveActivePopup(): ?array
     {
-        $popup = Cache::remember('site.active_popup', 300, function () {
-            $popup = Popup::eligible()->orderBy('sort_order')->first();
-
-            return $popup ? [
-                'id' => $popup->id,
-                'type' => $popup->type,
-                'trigger' => $popup->trigger,
-                'delay_seconds' => $popup->delay_seconds,
-                'title' => $popup->title,
-                'body' => $popup->body,
-                'cta_label' => $popup->cta_label,
-                'cta_url' => $popup->cta_url,
-                'discount_code' => $popup->discount_code,
-                'show_email_field' => $popup->show_email_field,
-                'target_new_visitors_only' => $popup->target_new_visitors_only,
-                'image_url' => $popup->hasMedia('image') ? $popup->getFirstMediaUrl('image', 'card') : null,
-            ] : null;
+        $popups = Cache::remember('site.active_popup', 300, function () {
+            return Popup::eligible()
+                ->orderBy('sort_order')
+                ->get()
+                ->map(fn (Popup $popup) => [
+                    'id' => $popup->id,
+                    'type' => $popup->type,
+                    'trigger' => $popup->trigger,
+                    'delay_seconds' => $popup->delay_seconds,
+                    'title' => $popup->title,
+                    'body' => $popup->body,
+                    'cta_label' => $popup->cta_label,
+                    'cta_url' => $popup->cta_url,
+                    'discount_code' => $popup->discount_code,
+                    'show_email_field' => $popup->show_email_field,
+                    'target_new_visitors_only' => $popup->target_new_visitors_only,
+                    'image_url' => $popup->hasMedia('image') ? $popup->getFirstMediaUrl('image', 'card') : null,
+                ])
+                ->all();
         });
 
-        if (! $popup) {
+        if (! $popups) {
             return null;
         }
 
@@ -113,10 +118,12 @@ class SiteDataComposer
             Cookie::queue(Cookie::forever('estele_visited', '1'));
         }
 
-        if ($popup['target_new_visitors_only'] && $isReturningVisitor) {
-            return null;
+        foreach ($popups as $popup) {
+            if (! $popup['target_new_visitors_only'] || ! $isReturningVisitor) {
+                return $popup;
+            }
         }
 
-        return $popup;
+        return null;
     }
 }
