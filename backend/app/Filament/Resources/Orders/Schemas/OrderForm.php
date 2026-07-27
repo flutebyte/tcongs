@@ -156,6 +156,11 @@ class OrderForm
                             ->prefix('₹')
                             ->disabled()
                             ->visible(fn (?Order $record) => $record && (float) $record->refunded_amount > 0),
+                        Textarea::make('refund_reason')
+                            ->label('Refund reason')
+                            ->disabled()
+                            ->columnSpanFull()
+                            ->visible(fn (?Order $record) => $record && (float) $record->refunded_amount > 0),
                     ]),
             ]);
     }
