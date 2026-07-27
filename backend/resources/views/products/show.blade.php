@@ -104,7 +104,7 @@
       </div>
       <p class="mb-5 text-[12px] text-muted">Inclusive of all taxes</p>
 
-      <form action="{{ route('cart.store', $product) }}" method="post" data-add-to-cart data-checkout-url="{{ route('checkout.index') }}">
+      <form action="{{ route('cart.store', $product) }}" method="post" data-cart-form data-checkout-url="{{ route('checkout.index') }}">
         @csrf
 
         @if($product->variants->isNotEmpty())

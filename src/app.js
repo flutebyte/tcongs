@@ -540,8 +540,11 @@ import './app.css';
     });
 
     // Add-to-cart forms (product page) — submit over fetch so the drawer
-    // opens with fresh contents instead of a full page reload.
-    $$('[data-add-to-cart]').forEach(function (form) {
+    // opens with fresh contents instead of a full page reload. Uses its own
+    // attribute (not [data-add-to-cart]) because that name is also used
+    // below by the static-site button handler — sharing it made the click
+    // handler below fire on this <form> and wipe out its contents.
+    $$('[data-cart-form]').forEach(function (form) {
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var buyNow = e.submitter && e.submitter.name === 'buy_now';
