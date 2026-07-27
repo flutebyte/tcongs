@@ -11,6 +11,26 @@ use Illuminate\Database\Seeder;
 
 class ContentSeeder extends Seeder
 {
+    /**
+     * Like updateOrCreate(), but for rows whose own key column is being
+     * renamed (e.g. a slug or question text changing to the real Estele
+     * copy). Matching on the old key alone breaks on a second run once the
+     * row has already been renamed - this checks the new key first (already
+     * migrated), falls back to the old key (first-time migration), and
+     * only creates fresh if neither exists.
+     */
+    private function migrateOrCreate(string $model, string $keyColumn, string $newKey, string $oldKey, array $attributes): mixed
+    {
+        $record = $model::where($keyColumn, $newKey)->first()
+            ?? $model::where($keyColumn, $oldKey)->first()
+            ?? new $model;
+
+        $record->fill($attributes);
+        $record->save();
+
+        return $record;
+    }
+
     public function run(): void
     {
         $pages = [
@@ -29,14 +49,17 @@ class ContentSeeder extends Seeder
         }
 
         $styleGuide = BlogCategory::firstOrCreate(['slug' => 'style-guide'], ['name' => 'Style Guide', 'sort_order' => 1]);
-        $giftGuides = BlogCategory::updateOrCreate(['slug' => 'care-tips'], ['name' => 'Gift Guides', 'slug' => 'gift-guides', 'sort_order' => 2]);
+        $giftGuides = $this->migrateOrCreate(BlogCategory::class, 'slug', 'gift-guides', 'care-tips', ['name' => 'Gift Guides', 'slug' => 'gift-guides', 'sort_order' => 2]);
 
         // Real posts from estele.co/blogs/blog (title/excerpt/content/image all
         // sourced from the live site, not invented) — matched via the old
         // placeholder slugs so re-running this seeder updates existing rows
         // instead of creating duplicates.
-        $necklaceSets = Blog::updateOrCreate(
-            ['slug' => 'how-to-choose-your-first-necklace'],
+        $necklaceSets = $this->migrateOrCreate(
+            Blog::class,
+            'slug',
+            'necklace-sets-that-steal-the-spotlight',
+            'how-to-choose-your-first-necklace',
             [
                 'blog_category_id' => $styleGuide->id,
                 'slug' => 'necklace-sets-that-steal-the-spotlight',
@@ -89,8 +112,11 @@ class ContentSeeder extends Seeder
             }
         }
 
-        $braceletsGuide = Blog::updateOrCreate(
-            ['slug' => 'caring-for-anti-tarnish-jewellery'],
+        $braceletsGuide = $this->migrateOrCreate(
+            Blog::class,
+            'slug',
+            'valentines-day-gift-guide-bracelets-for-women',
+            'caring-for-anti-tarnish-jewellery',
             [
                 'blog_category_id' => $giftGuides->id,
                 'slug' => 'valentines-day-gift-guide-bracelets-for-women',
@@ -123,20 +149,75 @@ class ContentSeeder extends Seeder
             }
         }
 
-        $ordering = FaqCategory::firstOrCreate(['name' => 'Ordering'], ['sort_order' => 1]);
-        $shipping = FaqCategory::firstOrCreate(['name' => 'Shipping'], ['sort_order' => 2]);
+        // Real FAQs from estele.co/pages/faq-s (question/answer/category all
+        // sourced from the live site, not invented) — matched via the old
+        // placeholder questions so re-running this seeder updates existing
+        // rows instead of creating duplicates.
+        $shippingDelivery = $this->migrateOrCreate(FaqCategory::class, 'name', 'Shipping & Delivery', 'Ordering', ['name' => 'Shipping & Delivery', 'sort_order' => 1]);
+        $returnsExchange = $this->migrateOrCreate(FaqCategory::class, 'name', 'Returns & Exchange', 'Shipping', ['name' => 'Returns & Exchange', 'sort_order' => 2]);
+        $payment = FaqCategory::firstOrCreate(['name' => 'Payment'], ['sort_order' => 3]);
+
+        $this->migrateOrCreate(
+            Faq::class,
+            'question',
+            'When will my order ship?',
+            'How do I place an order?',
+            [
+                'faq_category_id' => $shippingDelivery->id,
+                'question' => 'When will my order ship?',
+                'answer' => 'Orders are usually processed within 1-3 business days (Monday-Friday), with expedited 24-hour processing for orders shipping to Hyderabad. Customized or pre-order items may require additional time. For specific delivery requests, contact us at info@estele.co or +91 9121022888.',
+                'sort_order' => 1,
+            ]
+        );
+        $this->migrateOrCreate(
+            Faq::class,
+            'question',
+            'Through what carrier do you ship?',
+            'Can I modify my order after placing it?',
+            [
+                'faq_category_id' => $shippingDelivery->id,
+                'question' => 'Through what carrier do you ship?',
+                'answer' => "We ship via Delhivery. You'll receive a tracking number once your order is dispatched, along with a notification when your parcel is out for local delivery.",
+                'sort_order' => 2,
+            ]
+        );
+        $this->migrateOrCreate(
+            Faq::class,
+            'question',
+            'Do you ship internationally?',
+            'How long does delivery take?',
+            [
+                'faq_category_id' => $shippingDelivery->id,
+                'question' => 'Do you ship internationally?',
+                'answer' => 'Unfortunately, we currently process orders only in India.',
+                'sort_order' => 3,
+            ]
+        );
 
         Faq::firstOrCreate(
-            ['question' => 'How do I place an order?'],
-            ['faq_category_id' => $ordering->id, 'answer' => 'Simply add a product to your cart and proceed to checkout.', 'sort_order' => 1]
+            ['question' => 'What is the return procedure?'],
+            [
+                'faq_category_id' => $returnsExchange->id,
+                'answer' => 'Items can be returned within 7 days of delivery (excluding sale items). Products must be undamaged, in their original packaging, with the invoice included. Please allow up to two weeks from when you send the parcel for us to process your refund. Contact info@estele.co or +91 9121022888 for pickup instructions. Returns address: Estele Accessories Pvt. Ltd., 9-12/1, Sri Sai Nilayam, BSNL Building, Hanuman Nagar, Boduppal, Hyderabad - 500092.',
+                'sort_order' => 1,
+            ]
         );
         Faq::firstOrCreate(
-            ['question' => 'Can I modify my order after placing it?'],
-            ['faq_category_id' => $ordering->id, 'answer' => 'Contact our support team as soon as possible and we will do our best to help.', 'sort_order' => 2]
+            ['question' => 'Can items be exchanged?'],
+            [
+                'faq_category_id' => $returnsExchange->id,
+                'answer' => "Currently, we are not able to process any exchanges. If you're looking for a replacement, please contact us at info@estele.co or +91 9121022888.",
+                'sort_order' => 2,
+            ]
         );
+
         Faq::firstOrCreate(
-            ['question' => 'How long does delivery take?'],
-            ['faq_category_id' => $shipping->id, 'answer' => 'Orders typically arrive within 3-7 business days depending on your location.', 'sort_order' => 1]
+            ['question' => 'What payment methods are accepted?'],
+            [
+                'faq_category_id' => $payment->id,
+                'answer' => 'We accept Visa, MasterCard, AMEX, NetBanking, Cash on Delivery, and PayU wallet.',
+                'sort_order' => 1,
+            ]
         );
     }
 }
