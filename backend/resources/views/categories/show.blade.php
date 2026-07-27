@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_title', ($category->seoMeta?->title ?? $category->name).' | '.($siteSettings['site_name'] ?? 'Estele'))
-@section('meta_description', $category->seoMeta?->description ?? $category->description)
+@section('meta_description', $category->seoMeta?->description ?: ($category->description ?: $category->name))
 @if($category->seoMeta?->og_image || $category->hasMedia('image'))
   @section('og_image', $category->seoMeta?->og_image ?? $category->getFirstMediaUrl('image', 'tile'))
 @endif

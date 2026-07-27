@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_title', ($product->seoMeta?->title ?? $product->title).' | '.($siteSettings['site_name'] ?? 'Estele'))
-@section('meta_description', $product->seoMeta?->description ?? $product->description)
+@section('meta_description', $product->seoMeta?->description ?: ($product->description ?: $product->title))
 @section('og_type', 'product')
 @if($product->seoMeta?->og_image || $product->hasMedia('gallery'))
   @section('og_image', $product->seoMeta?->og_image ?? $product->getFirstMediaUrl('gallery', 'detail'))

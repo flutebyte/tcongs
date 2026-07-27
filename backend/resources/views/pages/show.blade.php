@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_title', ($page->seoMeta?->title ?? $page->title).' | '.($siteSettings['site_name'] ?? 'Estele'))
-@section('meta_description', $page->seoMeta?->description ?? '')
+@section('meta_description', $page->seoMeta?->description ?: $page->title)
 @if($page->seoMeta?->og_image)
   @section('og_image', $page->seoMeta->og_image)
 @endif

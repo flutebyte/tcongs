@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_title', ($blog->seoMeta?->title ?? $blog->title).' | '.($siteSettings['site_name'] ?? 'Estele'))
-@section('meta_description', $blog->seoMeta?->description ?? $blog->excerpt)
+@section('meta_description', $blog->seoMeta?->description ?: ($blog->excerpt ?: $blog->title))
 @section('og_type', 'article')
 @if($blog->seoMeta?->og_image || $blog->hasMedia('featured_image'))
   @section('og_image', $blog->seoMeta?->og_image ?? $blog->getFirstMediaUrl('featured_image', 'detail'))

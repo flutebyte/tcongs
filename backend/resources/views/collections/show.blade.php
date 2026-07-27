@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_title', ($collection->seoMeta?->title ?? $collection->name).' | '.($siteSettings['site_name'] ?? 'Estele'))
-@section('meta_description', $collection->seoMeta?->description ?? $collection->description)
+@section('meta_description', $collection->seoMeta?->description ?: ($collection->description ?: $collection->name))
 @if($collection->seoMeta?->og_image || $collection->hasMedia('image'))
   @section('og_image', $collection->seoMeta?->og_image ?? $collection->getFirstMediaUrl('image', 'banner'))
 @endif
