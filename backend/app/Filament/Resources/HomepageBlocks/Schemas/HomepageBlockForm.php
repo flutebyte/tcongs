@@ -23,6 +23,7 @@ class HomepageBlockForm
                 Select::make('type')
                     ->required()
                     ->options([
+                        'shop_by_category' => 'Shop by Category',
                         'product_carousel' => 'Product carousel',
                         'collection_carousel' => 'Collection grid',
                         'celebrities' => 'Celebrities / As Seen On',
