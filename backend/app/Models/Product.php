@@ -74,6 +74,28 @@ class Product extends Model implements HasMedia
         return $this->belongsToMany(Collection::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedReviews(): HasMany
+    {
+        return $this->reviews()->where('status', 'approved');
+    }
+
+    public function reviewsCount(): int
+    {
+        return $this->approvedReviews()->count();
+    }
+
+    public function reviewsAverageRating(): ?float
+    {
+        $average = $this->approvedReviews()->avg('rating');
+
+        return $average !== null ? round((float) $average, 1) : null;
+    }
+
     public function searchableAs(): string
     {
         return 'products';

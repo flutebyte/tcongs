@@ -7,8 +7,10 @@ use App\Models\Category;
 use App\Models\Collection as CollectionModel;
 use App\Models\Coupon;
 use App\Models\Offer;
+use App\Models\Popup;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\View\View;
 
 class SiteDataComposer
@@ -69,5 +71,52 @@ class SiteDataComposer
                 ->map(fn (Coupon $coupon) => ['code' => $coupon->code, 'summary' => $coupon->summary()])
                 ->toArray()
         ));
+
+        $view->with('activePopup', $this->resolveActivePopup());
+    }
+
+    /**
+     * The eligible popup's content (schedule/is_active-gated) is the same for
+     * every visitor, so it's safe to cache site-wide — but whether *this*
+     * visitor should actually see it (new-visitor targeting) depends on a
+     * per-request cookie, so that check happens after the cache read, not
+     * inside it.
+     */
+    private function resolveActivePopup(): ?array
+    {
+        $popup = Cache::remember('site.active_popup', 300, function () {
+            $popup = Popup::eligible()->orderBy('sort_order')->first();
+
+            return $popup ? [
+                'id' => $popup->id,
+                'type' => $popup->type,
+                'trigger' => $popup->trigger,
+                'delay_seconds' => $popup->delay_seconds,
+                'title' => $popup->title,
+                'body' => $popup->body,
+                'cta_label' => $popup->cta_label,
+                'cta_url' => $popup->cta_url,
+                'discount_code' => $popup->discount_code,
+                'show_email_field' => $popup->show_email_field,
+                'target_new_visitors_only' => $popup->target_new_visitors_only,
+                'image_url' => $popup->hasMedia('image') ? $popup->getFirstMediaUrl('image', 'card') : null,
+            ] : null;
+        });
+
+        if (! $popup) {
+            return null;
+        }
+
+        $isReturningVisitor = request()->hasCookie('estele_visited');
+
+        if (! $isReturningVisitor) {
+            Cookie::queue(Cookie::forever('estele_visited', '1'));
+        }
+
+        if ($popup['target_new_visitors_only'] && $isReturningVisitor) {
+            return null;
+        }
+
+        return $popup;
     }
 }

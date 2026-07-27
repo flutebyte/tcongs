@@ -230,6 +230,7 @@
 
 @include('partials.cart-drawer')
 @include('partials.coupons-modal')
+@include('partials.popup')
 
 <div class="fixed inset-0 z-[200]" data-search hidden>
   <div class="absolute inset-0 bg-black/45" data-search-close></div>

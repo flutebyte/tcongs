@@ -24,7 +24,8 @@ class ShieldSeeder extends Seeder
     private const RESOURCES = [
         'Banner', 'Category', 'Collection', 'Coupon', 'Offer',
         'HomepageBlock', 'Order', 'Product', 'Role', 'Setting',
-        'BlogCategory', 'Blog', 'CmsPage', 'FaqCategory', 'Faq',
+        'BlogCategory', 'Blog', 'CmsPage', 'FaqCategory', 'Faq', 'Review',
+        'Popup', 'NewsletterSubscriber',
     ];
 
     private const ACTIONS = [
@@ -64,6 +65,13 @@ class ShieldSeeder extends Seeder
             'ViewAny:CmsPage', 'View:CmsPage', 'Create:CmsPage', 'Update:CmsPage',
             'ViewAny:FaqCategory', 'View:FaqCategory', 'Create:FaqCategory', 'Update:FaqCategory',
             'ViewAny:Faq', 'View:Faq', 'Create:Faq', 'Update:Faq',
+            // Moderation only — no Delete/DeleteAny, matches the resource's own
+            // canCreate()=false (reviews only ever originate from customers).
+            'ViewAny:Review', 'View:Review', 'Update:Review',
+            // Popups are a marketing tool end-to-end — full CRUD, unlike Review.
+            'ViewAny:Popup', 'View:Popup', 'Create:Popup', 'Update:Popup', 'Delete:Popup',
+            // Subscriber list is read-only everywhere — nobody hand-edits captured emails.
+            'ViewAny:NewsletterSubscriber', 'View:NewsletterSubscriber',
         ]);
     }
 }

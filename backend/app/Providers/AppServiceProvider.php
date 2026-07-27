@@ -14,7 +14,9 @@ use App\Models\FaqCategory;
 use App\Models\HomepageBlock;
 use App\Models\HomepageBlockItem;
 use App\Models\Offer;
+use App\Models\Popup;
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Setting;
 use App\Observers\BannerObserver;
 use App\Observers\BlogCategoryObserver;
@@ -28,7 +30,9 @@ use App\Observers\FaqObserver;
 use App\Observers\HomepageBlockItemObserver;
 use App\Observers\HomepageBlockObserver;
 use App\Observers\OfferObserver;
+use App\Observers\PopupObserver;
 use App\Observers\ProductObserver;
+use App\Observers\ReviewObserver;
 use App\Observers\SettingObserver;
 use App\View\Composers\SiteDataComposer;
 use BezhanSalleh\FilamentShield\Facades\FilamentShield;
@@ -70,5 +74,7 @@ class AppServiceProvider extends ServiceProvider
         CmsPage::observe(CmsPageObserver::class);
         FaqCategory::observe(FaqCategoryObserver::class);
         Faq::observe(FaqObserver::class);
+        Review::observe(ReviewObserver::class);
+        Popup::observe(PopupObserver::class);
     }
 }

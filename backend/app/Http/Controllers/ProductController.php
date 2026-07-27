@@ -29,6 +29,11 @@ class ProductController extends Controller
 
         $product->loadMissing('variants', 'categories');
 
-        return view('products.show', compact('product', 'relatedProducts'));
+        $reviews = $product->approvedReviews()
+            ->with('media')
+            ->latest()
+            ->paginate(10, ['*'], 'reviews_page');
+
+        return view('products.show', compact('product', 'relatedProducts', 'reviews'));
     }
 }

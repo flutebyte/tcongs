@@ -16,7 +16,44 @@
       : null;
     $galleryImages = $product->getMedia('gallery');
     $mainMedia = $galleryImages->first();
+    $ratingAverage = $product->reviewsAverageRating();
+    $ratingCount = $product->reviewsCount();
   @endphp
+
+  <script type="application/ld+json">
+    {!! json_encode(array_filter([
+      '@context' => 'https://schema.org',
+      '@type' => 'Product',
+      'name' => $product->title,
+      'image' => $galleryImages->map(fn ($media) => $media->getUrl('detail'))->all(),
+      'description' => $product->description,
+      'sku' => $product->sku,
+      'offers' => [
+        '@type' => 'Offer',
+        'url' => route('products.show', $product),
+        'priceCurrency' => 'INR',
+        'price' => (string) $product->price,
+        'availability' => $product->stock_quantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      ],
+      'aggregateRating' => $ratingCount > 0 ? [
+        '@type' => 'AggregateRating',
+        'ratingValue' => $ratingAverage,
+        'reviewCount' => $ratingCount,
+      ] : null,
+      'review' => $reviews->isNotEmpty() ? $reviews->map(fn ($review) => [
+        '@type' => 'Review',
+        'author' => ['@type' => 'Person', 'name' => $review->customer_name],
+        'datePublished' => $review->created_at->toIso8601String(),
+        'reviewBody' => $review->body,
+        'reviewRating' => [
+          '@type' => 'Rating',
+          'ratingValue' => $review->rating,
+          'bestRating' => 5,
+          'worstRating' => 1,
+        ],
+      ])->all() : null,
+    ]), JSON_UNESCAPED_SLASHES) !!}
+  </script>
 
   <nav class="mx-auto w-full max-w-wrapper px-3 md:px-4 flex flex-wrap items-center gap-1.5 py-4 text-[13px] text-muted" aria-label="Breadcrumb">
     <x-breadcrumb :items="array_filter([
@@ -51,6 +88,12 @@
 
     <div>
       <h1 class="mb-2.5 text-[20px] md:text-[28px]">{{ $product->title }}</h1>
+
+      @if($ratingCount > 0)
+        <a class="mb-2.5 inline-flex items-center gap-2" href="#reviews">
+          <x-review-stars :rating="$ratingAverage" :count="$ratingCount" />
+        </a>
+      @endif
 
       <div class="mb-1 flex flex-wrap items-center gap-2.5 text-[21px]">
         <span class="font-medium text-price">₹{{ number_format($product->price, 0) }}</span>
@@ -133,5 +176,104 @@
       </div>
     </section>
   @endif
+
+  <section class="border-t border-line py-10 md:py-[60px]" id="reviews">
+    <div class="mx-auto w-full max-w-[760px] px-3 md:px-4">
+      <x-section-header
+        title="Customer Reviews"
+        :subtitle="$ratingCount > 0 ? number_format($ratingAverage, 1).' out of 5, based on '.$ratingCount.' review'.($ratingCount === 1 ? '' : 's') : 'No reviews yet — be the first to write one'"
+      />
+
+      @if(session('success'))
+        <p class="mb-6 rounded-lg border border-line bg-pinksoft px-4 py-3 text-center text-[13px] text-heading">{{ session('success') }}</p>
+      @endif
+
+      @if($reviews->isNotEmpty())
+        <ul class="mb-8 space-y-5">
+          @foreach($reviews as $review)
+            <li class="border-b border-line pb-5">
+              <div class="mb-1.5 flex flex-wrap items-center gap-2">
+                <x-review-stars :rating="$review->rating" />
+                @if($review->is_verified_purchase)
+                  <span class="text-[11px] font-medium uppercase tracking-[0.3px] text-accent">Verified Purchase</span>
+                @endif
+              </div>
+              @if($review->title)
+                <p class="mb-1 text-[14px] font-medium text-heading">{{ $review->title }}</p>
+              @endif
+              <p class="mb-2 text-[13.5px] leading-[1.7] text-muted">{{ $review->body }}</p>
+              @if($review->hasMedia('photos'))
+                <div class="mb-2 flex flex-wrap gap-2">
+                  @foreach($review->getMedia('photos') as $photo)
+                    <img class="h-16 w-16 rounded object-cover" src="{{ $photo->getUrl('thumb') }}" alt="Photo submitted with {{ $review->customer_name }}'s review" loading="lazy" width="64" height="64">
+                  @endforeach
+                </div>
+              @endif
+              <p class="text-[12px] text-muted">{{ $review->customer_name }} &middot; {{ $review->created_at->format('d M Y') }}</p>
+            </li>
+          @endforeach
+        </ul>
+
+        <div class="mb-8">
+          {{ $reviews->links() }}
+        </div>
+      @endif
+
+      <details class="marker-pm" {{ $errors->any() ? 'open' : '' }}>
+        <summary class="cursor-pointer border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Write a Review</summary>
+        <form class="pb-4.5" action="{{ route('products.reviews.store', $product) }}" method="post" enctype="multipart/form-data">
+          @csrf
+          <input class="hidden" type="text" name="website" tabindex="-1" autocomplete="off">
+
+          <div class="mb-3.5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label class="mb-1.5 block text-[13px] font-medium text-heading" for="customer_name">Name</label>
+              <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="customer_name" name="customer_name" type="text" value="{{ old('customer_name') }}" required>
+              @error('customer_name') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+            </div>
+            <div>
+              <label class="mb-1.5 block text-[13px] font-medium text-heading" for="customer_email">Email</label>
+              <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="customer_email" name="customer_email" type="email" value="{{ old('customer_email') }}" required>
+              @error('customer_email') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+            </div>
+          </div>
+
+          <div class="mb-3.5">
+            <label class="mb-1.5 block text-[13px] font-medium text-heading" for="rating">Rating</label>
+            <select class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors focus:border-heading" id="rating" name="rating" required>
+              <option value="">Select a rating</option>
+              @for($i = 5; $i >= 1; $i--)
+                <option value="{{ $i }}" {{ old('rating') == $i ? 'selected' : '' }}>{{ $i }} star{{ $i === 1 ? '' : 's' }}</option>
+              @endfor
+            </select>
+            @error('rating') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+          </div>
+
+          <div class="mb-3.5">
+            <label class="mb-1.5 block text-[13px] font-medium text-heading" for="title">Title (optional)</label>
+            <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="title" name="title" type="text" value="{{ old('title') }}">
+            @error('title') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+          </div>
+
+          <div class="mb-3.5">
+            <label class="mb-1.5 block text-[13px] font-medium text-heading" for="body">Review</label>
+            <textarea class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="body" name="body" rows="4" required>{{ old('body') }}</textarea>
+            @error('body') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+          </div>
+
+          <div class="mb-5">
+            <label class="mb-1.5 block text-[13px] font-medium text-heading" for="photos">Photos (optional, up to 3)</label>
+            <input class="w-full border border-line-strong bg-white px-4 py-3 text-[13px] outline-none transition-colors focus:border-heading" id="photos" name="photos[]" type="file" accept="image/*" multiple>
+            @error('photos') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+            @error('photos.*') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+          </div>
+
+          <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
+            Submit Review
+          </button>
+        </form>
+      </details>
+    </div>
+  </section>
 
 @endsection
