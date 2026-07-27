@@ -19,4 +19,5 @@ EXPOSE 8080
 
 CMD php artisan storage:link || true; \
     php artisan migrate --force; \
+    (while true; do php artisan queue:work --queue=default --tries=3 --max-time=3600 --sleep=3; sleep 2; done &) ; \
     php artisan serve --host=0.0.0.0 --port="${PORT:-8080}"
