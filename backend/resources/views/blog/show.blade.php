@@ -28,12 +28,17 @@
     ], JSON_UNESCAPED_SLASHES) !!}
   </script>
 
-  <div class="mx-auto w-full max-w-[760px] px-3 py-6 md:px-4">
-    <x-breadcrumb :items="array_filter([
+  @php
+    $blogBreadcrumbItems = array_filter([
       ['label' => 'Blog', 'url' => route('blogs.index')],
       $blog->blogCategory ? ['label' => $blog->blogCategory->name, 'url' => route('blogs.index', ['category' => $blog->blogCategory->slug])] : null,
       ['label' => $blog->title],
-    ])" />
+    ]);
+  @endphp
+  <x-breadcrumb-schema :items="$blogBreadcrumbItems" />
+
+  <div class="mx-auto w-full max-w-[760px] px-3 py-6 md:px-4">
+    <x-breadcrumb :items="$blogBreadcrumbItems" />
 
     <p class="mb-2 text-[11px] uppercase tracking-[0.3px] text-muted">
       @if($blog->blogCategory){{ $blog->blogCategory->name }} · @endif

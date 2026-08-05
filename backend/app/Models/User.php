@@ -25,6 +25,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->roles()->exists();
     }
 
+    public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Order::class)->latest();
+    }
+
     /**
      * Get the attributes that should be cast.
      *

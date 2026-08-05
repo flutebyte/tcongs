@@ -18,6 +18,10 @@
     $mainMedia = $galleryImages->first();
     $ratingAverage = $product->reviewsAverageRating();
     $ratingCount = $product->reviewsCount();
+    $breadcrumbItems = array_filter([
+      $primaryCategory ? ['label' => $primaryCategory->name, 'url' => route('categories.show', $primaryCategory)] : null,
+      ['label' => $product->title],
+    ]);
   @endphp
 
   <script type="application/ld+json">
@@ -28,6 +32,7 @@
       'image' => $galleryImages->map(fn ($media) => $media->getUrl('detail'))->all(),
       'description' => $product->description,
       'sku' => $product->sku,
+      'brand' => ['@type' => 'Brand', 'name' => $siteSettings['site_name'] ?? 'Estele'],
       'offers' => [
         '@type' => 'Offer',
         'url' => route('products.show', $product),
@@ -55,17 +60,51 @@
     ]), JSON_UNESCAPED_SLASHES) !!}
   </script>
 
+  <x-breadcrumb-schema :items="$breadcrumbItems" />
+
   <nav class="mx-auto w-full max-w-wrapper px-3 md:px-4 flex flex-wrap items-center gap-1.5 py-4 text-[13px] text-muted" aria-label="Breadcrumb">
-    <x-breadcrumb :items="array_filter([
-      $primaryCategory ? ['label' => $primaryCategory->name, 'url' => route('categories.show', $primaryCategory)] : null,
-      ['label' => $product->title],
-    ])" />
+    <x-breadcrumb :items="$breadcrumbItems" />
   </nav>
+
+  {{--
+    Gallery layout: real Estele product pages run a vertical thumbnail strip
+    beside the main image on desktop, not a grid below it (verified live via
+    browser). Reproduced with plain scoped CSS rather than new Tailwind
+    utility classes — see the note on padding above for why: this backend's
+    public/theme/app.css is a static copy of a separate project's compiled
+    CSS, so a fresh utility class written only here would render as nothing.
+    Individual thumbnail buttons keep their original Tailwind classes
+    (aspect-square/border-accent/etc.) since those are already proven
+    compiled in this exact file.
+  --}}
+  <style>
+    .pdp-gallery { display: flex; flex-direction: column; gap: 10px; }
+    .pdp-thumbs { display: flex; flex-direction: row; gap: 10px; overflow-x: auto; order: 2; }
+    .pdp-thumbs .pdp-thumb { flex: 0 0 72px; width: 72px; }
+    .pdp-main { order: 1; }
+    @media (min-width: 768px) {
+      .pdp-gallery { flex-direction: row; align-items: flex-start; }
+      .pdp-thumbs { flex-direction: column; overflow-x: visible; overflow-y: auto; order: 1; max-height: 600px; width: 84px; flex: 0 0 84px; }
+      .pdp-thumbs .pdp-thumb { width: 100%; flex: 0 0 auto; }
+      .pdp-main { order: 2; flex: 1 1 auto; min-width: 0; }
+    }
+  </style>
 
   <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 grid grid-cols-1 gap-8 pb-10 md:grid-cols-2 md:gap-[46px] md:pb-[60px]">
 
-    <div>
-      <div class="aspect-square overflow-hidden rounded bg-placeholder">
+    <div class="pdp-gallery">
+      @if($galleryImages->count() > 1)
+        <div class="pdp-thumbs">
+          @foreach($galleryImages as $index => $media)
+            <button class="pdp-thumb aspect-square overflow-hidden rounded border bg-placeholder transition-colors {{ $index === 0 ? 'border-accent' : 'border-transparent hover:border-accent' }}" type="button"
+                    data-gallery-thumb data-full="{{ $media->getUrl('detail') }}">
+              <img class="h-full w-full object-cover" src="{{ $media->getUrl('card') }}" alt="{{ $product->title }} view {{ $index + 1 }}" loading="lazy" width="160" height="160">
+            </button>
+          @endforeach
+        </div>
+      @endif
+      {{-- Image area reduced ~20% via inline padding — see product-card.blade.php for why this isn't a Tailwind p-[...] class. --}}
+      <div class="pdp-main aspect-square overflow-hidden rounded bg-placeholder" style="padding: 5.3%">
         @if($mainMedia)
           <img class="h-full w-full object-cover" id="pdp-main-img"
                src="{{ $mainMedia->getUrl('detail') }}"
@@ -74,20 +113,13 @@
                alt="{{ $product->title }}" width="1000" height="1000" fetchpriority="high">
         @endif
       </div>
-      @if($galleryImages->count() > 1)
-        <div class="mt-2.5 grid grid-cols-4 gap-2.5">
-          @foreach($galleryImages as $index => $media)
-            <button class="aspect-square overflow-hidden rounded border bg-placeholder transition-colors {{ $index === 0 ? 'border-accent' : 'border-transparent hover:border-accent' }}" type="button"
-                    data-gallery-thumb data-full="{{ $media->getUrl('detail') }}">
-              <img class="h-full w-full object-cover" src="{{ $media->getUrl('card') }}" alt="{{ $product->title }} view {{ $index + 1 }}" loading="lazy" width="160" height="160">
-            </button>
-          @endforeach
-        </div>
-      @endif
     </div>
 
     <div>
-      <h1 class="mb-2.5 text-[20px] md:text-[28px]">{{ $product->title }}</h1>
+      <h1 class="mb-1.5 text-[20px] md:text-[28px]">{{ $product->title }}</h1>
+      @if($product->sku)
+        <p class="mb-2.5 text-[12px] text-muted">SKU: {{ $product->sku }}</p>
+      @endif
 
       @if($ratingCount > 0)
         <a class="mb-2.5 inline-flex items-center gap-2" href="#reviews">
@@ -102,9 +134,27 @@
           <span class="inline-block bg-salebadge px-2.5 py-1 text-[11px] font-medium uppercase leading-none text-white">{{ $discountPercent }}% OFF</span>
         @endif
       </div>
-      <p class="mb-5 text-[12px] text-muted">Inclusive of all taxes</p>
+      <p class="mb-4 text-[12px] text-muted">Inclusive of all taxes</p>
 
-      <form action="{{ route('cart.store', $product) }}" method="post" data-cart-form data-checkout-url="{{ route('checkout.index') }}">
+      {{-- Trust badge row, matching real Estele's icon strip placed right after the price. --}}
+      <div class="mb-4 flex flex-wrap items-center gap-4 text-[12px] text-muted">
+        <span class="flex items-center gap-1.5">
+          <svg class="h-4 w-4 shrink-0 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          100% Anti-Tarnish
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="h-4 w-4 shrink-0 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+          7-Day Return &amp; Exchange
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="h-4 w-4 shrink-0 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
+          Free Shipping Available
+        </span>
+      </div>
+
+      @include('partials.offers-banner')
+
+      <form class="mt-4" action="{{ route('cart.store', $product) }}" method="post" data-cart-form data-checkout-url="{{ route('checkout.index') }}">
         @csrf
 
         @if($product->variants->isNotEmpty())
@@ -136,13 +186,6 @@
         </button>
       </form>
 
-      <ul class="mt-6 space-y-2">
-        <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Anti-tarnish coating</li>
-        <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">1 year manufacturing warranty</li>
-        <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Free shipping on prepaid orders</li>
-        <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Easy 7-day returns</li>
-      </ul>
-
       <div class="mt-7">
         @if($product->description)
           <details class="marker-pm" open>
@@ -152,13 +195,32 @@
             </div>
           </details>
         @endif
-        <details class="marker-pm border-b border-line">
-          <summary class="flex items-center justify-between border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Shipping &amp; Returns</summary>
+        <details class="marker-pm">
+          <summary class="flex items-center justify-between border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Return &amp; Exchange Policy</summary>
           <div class="pb-4.5 text-[13.5px] leading-[1.85] text-muted">
             <p>Free shipping on all prepaid orders across India. Orders are dispatched within
                24&ndash;48 hours. Returns and exchanges accepted within 7 days of delivery,
                provided the product is unused and in original packaging.</p>
           </div>
+        </details>
+        <details class="marker-pm">
+          <summary class="flex items-center justify-between border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Manufacturing Details</summary>
+          <div class="pb-4.5 text-[13.5px] leading-[1.85] text-muted">
+            <p>Adorn yourself with the allure of anti-tarnish jewelry, exuding beauty and durability.
+               @if($product->sku) SKU: {{ $product->sku }}. @endif
+               Every piece is quality-checked before dispatch.</p>
+          </div>
+        </details>
+        <details class="marker-pm border-b border-line">
+          <summary class="flex items-center justify-between border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Care &amp; Maintenance</summary>
+          <ul class="pb-4.5 space-y-2">
+            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Keep jewellery away from water &amp; humidity</li>
+            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Remove jewellery before sleeping or physical activities</li>
+            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Remove jewellery before bathing, showering or swimming</li>
+            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Avoid direct contact with perfume, body lotions or other chemicals</li>
+            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Clean the piece occasionally and wipe with a soft cloth</li>
+            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Store separately in an air-tight jewellery box</li>
+          </ul>
         </details>
       </div>
     </div>
@@ -176,6 +238,20 @@
       </div>
     </section>
   @endif
+
+  {{-- "Our Promise to You" trust strip, matching real Estele's PDP (customer-count claim dropped — that figure is Estele's own, not this store's). --}}
+  <section class="border-t border-line py-10 md:py-[60px]">
+    <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
+      <x-section-header title="Our Promise to You" />
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5">
+        @foreach(['One Year Warranty', 'Unparalleled Quality', 'Brilliant Designs', 'Made in India', 'Free Shipping'] as $promise)
+          <div class="rounded-lg border border-line p-4 text-center">
+            <p class="text-[11px] font-medium uppercase tracking-[0.3px] text-heading">{{ $promise }}</p>
+          </div>
+        @endforeach
+      </div>
+    </div>
+  </section>
 
   <section class="border-t border-line py-10 md:py-[60px]" id="reviews">
     <div class="mx-auto w-full max-w-[760px] px-3 md:px-4">

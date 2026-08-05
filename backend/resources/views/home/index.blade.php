@@ -6,9 +6,48 @@
 
 @section('content')
 
+  {{-- Organization JSON-LD (SEO checklist item) — name, logo, social links, all admin-editable via Settings. --}}
+  <script type="application/ld+json">
+    {!! json_encode(array_filter([
+      '@context' => 'https://schema.org',
+      '@type' => 'Organization',
+      'name' => $siteSettings['site_name'] ?? 'Estele',
+      'url' => route('home'),
+      'logo' => $siteSettings['site_logo_url'] ?? null,
+      'sameAs' => array_values(array_filter([
+        $siteSettings['social_instagram'] ?? null,
+        $siteSettings['social_facebook'] ?? null,
+        $siteSettings['social_twitter'] ?? null,
+        $siteSettings['social_youtube'] ?? null,
+      ])),
+      'contactPoint' => ($siteSettings['contact_phone'] ?? null) ? array_filter([
+        '@type' => 'ContactPoint',
+        'telephone' => $siteSettings['contact_phone'],
+        'email' => $siteSettings['contact_email'] ?? null,
+        'contactType' => 'customer service',
+      ]) : null,
+    ]), JSON_UNESCAPED_SLASHES) !!}
+  </script>
+
   @if($banners->isNotEmpty())
     <div class="mx-auto w-full px-8 md:px-9">
-      <section class="hero-fade relative overflow-hidden rounded-[1.25rem] mb-2 aspect-[1800/700] w-full md:aspect-[1800/700] aspect-[750/1000]" aria-label="Featured collections" data-carousel data-autoplay="5000" data-fade>
+      {{--
+        Banner height reduced 40% from the original aspect ratios (mobile
+        750/1000 -> 750/600, desktop 1800/700 -> 1800/420). Uses an inline
+        style rather than a new Tailwind aspect-[...] utility class: this
+        backend has no live Tailwind build of its own — public/theme/app.css
+        is a static copy of the separate root project's compiled CSS (see
+        tcongs-d2c-spec memory), so any brand-new arbitrary-value class
+        written only in a backend Blade file compiles to nothing and the
+        element would silently lose its aspect ratio entirely. The old class
+        list also had a latent bug: two unprefixed aspect-[...] utilities of
+        equal specificity with no breakpoint on the mobile one, so which
+        ratio actually won depended on Tailwind's generation order rather
+        than intent — sidestepped here since inline style always wins CSS
+        cascade order regardless of stylesheet compile order.
+      --}}
+      <style>@media (min-width: 768px) { .hero-banner-shortened { aspect-ratio: 1800 / 420 !important; } }</style>
+      <section class="hero-fade hero-banner-shortened relative overflow-hidden rounded-[1.25rem] mb-2 w-full" style="aspect-ratio: 750 / 600" aria-label="Featured collections" data-carousel data-autoplay="5000" data-fade>
         @foreach($banners as $index => $banner)
           <div class="hero-slide {{ $index === 0 ? 'is-active' : '' }}" data-carousel-slide>
             <a href="{{ $banner->link_url ?? '#' }}" aria-label="{{ $banner->title }}">

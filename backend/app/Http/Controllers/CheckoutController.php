@@ -212,6 +212,7 @@ class CheckoutController extends Controller
 
                 $order = Order::create([
                     ...$validated,
+                    'user_id' => auth()->id(),
                     'order_number' => $this->generateOrderNumber(),
                     'shipping_country' => 'India',
                     'subtotal' => $subtotal,

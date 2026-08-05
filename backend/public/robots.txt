@@ -1,2 +1,14 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account
+Disallow: /login
+Disallow: /register
+Disallow: /payment
+Disallow: /search
+Disallow: /*?q=
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+
+Sitemap: https://tcongs-production.up.railway.app/sitemap.xml

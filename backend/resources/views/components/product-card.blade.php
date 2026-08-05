@@ -1,7 +1,17 @@
 @props(['product'])
 
 <article class="group relative text-center">
-  <a class="relative block aspect-square overflow-hidden bg-placeholder" href="{{ route('products.show', $product) }}" aria-label="{{ $product->title }}">
+  {{--
+    Image area reduced ~20% (inline style, not a Tailwind p-[...] class: see
+    the note in home/index.blade.php — this backend has no live Tailwind
+    build of its own, so a brand-new arbitrary-value class here would compile
+    to nothing). ~5.3% inset on each side shrinks a square box's rendered
+    area by ~20% (side scales by sqrt(0.8) ≈ 0.894). The sale badge and
+    wishlist button below are unaffected — their `absolute` offsets are
+    relative to this box's padding edge, not its (now smaller) content box,
+    so they stay flush in the card's true corners.
+  --}}
+  <a class="relative block aspect-square overflow-hidden bg-placeholder" style="padding: 5.3%" href="{{ route('products.show', $product) }}" aria-label="{{ $product->title }}">
     @if($product->hasMedia('gallery'))
       <img class="h-full w-full object-cover" src="{{ $product->getFirstMediaUrl('gallery', 'card') }}" alt="{{ $product->title }}" loading="lazy" width="600" height="600">
       @if($product->getMedia('gallery')->count() > 1)

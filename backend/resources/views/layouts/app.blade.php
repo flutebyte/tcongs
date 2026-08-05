@@ -77,7 +77,7 @@
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         <span class="absolute right-0.5 top-0.5 grid h-4 min-w-4 place-items-center rounded-lg bg-accent px-1 text-[10px] leading-none text-white" style="{{ $cartCount > 0 ? '' : 'display:none' }}" data-cart-count-badge>{{ $cartCount }}</span>
       </a>
-      <a class="relative grid h-[38px] w-[38px] place-items-center text-heading transition-colors hover:[color:var(--nav-hover-color)]" href="/account.html" aria-label="Account">
+      <a class="relative grid h-[38px] w-[38px] place-items-center text-heading transition-colors hover:[color:var(--nav-hover-color)]" href="{{ auth()->check() ? route('account.index') : route('login') }}" aria-label="Account">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1"/></svg>
       </a>
     </div>
@@ -223,7 +223,11 @@
       @endif
     </ul>
     <div class="p-5">
-      <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent w-full" href="/account.html">Login / Register</a>
+      @auth
+        <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent w-full" href="{{ route('account.index') }}">My Account</a>
+      @else
+        <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent w-full" href="{{ route('login') }}">Login / Register</a>
+      @endauth
     </div>
   </nav>
 </div>
@@ -280,8 +284,8 @@
       <div>
         <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">CUSTOMER SERVICE</h3>
         <ul class="space-y-2.5 text-[13px] text-muted">
-          <li><a class="transition-colors hover:text-accent" href="/account.html">Find Your Order</a></li>
-          <li><a class="transition-colors hover:text-accent" href="/account.html">Track Order</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Find Your Order</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Track Order</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('cart.index') }}">Cart</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('faq.index') }}">FAQ</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'shipping-policy') }}">Shipping Policy</a></li>
@@ -362,14 +366,26 @@
     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.2l7.7-7.7 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
     <span>Wishlist</span>
   </a>
-  <a class="flex flex-1 flex-col items-center gap-0.5 px-0.5 py-2 text-[10px] uppercase tracking-[0.3px] text-heading transition-colors hover:text-accent" href="/account.html">
+  <a class="flex flex-1 flex-col items-center gap-0.5 px-0.5 py-2 text-[10px] uppercase tracking-[0.3px] text-heading transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">
     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1"/></svg>
     <span>Account</span>
   </a>
 </nav>
 
-<button class="fixed bottom-[74px] right-3 z-[90] grid h-[42px] w-[42px] translate-y-2.5 place-items-center rounded-full bg-heading text-white opacity-0 transition-all hover:bg-accent md:bottom-[18px] md:right-[18px]"
-        type="button" data-to-top aria-label="Back to top">
+{{--
+  Back-to-top used to sit at the exact same fixed coordinates as the chat
+  bubble below (bottom-[74px]/right-3, md:bottom-[18px]/md:right-[18px]) —
+  the chat bubble's higher z-index meant it silently covered this button
+  whenever both were visible, making "back to top" unreachable near the
+  chat widget. Stacked above the chat bubble instead (bubble height + a
+  small gap): mobile 50px bubble at bottom-74px -> clear at 134px; desktop
+  58px bubble at bottom-18px -> clear at 86px. Inline style + scoped
+  breakpoint override rather than new bottom-[...] utility classes, since
+  this backend has no live Tailwind build of its own (see home/index.blade.php).
+--}}
+<style>@media (min-width: 768px) { .back-to-top-btn { bottom: 86px !important; } }</style>
+<button class="back-to-top-btn fixed right-3 z-[90] grid h-[42px] w-[42px] translate-y-2.5 place-items-center rounded-full bg-heading text-white opacity-0 transition-all hover:bg-accent md:right-[18px]"
+        style="bottom: 134px" type="button" data-to-top aria-label="Back to top">
   <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
