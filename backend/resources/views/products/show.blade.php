@@ -76,21 +76,86 @@
     Individual thumbnail buttons keep their original Tailwind classes
     (aspect-square/border-accent/etc.) since those are already proven
     compiled in this exact file.
+
+    Same reasoning covers everything else new below (.pdp-image-wrap /
+    .pdp-zoom-* / .pdp-lightbox* / .pdp-title-row / .pdp-icon-*): plain scoped
+    CSS/JS, not new Tailwind classes. These reproduce three things confirmed
+    missing here vs. the real Estele PDP (checked live via browser) — a
+    hover-to-zoom lens with a magnified side panel, an expand icon that opens
+    the current image full-screen, and wishlist/share icons beside the title.
   --}}
   <style>
     .pdp-gallery { display: flex; flex-direction: column; gap: 10px; }
     .pdp-thumbs { display: flex; flex-direction: row; gap: 10px; overflow-x: auto; order: 2; }
     .pdp-thumbs .pdp-thumb { flex: 0 0 72px; width: 72px; }
-    .pdp-main { order: 1; }
+    .pdp-image-wrap { position: relative; order: 1; }
     @media (min-width: 768px) {
       .pdp-gallery { flex-direction: row; align-items: flex-start; }
       .pdp-thumbs { flex-direction: column; overflow-x: visible; overflow-y: auto; order: 1; max-height: 600px; width: 84px; flex: 0 0 84px; }
       .pdp-thumbs .pdp-thumb { width: 100%; flex: 0 0 auto; }
-      .pdp-main { order: 2; flex: 1 1 auto; min-width: 0; }
+      .pdp-image-wrap { order: 2; flex: 1 1 auto; min-width: 0; }
+    }
+
+    .pdp-icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      height: 34px; width: 34px; padding: 0; border-radius: 999px;
+      border: 1px solid var(--color-line); background: transparent;
+      color: var(--color-heading); cursor: pointer;
+      transition: color .15s ease, border-color .15s ease;
+    }
+    .pdp-icon-btn:hover, .pdp-icon-btn.is-active { border-color: var(--color-accent); color: var(--color-accent); }
+    .pdp-icon-btn svg { height: 16px; width: 16px; }
+
+    .pdp-expand-btn {
+      position: absolute; top: 10px; right: 10px; z-index: 5;
+      background: var(--color-white); border: 0;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .18);
+    }
+
+    /* Hover-to-zoom lens + magnified side panel, matching estele.co's PDP gallery. */
+    .pdp-zoom-lens {
+      position: absolute; display: none; pointer-events: none; z-index: 4;
+      border: 1px solid rgba(20, 20, 20, .45); background: rgba(255, 255, 255, .35);
+    }
+    .pdp-zoom-pane {
+      position: absolute; display: none; top: 0; left: 100%; margin-left: 16px;
+      width: 100%; height: 100%; z-index: 20; border-radius: 4px;
+      background-color: var(--color-placeholder); background-repeat: no-repeat;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .16);
+    }
+    @media (min-width: 1024px) {
+      .pdp-main { cursor: zoom-in; }
+    }
+
+    .pdp-lightbox {
+      position: fixed; inset: 0; z-index: 100; display: flex;
+      align-items: center; justify-content: center;
+      background: rgba(0, 0, 0, .85); padding: 24px;
+    }
+    .pdp-lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .pdp-lightbox-close {
+      position: absolute; top: 16px; right: 20px; z-index: 1;
+      background: none; border: 0; color: var(--color-white);
+      font-size: 32px; line-height: 1; cursor: pointer;
+    }
+
+    .pdp-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .pdp-title-row h1 { margin: 0; }
+    .pdp-icon-group { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .pdp-share-tip {
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      white-space: nowrap; background: var(--color-heading); color: var(--color-white);
+      font-size: 11px; padding: 4px 8px; border-radius: 4px;
     }
   </style>
 
-  <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 grid grid-cols-1 gap-8 pb-10 md:grid-cols-2 md:gap-[46px] md:pb-[60px]">
+  {{--
+    Wrapped in <article> (not just a plain <div>) so the site-wide wishlist heart
+    click-handler in app.js — which walks up to the nearest article/li to find an
+    <img> for its localStorage key — resolves to this product's own image here too,
+    same as it does for product cards on listing pages.
+  --}}
+  <article class="mx-auto w-full max-w-wrapper px-3 md:px-4 grid grid-cols-1 gap-8 pb-10 md:grid-cols-2 md:gap-[46px] md:pb-[60px]">
 
     <div class="pdp-gallery">
       @if($galleryImages->count() > 1)
@@ -103,20 +168,39 @@
           @endforeach
         </div>
       @endif
-      {{-- Image area reduced ~20% via inline padding — see product-card.blade.php for why this isn't a Tailwind p-[...] class. --}}
-      <div class="pdp-main aspect-square overflow-hidden rounded bg-placeholder" style="padding: 5.3%">
+      <div class="pdp-image-wrap">
+        {{-- Image area reduced ~20% via inline padding — see product-card.blade.php for why this isn't a Tailwind p-[...] class. --}}
+        <div class="pdp-main aspect-square overflow-hidden rounded bg-placeholder" style="padding: 5.3%" id="pdp-zoom-frame">
+          @if($mainMedia)
+            <img class="h-full w-full object-cover" id="pdp-main-img"
+                 src="{{ $mainMedia->getUrl('detail') }}"
+                 srcset="{{ $mainMedia->getUrl('mobile') }} 768w, {{ $mainMedia->getUrl('tablet') }} 1024w, {{ $mainMedia->getUrl('detail') }} 1600w"
+                 sizes="(max-width: 768px) 100vw, 50vw"
+                 alt="{{ $product->title }}" width="1000" height="1000" fetchpriority="high">
+          @endif
+          <div class="pdp-zoom-lens" id="pdp-zoom-lens"></div>
+        </div>
         @if($mainMedia)
-          <img class="h-full w-full object-cover" id="pdp-main-img"
-               src="{{ $mainMedia->getUrl('detail') }}"
-               srcset="{{ $mainMedia->getUrl('mobile') }} 768w, {{ $mainMedia->getUrl('tablet') }} 1024w, {{ $mainMedia->getUrl('detail') }} 1600w"
-               sizes="(max-width: 768px) 100vw, 50vw"
-               alt="{{ $product->title }}" width="1000" height="1000" fetchpriority="high">
+          <button class="pdp-icon-btn pdp-expand-btn" type="button" id="pdp-expand-btn" aria-label="View full image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"/></svg>
+          </button>
+          <div class="pdp-zoom-pane" id="pdp-zoom-pane"></div>
         @endif
       </div>
     </div>
 
     <div>
-      <h1 class="mb-1.5 text-[20px] md:text-[28px]">{{ $product->title }}</h1>
+      <div class="pdp-title-row mb-1.5">
+        <h1 class="text-[20px] md:text-[28px]">{{ $product->title }}</h1>
+        <div class="pdp-icon-group">
+          <button class="pdp-icon-btn" type="button" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.2l7.7-7.7 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+          </button>
+          <button class="pdp-icon-btn" type="button" id="pdp-share-btn" aria-label="Share">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="18" cy="5" r="2.4"/><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="19" r="2.4"/><path d="M8.1 10.7l7.8-4.4M8.1 13.3l7.8 4.4"/></svg>
+          </button>
+        </div>
+      </div>
       @if($product->sku)
         <p class="mb-2.5 text-[12px] text-muted">SKU: {{ $product->sku }}</p>
       @endif
@@ -224,7 +308,14 @@
         </details>
       </div>
     </div>
-  </div>
+  </article>
+
+  @if($mainMedia)
+    <div class="pdp-lightbox" id="pdp-lightbox" hidden>
+      <button class="pdp-lightbox-close" type="button" data-lightbox-close aria-label="Close">&times;</button>
+      <img id="pdp-lightbox-img" src="" alt="">
+    </div>
+  @endif
 
   @if($relatedProducts->isNotEmpty())
     <section class="py-10 md:py-[60px]">
@@ -353,3 +444,110 @@
   </section>
 
 @endsection
+
+@push('scripts')
+  <script>
+    (function () {
+      // Hover-to-zoom: a lens follows the cursor over the main image, and a
+      // magnified crop renders in a side panel — same interaction as estele.co's
+      // PDP gallery. Desktop-only (min-width 1024px + hover-capable pointer);
+      // the CSS media query above is a second guard in case JS resolves this
+      // before layout settles.
+      var frame = document.getElementById('pdp-zoom-frame');
+      var mainImg = document.getElementById('pdp-main-img');
+      var lens = document.getElementById('pdp-zoom-lens');
+      var pane = document.getElementById('pdp-zoom-pane');
+      var canZoom = frame && mainImg && lens && pane;
+      var hoverCapable = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      var ZOOM = 2.4;
+
+      function syncPaneImage() {
+        pane.style.backgroundImage = 'url("' + (mainImg.currentSrc || mainImg.src) + '")';
+      }
+
+      if (canZoom) {
+        syncPaneImage();
+        mainImg.addEventListener('load', syncPaneImage);
+
+        frame.addEventListener('mousemove', function (e) {
+          if (!hoverCapable || window.innerWidth < 1024) return;
+          var rect = frame.getBoundingClientRect();
+          var x = e.clientX - rect.left;
+          var y = e.clientY - rect.top;
+          if (x < 0 || y < 0 || x > rect.width || y > rect.height) return;
+
+          var lensW = rect.width / ZOOM;
+          var lensH = rect.height / ZOOM;
+          var lx = Math.min(Math.max(x - lensW / 2, 0), rect.width - lensW);
+          var ly = Math.min(Math.max(y - lensH / 2, 0), rect.height - lensH);
+
+          lens.style.width = lensW + 'px';
+          lens.style.height = lensH + 'px';
+          lens.style.left = lx + 'px';
+          lens.style.top = ly + 'px';
+          lens.style.display = 'block';
+          pane.style.display = 'block';
+
+          var bgX = rect.width - lensW > 0 ? (lx / (rect.width - lensW)) * 100 : 0;
+          var bgY = rect.height - lensH > 0 ? (ly / (rect.height - lensH)) * 100 : 0;
+          pane.style.backgroundSize = (ZOOM * 100) + '%';
+          pane.style.backgroundPosition = bgX + '% ' + bgY + '%';
+        });
+
+        frame.addEventListener('mouseleave', function () {
+          lens.style.display = 'none';
+          pane.style.display = 'none';
+        });
+      }
+
+      // Expand icon -> full-screen lightbox of the current main image.
+      var expandBtn = document.getElementById('pdp-expand-btn');
+      var lightbox = document.getElementById('pdp-lightbox');
+      var lightboxImg = document.getElementById('pdp-lightbox-img');
+      var lightboxClose = lightbox && lightbox.querySelector('[data-lightbox-close]');
+
+      if (expandBtn && lightbox && lightboxImg && mainImg) {
+        function openLightbox() {
+          lightboxImg.src = mainImg.currentSrc || mainImg.src;
+          lightboxImg.alt = mainImg.alt;
+          lightbox.hidden = false;
+          document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+          lightbox.hidden = true;
+          document.body.style.overflow = '';
+        }
+        expandBtn.addEventListener('click', openLightbox);
+        if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', function (e) {
+          if (e.target === lightbox) closeLightbox();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && !lightbox.hidden) closeLightbox();
+        });
+      }
+
+      // Share icon -> native share sheet where available, else copy the link.
+      var shareBtn = document.getElementById('pdp-share-btn');
+      if (shareBtn) {
+        shareBtn.addEventListener('click', function () {
+          var shareData = { title: document.title, url: window.location.href };
+          if (navigator.share) {
+            navigator.share(shareData).catch(function () {});
+            return;
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareData.url).then(function () {
+              var tip = document.createElement('span');
+              tip.textContent = 'Link copied';
+              tip.className = 'pdp-share-tip';
+              shareBtn.style.position = 'relative';
+              shareBtn.appendChild(tip);
+              setTimeout(function () { tip.remove(); }, 1600);
+            }).catch(function () {});
+          }
+        });
+      }
+    })();
+  </script>
+@endpush
