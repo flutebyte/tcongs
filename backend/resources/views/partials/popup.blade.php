@@ -5,7 +5,7 @@
       <button class="absolute right-3 top-2 text-[26px] leading-none text-heading" type="button" data-popup-close aria-label="Close">&times;</button>
 
       @if($activePopup['image_url'])
-        <img class="h-40 w-full rounded-t-lg object-cover" src="{{ $activePopup['image_url'] }}" alt="{{ $activePopup['title'] }}">
+        <img class="h-40 w-full rounded-t-lg object-cover" src="{{ $activePopup['image_url'] }}" alt="{{ $activePopup['image_alt'] }}">
       @endif
 
       <div class="p-6">

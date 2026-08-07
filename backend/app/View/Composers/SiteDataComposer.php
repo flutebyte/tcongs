@@ -107,6 +107,7 @@ class SiteDataComposer
                     'show_email_field' => $popup->show_email_field,
                     'target_new_visitors_only' => $popup->target_new_visitors_only,
                     'image_url' => $popup->hasMedia('image') ? $popup->getFirstMediaUrl('image', 'card') : null,
+                    'image_alt' => $popup->image_alt_text ?: $popup->title,
                 ])
                 ->all();
         });

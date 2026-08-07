@@ -95,6 +95,11 @@ class PopupForm
                             ->conversion('card')
                             ->image()
                             ->columnSpanFull(),
+                        TextInput::make('image_alt_text')
+                            ->label('Image alt text')
+                            ->maxLength(255)
+                            ->helperText('Optional — falls back to the popup title above if left blank.')
+                            ->columnSpanFull(),
                     ]),
 
                 Section::make('Schedule & Targeting')

@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class BlogForm
@@ -50,6 +51,13 @@ class BlogForm
                     ->collection('featured_image')
                     ->conversion('detail')
                     ->image()
+                    ->live()
+                    ->columnSpanFull(),
+                TextInput::make('featured_image_alt_text')
+                    ->label('Featured image alt text')
+                    ->helperText('Required whenever a featured image is set (spec §4.1).')
+                    ->maxLength(255)
+                    ->required(fn (Get $get) => filled($get('featured_image')))
                     ->columnSpanFull(),
 
                 Section::make('SEO')

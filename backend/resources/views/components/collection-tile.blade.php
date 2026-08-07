@@ -6,7 +6,7 @@
       <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
            style="object-position: {{ $objectPosition }};"
            src="{{ $category->getFirstMediaUrl('image', 'tile') }}"
-           alt="{{ $category->name }}" loading="lazy">
+           alt="{{ $category->image_alt_text ?: $category->name }}" loading="lazy">
     @endif
   </span>
   <p class="mt-2 text-center text-[12px] uppercase tracking-[0.3px] text-heading">{{ $category->name }}</p>

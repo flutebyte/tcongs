@@ -11,9 +11,16 @@
       <div class="mx-auto grid max-w-[1040px] grid-cols-2 gap-3 px-3 sm:gap-4 sm:px-5 md:max-w-[1100px] md:grid-cols-4 md:gap-5 md:px-8 lg:gap-6 lg:px-10">
         @foreach($collections as $collection)
           <a class="block" href="{{ route('collections.show', $collection) }}">
-            <span class="block overflow-hidden rounded-[8%]">
+            {{-- aspect-ratio reserves the tile's box before the image loads —
+                 without it this was the one image grid in the codebase with
+                 no CLS protection (every sibling block already has this).
+                 Kept object-contain/h-full (not object-cover): Collection's
+                 'tile' media conversion only constrains width, not aspect
+                 ratio, so forcing a crop here could cut off real uploads —
+                 object-contain letterboxes instead, same as before this fix. --}}
+            <span class="block overflow-hidden rounded-[8%]" style="aspect-ratio: 2/3;">
               @if($collection->hasMedia('image'))
-                <img class="h-auto w-full object-contain transition-transform duration-700 hover:scale-[1.03]"
+                <img class="h-full w-full object-contain transition-transform duration-700 hover:scale-[1.03]"
                      src="{{ $collection->getFirstMediaUrl('image', 'tile') }}"
                      alt="{{ $collection->name }}" loading="lazy">
               @endif

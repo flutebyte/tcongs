@@ -30,6 +30,7 @@ class Banner extends Model implements HasMedia
         'link_url',
         'sort_order',
         'is_active',
+        'image_alt_text',
     ];
 
     protected function casts(): array

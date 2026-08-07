@@ -7,6 +7,7 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class CategoryForm
@@ -38,6 +39,13 @@ class CategoryForm
                     ->collection('image')
                     ->conversion('tile')
                     ->image()
+                    ->live()
+                    ->columnSpanFull(),
+                TextInput::make('image_alt_text')
+                    ->label('Image alt text')
+                    ->helperText('Required whenever an image is set — describes the image for screen readers and image search (spec §4.1).')
+                    ->maxLength(255)
+                    ->required(fn (Get $get) => filled($get('image')))
                     ->columnSpanFull(),
 
                 Section::make('SEO')

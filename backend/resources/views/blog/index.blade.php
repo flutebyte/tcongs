@@ -31,6 +31,7 @@
         @endforeach
       </div>
 
+      <x-pagination-links :paginator="$posts" />
       <div class="mt-8">
         {{ $posts->links() }}
       </div>

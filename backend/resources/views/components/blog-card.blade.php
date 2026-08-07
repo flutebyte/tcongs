@@ -5,7 +5,7 @@
     @if($blog->hasMedia('featured_image'))
       <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
            src="{{ $blog->getFirstMediaUrl('featured_image', 'card') }}"
-           alt="{{ $blog->title }}" loading="lazy">
+           alt="{{ $blog->featured_image_alt_text ?: $blog->title }}" loading="lazy">
     @endif
   </span>
   <p class="mt-3 text-[11px] uppercase tracking-[0.3px] text-muted">

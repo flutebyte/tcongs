@@ -37,6 +37,16 @@ class SettingSeeder extends Seeder
             // account; set to 'razorpay' once RAZORPAY_KEY_ID/KEY_SECRET
             // are configured to accept online payments at checkout.
             'payment_provider' => 'cod',
+
+            // SEO Global Settings (Phase 5, spec §5's "SEO Settings" row) —
+            // admin-editable robots.txt (see the /robots.txt route in
+            // web.php) and raw script injection for GA4/GSC/Meta Pixel etc,
+            // rendered verbatim near </head> and </body> in layouts/app —
+            // deliberately blank by default, nothing tracked until an admin
+            // pastes real tracking snippets in.
+            'robots_txt' => "User-agent: *\nAllow: /\nDisallow: /cart\nDisallow: /checkout\nDisallow: /account\nDisallow: /login\nDisallow: /register\nDisallow: /payment\nDisallow: /search\nDisallow: /*?q=\nDisallow: /*?*sort=\nDisallow: /*?*filter=\n\nSitemap: ".url('/sitemap.xml'),
+            'tracking_head_scripts' => '',
+            'tracking_body_scripts' => '',
         ];
 
         foreach ($settings as $key => $value) {

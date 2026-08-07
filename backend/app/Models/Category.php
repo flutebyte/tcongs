@@ -35,6 +35,7 @@ class Category extends Model implements HasMedia
         'description',
         'parent_id',
         'sort_order',
+        'image_alt_text',
     ];
 
     public function parent(): BelongsTo

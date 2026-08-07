@@ -20,6 +20,25 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
+// Admin-editable (Settings key 'robots_txt', see SettingSeeder) — falls back to a
+// sane default if never configured. There's deliberately no public/robots.txt
+// static file (it would be served directly by the app server, bypassing this
+// route entirely) — see the note in public/.gitignore-style removal below.
+Route::get('/robots.txt', function () {
+    $settings = \Illuminate\Support\Facades\Cache::remember(
+        'site.settings',
+        3600,
+        fn () => \App\Models\Setting::pluck('value', 'key')->toArray()
+    );
+    $content = $settings['robots_txt'] ?? null;
+
+    if (! $content) {
+        $content = "User-agent: *\nAllow: /\nDisallow: /cart\nDisallow: /checkout\nDisallow: /account\nDisallow: /login\nDisallow: /register\nDisallow: /payment\nDisallow: /search\n\nSitemap: ".url('/sitemap.xml');
+    }
+
+    return response($content, 200)->header('Content-Type', 'text/plain');
+})->name('robots');
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
@@ -89,3 +108,9 @@ Route::post('/payment/{order:order_number}/callback', [PaymentController::class,
 // (see bootstrap/app.php's validateCsrfTokens except-list) and the signature
 // check inside the handler is what authenticates it, not a session-bound token.
 Route::post('/webhooks/razorpay', [PaymentController::class, 'webhook'])->name('webhooks.razorpay');
+
+// Redirect Manager (spec §5/§6): see bootstrap/app.php's withExceptions for
+// where a 404 actually gets checked against the redirects table — a plain
+// Route::fallback() here would only catch structurally-unmatched paths, not
+// a stale slug on a route like /products/{product:slug} (that matches the
+// URI shape fine and throws ModelNotFoundException instead).

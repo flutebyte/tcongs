@@ -42,6 +42,7 @@ class Blog extends Model implements HasMedia
         'status',
         'published_at',
         'is_featured',
+        'featured_image_alt_text',
     ];
 
     protected function casts(): array

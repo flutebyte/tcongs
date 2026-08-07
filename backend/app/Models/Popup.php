@@ -43,6 +43,7 @@ class Popup extends Model implements HasMedia
         'ends_at',
         'target_new_visitors_only',
         'sort_order',
+        'image_alt_text',
     ];
 
     protected function casts(): array

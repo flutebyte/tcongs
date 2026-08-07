@@ -8,6 +8,18 @@
   <meta name="description" content="@yield('meta_description', $siteSettings['site_tagline'] ?? '')">
   <link rel="canonical" href="@yield('canonical', url()->current())">
 
+  {{-- hreflang scaffolding (spec §4.1 — "even if single-language at launch,
+       future multi-region readiness"). Self-referencing en-IN plus x-default
+       is the minimum valid hreflang set; add more <link> tags here per
+       locale/region if the site ever ships additional languages. --}}
+  <link rel="alternate" hreflang="en-in" href="@yield('canonical', url()->current())">
+  <link rel="alternate" hreflang="x-default" href="@yield('canonical', url()->current())">
+
+  {{-- rel=next/prev on paginated listing pages (spec §4.1 — avoids duplicate-
+       content signals across category/blog/search pagination); pushed from
+       the individual views via @push('pagination_links'), see x-pagination-links. --}}
+  @stack('pagination_links')
+
   <meta property="og:type" content="@yield('og_type', 'website')">
   <meta property="og:site_name" content="{{ $siteSettings['site_name'] ?? 'Estele' }}">
   <meta property="og:url" content="@yield('canonical', url()->current())">
@@ -29,6 +41,14 @@
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
   <link rel="stylesheet" href="{{ asset('theme/app.css') }}?v={{ @filemtime(public_path('theme/app.css')) }}">
+
+  {{-- Admin-managed GA4/GSC/Meta Pixel etc (Settings key 'tracking_head_scripts',
+       see the SEO Settings section of the admin Settings resource) — raw
+       markup rendered verbatim, blank/no-op until an admin pastes a real
+       snippet in. Trusted input: only super_admin can edit Settings. --}}
+  @if(! empty($siteSettings['tracking_head_scripts']))
+    {!! $siteSettings['tracking_head_scripts'] !!}
+  @endif
 </head>
 <body>
 <a class="sr-only-custom" href="#main">Skip to content</a>
@@ -391,5 +411,12 @@
 
 <script src="{{ asset('theme/app.js') }}?v={{ @filemtime(public_path('theme/app.js')) }}"></script>
 @stack('scripts')
+
+{{-- Admin-managed tracking scripts that need to run after page content (e.g.
+     a GTM noscript fallback or a pixel that expects the DOM to be ready) —
+     counterpart to 'tracking_head_scripts' above. --}}
+@if(! empty($siteSettings['tracking_body_scripts']))
+  {!! $siteSettings['tracking_body_scripts'] !!}
+@endif
 </body>
 </html>

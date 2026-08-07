@@ -1,10 +1,13 @@
 <?php
 
+use App\Models\Redirect;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -36,4 +39,26 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        // Redirect Manager (spec §5/§6 — "old URLs never 404 when slug
+        // changes"). Registered for both exception types because a route
+        // with a bound wildcard (e.g. /products/{product:slug}) matches the
+        // URI shape fine and throws ModelNotFoundException on a stale slug
+        // — a plain Route::fallback() never sees that, only a genuinely
+        // unmatched path (NotFoundHttpException). Returning null falls
+        // through to Laravel's normal 404 rendering (the branded 404 view).
+        $redirectCheck = function (\Throwable $e, Request $request) {
+            if ($request->method() !== 'GET' || $request->is('api/*')) {
+                return null;
+            }
+
+            $redirect = Redirect::where('old_path', Redirect::normalizePath($request->path()))
+                ->where('is_active', true)
+                ->first();
+
+            return $redirect ? redirect($redirect->new_path, $redirect->status_code) : null;
+        };
+
+        $exceptions->render(fn (NotFoundHttpException $e, Request $request) => $redirectCheck($e, $request));
+        $exceptions->render(fn (ModelNotFoundException $e, Request $request) => $redirectCheck($e, $request));
     })->create();

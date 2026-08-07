@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Product;
+use App\Models\Redirect;
 use Illuminate\Support\Facades\Cache;
 
 class ProductObserver
@@ -15,6 +16,13 @@ class ProductObserver
     public function updated(Product $product): void
     {
         $this->flush($product);
+
+        if ($product->wasChanged('slug') && $product->getOriginal('slug')) {
+            Redirect::recordSlugChange(
+                '/products/'.$product->getOriginal('slug'),
+                '/products/'.$product->slug
+            );
+        }
     }
 
     public function deleted(Product $product): void

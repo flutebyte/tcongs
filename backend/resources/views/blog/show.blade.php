@@ -48,7 +48,7 @@
     <h1 class="mb-5 text-[24px] md:text-[32px]">{{ $blog->title }}</h1>
 
     @if($image)
-      <img class="mb-6 w-full rounded-lg object-cover" style="aspect-ratio: 16/9;" src="{{ $image }}" alt="{{ $blog->title }}" width="1600" height="900">
+      <img class="mb-6 w-full rounded-lg object-cover" style="aspect-ratio: 16/9;" src="{{ $image }}" alt="{{ $blog->featured_image_alt_text ?: $blog->title }}" width="1600" height="900">
     @endif
 
     <div class="prose max-w-none text-[14px] leading-relaxed text-ink">

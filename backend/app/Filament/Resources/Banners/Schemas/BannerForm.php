@@ -35,6 +35,12 @@ class BannerForm
                     ->image()
                     ->required()
                     ->columnSpanFull(),
+                TextInput::make('image_alt_text')
+                    ->label('Image alt text')
+                    ->required()
+                    ->maxLength(255)
+                    ->helperText('Shown publicly to screen readers / image search — the "Title" field above is internal-only.')
+                    ->columnSpanFull(),
             ]);
     }
 }

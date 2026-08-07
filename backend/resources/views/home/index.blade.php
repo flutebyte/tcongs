@@ -29,6 +29,27 @@
     ]), JSON_UNESCAPED_SLASHES) !!}
   </script>
 
+  {{-- WebSite + SearchAction JSON-LD (spec §4.1) — tells Google the site has
+       an internal search box it can offer as a "Sitelinks Search Box" in
+       results; {search_term_string} is the schema.org placeholder Google's
+       own docs specify, substituted with the real query at click time. --}}
+  <script type="application/ld+json">
+    {!! json_encode([
+      '@context' => 'https://schema.org',
+      '@type' => 'WebSite',
+      'name' => $siteSettings['site_name'] ?? 'Estele',
+      'url' => route('home'),
+      'potentialAction' => [
+        '@type' => 'SearchAction',
+        'target' => [
+          '@type' => 'EntryPoint',
+          'urlTemplate' => route('search').'?q={search_term_string}',
+        ],
+        'query-input' => 'required name=search_term_string',
+      ],
+    ], JSON_UNESCAPED_SLASHES) !!}
+  </script>
+
   @if($banners->isNotEmpty())
     <div class="mx-auto w-full px-8 md:px-9">
       {{--
@@ -54,7 +75,7 @@
               @if($banner->hasMedia('image'))
                 <picture>
                   <source media="(max-width: 767px)" srcset="{{ $banner->getFirstMediaUrl('image', 'mobile') }}">
-                  <img class="h-full w-full object-cover" src="{{ $banner->getFirstMediaUrl('image', 'desktop') }}" alt="{{ $banner->title }}" loading="{{ $index === 0 ? 'eager' : 'lazy' }}" fetchpriority="{{ $index === 0 ? 'high' : 'auto' }}">
+                  <img class="h-full w-full object-cover" src="{{ $banner->getFirstMediaUrl('image', 'desktop') }}" alt="{{ $banner->image_alt_text ?: $banner->title }}" loading="{{ $index === 0 ? 'eager' : 'lazy' }}" fetchpriority="{{ $index === 0 ? 'high' : 'auto' }}">
                 </picture>
               @endif
             </a>
