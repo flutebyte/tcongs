@@ -12,5 +12,5 @@
         'name' => $item['label'],
         'item' => $item['url'] ?? null,
       ]))->all(),
-  ], JSON_UNESCAPED_SLASHES) !!}
+  ], JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
 </script>

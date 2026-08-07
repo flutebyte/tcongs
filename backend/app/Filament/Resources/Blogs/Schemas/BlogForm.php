@@ -51,6 +51,7 @@ class BlogForm
                     ->collection('featured_image')
                     ->conversion('detail')
                     ->image()
+                    ->maxSize(10240) // 10MB - Phase 6 audit, was unlimited
                     ->live()
                     ->columnSpanFull(),
                 TextInput::make('featured_image_alt_text')

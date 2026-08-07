@@ -48,7 +48,10 @@ Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name
 Route::post('/products/{product:slug}/reviews', [ReviewController::class, 'store'])
     ->name('products.reviews.store')
     ->middleware('throttle:5,60');
-Route::get('/search', [SearchController::class, 'index'])->name('search');
+// Phase 6 security audit: spec §9 explicitly names search alongside login/
+// OTP/checkout for rate limiting — generous enough for real typing/browsing,
+// still caps scraping/abuse.
+Route::get('/search', [SearchController::class, 'index'])->name('search')->middleware('throttle:60,1');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -84,7 +87,9 @@ Route::patch('/cart/items/{cartItem}', [CartController::class, 'update'])->name(
 Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
 
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+// Phase 6 security audit: this was the one order-placing endpoint with no
+// rate limit at all — every other checkout-adjacent route already has one.
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('throttle:10,1');
 // Looked up server-side (not straight from the browser) because
 // api.postalpincode.in doesn't send CORS headers, so a direct client fetch
 // is blocked; this also keeps the lookup rate-limited from one place.

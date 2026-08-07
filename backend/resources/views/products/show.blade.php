@@ -57,7 +57,7 @@
           'worstRating' => 1,
         ],
       ])->all() : null,
-    ]), JSON_UNESCAPED_SLASHES) !!}
+    ]), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
   </script>
 
   <x-breadcrumb-schema :items="$breadcrumbItems" />

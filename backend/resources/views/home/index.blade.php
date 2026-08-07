@@ -26,7 +26,7 @@
         'email' => $siteSettings['contact_email'] ?? null,
         'contactType' => 'customer service',
       ]) : null,
-    ]), JSON_UNESCAPED_SLASHES) !!}
+    ]), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
   </script>
 
   {{-- WebSite + SearchAction JSON-LD (spec §4.1) — tells Google the site has
@@ -47,7 +47,7 @@
         ],
         'query-input' => 'required name=search_term_string',
       ],
-    ], JSON_UNESCAPED_SLASHES) !!}
+    ], JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
   </script>
 
   @if($banners->isNotEmpty())

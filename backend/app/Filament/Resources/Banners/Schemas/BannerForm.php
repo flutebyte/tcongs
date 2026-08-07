@@ -33,6 +33,7 @@ class BannerForm
                     ->collection('image')
                     ->conversion('mobile')
                     ->image()
+                    ->maxSize(10240) // 10MB - Phase 6 audit, was unlimited
                     ->required()
                     ->columnSpanFull(),
                 TextInput::make('image_alt_text')

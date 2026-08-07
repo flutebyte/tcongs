@@ -25,7 +25,7 @@
         '@type' => 'Person',
         'name' => $blog->author_name ?: ($siteSettings['site_name'] ?? 'Estele'),
       ],
-    ], JSON_UNESCAPED_SLASHES) !!}
+    ], JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
   </script>
 
   @php

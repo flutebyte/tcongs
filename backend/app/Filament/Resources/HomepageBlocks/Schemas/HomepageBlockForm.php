@@ -98,6 +98,7 @@ class HomepageBlockForm
                                     ->collection('image')
                                     ->conversion('card')
                                     ->image()
+                                    ->maxSize(10240) // 10MB - Phase 6 audit, was unlimited
                                     ->columnSpanFull(),
                             ])
                             ->columns(2)

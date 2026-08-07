@@ -39,6 +39,7 @@ class CollectionForm
                     ->collection('image')
                     ->conversion('tile')
                     ->image()
+                    ->maxSize(10240) // 10MB - Phase 6 audit, was unlimited
                     ->columnSpanFull(),
 
                 Section::make('SEO')

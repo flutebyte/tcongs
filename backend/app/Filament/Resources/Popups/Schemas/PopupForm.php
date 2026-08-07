@@ -94,6 +94,7 @@ class PopupForm
                             ->collection('image')
                             ->conversion('card')
                             ->image()
+                            ->maxSize(10240) // 10MB - Phase 6 audit, was unlimited
                             ->columnSpanFull(),
                         TextInput::make('image_alt_text')
                             ->label('Image alt text')

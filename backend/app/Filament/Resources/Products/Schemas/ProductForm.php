@@ -65,6 +65,7 @@ class ProductForm
                             ->collection('gallery')
                             ->conversion('card')
                             ->image()
+                            ->maxSize(10240) // 10MB - Phase 6 audit, was unlimited
                             ->multiple()
                             ->reorderable()
                             ->columnSpanFull(),

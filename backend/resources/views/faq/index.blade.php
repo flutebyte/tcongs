@@ -21,7 +21,7 @@
             'text' => $faq->answer,
           ],
         ])->values()->all(),
-      ], JSON_UNESCAPED_SLASHES) !!}
+      ], JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
     </script>
   @endif
 

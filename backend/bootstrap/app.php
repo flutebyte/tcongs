@@ -34,6 +34,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'webhooks/razorpay',
         ]);
+
+        // Phase 6 security audit — standard response headers Laravel doesn't
+        // set by default. Covers the storefront; the admin panel gets the
+        // same middleware separately in AdminPanelProvider since Filament
+        // defines its own middleware stack, not this one.
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

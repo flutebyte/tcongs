@@ -39,6 +39,7 @@ class CategoryForm
                     ->collection('image')
                     ->conversion('tile')
                     ->image()
+                    ->maxSize(10240) // 10MB - Phase 6 audit, was unlimited
                     ->live()
                     ->columnSpanFull(),
                 TextInput::make('image_alt_text')
