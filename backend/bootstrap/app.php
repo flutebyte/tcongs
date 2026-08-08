@@ -67,4 +67,13 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(fn (NotFoundHttpException $e, Request $request) => $redirectCheck($e, $request));
         $exceptions->render(fn (ModelNotFoundException $e, Request $request) => $redirectCheck($e, $request));
+
+        // Phase 7 monitoring (spec §10 "error tracking from day one") — reports
+        // uncaught exceptions to Sentry. Genuinely no-op with no config change:
+        // SENTRY_LARAVEL_DSN is unset by default, config/sentry.php resolves
+        // 'dsn' => null in that case, and the SDK treats a null DSN as fully
+        // disabled (never dials out). Becomes live the moment a real DSN from
+        // a Sentry account is added to .env — same "ready but inactive until a
+        // real value is provided" pattern as tracking_head_scripts.
+        \Sentry\Laravel\Integration::handles($exceptions);
     })->create();

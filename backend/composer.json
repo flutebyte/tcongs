@@ -17,6 +17,7 @@
         "laravel/tinker": "^3.0",
         "meilisearch/meilisearch-php": "^1.16",
         "predis/predis": "^3.5",
+        "sentry/sentry-laravel": "*",
         "spatie/laravel-medialibrary": "^11.23",
         "spatie/laravel-permission": "^8.3"
     },
