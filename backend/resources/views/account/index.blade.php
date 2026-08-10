@@ -20,9 +20,30 @@
       </form>
     </div>
 
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-[1fr_320px] md:gap-[34px]">
-      <section>
-        <h2 class="mb-4 text-[14px] font-medium uppercase tracking-[0.4px]">Order History</h2>
+    {{-- md:grid-cols-[200px_1fr_320px] is an arbitrary value with no live Tailwind
+         build to compile it here (this backend has no build of its own — see the
+         "no live Tailwind build" note in home/index.blade.php); inline style
+         sidesteps that the same way the hero banner section does. --}}
+    <style>@media (min-width: 768px) { .account-layout-grid { grid-template-columns: 200px 1fr 320px; } }</style>
+    <div class="account-layout-grid grid grid-cols-1 gap-8 md:gap-[34px]">
+      {{-- Account nav — Overview (this page), Order History (below), Addresses,
+           Profile/Password (both further right, already on this page). All one
+           Blade view family; only Addresses is a separate route. --}}
+      <nav class="hidden md:block" aria-label="Account">
+        <ul class="space-y-1 text-[13px]">
+          <li><a class="block rounded-md bg-pinksoft px-3 py-2.5 font-medium text-accent" href="{{ route('account.index') }}">Overview</a></li>
+          <li><a class="block rounded-md px-3 py-2.5 text-heading transition-colors hover:bg-pinksoft" href="#order-history">Order History</a></li>
+          <li><a class="block rounded-md px-3 py-2.5 text-heading transition-colors hover:bg-pinksoft" href="{{ route('account.addresses') }}">Addresses</a></li>
+          <li><a class="block rounded-md px-3 py-2.5 text-heading transition-colors hover:bg-pinksoft" href="#profile-details">Profile</a></li>
+          <li><a class="block rounded-md px-3 py-2.5 text-heading transition-colors hover:bg-pinksoft" href="#change-password">Password</a></li>
+        </ul>
+      </nav>
+
+      <section id="order-history">
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <h2 class="text-[14px] font-medium uppercase tracking-[0.4px]">Order History</h2>
+          <a class="text-[12px] font-medium text-heading underline hover:text-accent md:hidden" href="{{ route('account.addresses') }}">My Addresses</a>
+        </div>
 
         @if($orders->isEmpty())
           <p class="rounded-lg border border-line bg-pinksoft px-4 py-4 text-[13px] text-heading">
@@ -31,7 +52,7 @@
         @else
           <div class="space-y-4">
             @foreach($orders as $order)
-              <a class="block rounded-lg border border-line p-4 transition-colors hover:border-heading" href="{{ route('checkout.confirmation', $order) }}">
+              <a class="block rounded-lg border border-line p-4 transition-colors hover:border-heading" href="{{ route('account.orders.show', $order) }}">
                 <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
                   <span class="text-[13px] font-medium text-heading">Order #{{ $order->order_number }}</span>
                   <span class="inline-block rounded-full bg-pinksoft px-3 py-1 text-[11px] font-medium uppercase tracking-[0.3px] text-accent">{{ ucfirst($order->status) }}</span>
@@ -48,7 +69,7 @@
       </section>
 
       <aside class="space-y-6">
-        <details class="marker-pm rounded-lg border border-line p-4" open>
+        <details class="marker-pm rounded-lg border border-line p-4" id="profile-details" open>
           <summary class="cursor-pointer text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Profile Details</summary>
           <form class="mt-4" action="{{ route('account.profile') }}" method="post">
             @csrf
@@ -67,7 +88,7 @@
           </form>
         </details>
 
-        <details class="marker-pm rounded-lg border border-line p-4">
+        <details class="marker-pm rounded-lg border border-line p-4" id="change-password">
           <summary class="cursor-pointer text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Change Password</summary>
           <form class="mt-4" action="{{ route('account.password') }}" method="post">
             @csrf

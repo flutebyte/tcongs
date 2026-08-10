@@ -51,7 +51,7 @@
   </script>
 
   @if($banners->isNotEmpty())
-    <div class="mx-auto w-full px-8 md:px-9">
+    <div class="mx-auto w-full">
       {{--
         Banner height reduced 40% from the original aspect ratios (mobile
         750/1000 -> 750/600, desktop 1800/700 -> 1800/420). Uses an inline
@@ -66,25 +66,33 @@
         ratio actually won depended on Tailwind's generation order rather
         than intent — sidestepped here since inline style always wins CSS
         cascade order regardless of stylesheet compile order.
+
+        No left/right padding on this wrapper (unlike every section below,
+        which uses px-3 md:px-4) — the banner is meant to run edge-to-edge on
+        both mobile and desktop, so the rounded corners were dropped too
+        (they read oddly on a full-bleed element).
       --}}
       <style>@media (min-width: 768px) { .hero-banner-shortened { aspect-ratio: 1800 / 420 !important; } }</style>
-      <section class="hero-fade hero-banner-shortened relative overflow-hidden rounded-[1.25rem] mb-2 w-full" style="aspect-ratio: 750 / 600" aria-label="Featured collections" data-carousel data-autoplay="5000" data-fade>
+      <section class="hero-fade hero-banner-shortened relative overflow-hidden mb-2 w-full" style="aspect-ratio: 750 / 600" aria-label="Featured collections" data-carousel data-autoplay="5000" data-fade>
         @foreach($banners as $index => $banner)
           <div class="hero-slide {{ $index === 0 ? 'is-active' : '' }}" data-carousel-slide>
             <a href="{{ $banner->link_url ?? '#' }}" aria-label="{{ $banner->title }}">
               @if($banner->hasMedia('image'))
                 <picture>
-                  <source media="(max-width: 767px)" srcset="{{ $banner->getFirstMediaUrl('image', 'mobile') }}">
+                  @if($banner->getMobileImageUrl())
+                    <source media="(max-width: 767px)" srcset="{{ $banner->getMobileImageUrl() }}">
+                  @endif
                   <img class="h-full w-full object-cover" src="{{ $banner->getFirstMediaUrl('image', 'desktop') }}" alt="{{ $banner->image_alt_text ?: $banner->title }}" loading="{{ $index === 0 ? 'eager' : 'lazy' }}" fetchpriority="{{ $index === 0 ? 'high' : 'auto' }}">
                 </picture>
               @endif
             </a>
           </div>
         @endforeach
-        <button class="absolute left-3 top-1/2 z-[3] hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 shadow-md md:grid" type="button" data-hero-prev aria-label="Previous slide">
+        {{-- Arrows visible on all breakpoints now (previously desktop-only via hidden md:grid) --}}
+        <button class="absolute left-3 top-1/2 z-[3] grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 shadow-md" type="button" data-hero-prev aria-label="Previous slide">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <button class="absolute right-3 top-1/2 z-[3] hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 shadow-md md:grid" type="button" data-hero-next aria-label="Next slide">
+        <button class="absolute right-3 top-1/2 z-[3] grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 shadow-md" type="button" data-hero-next aria-label="Next slide">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </section>
@@ -96,7 +104,10 @@
     </div>
   @endif
 
-  @foreach($homepageBlocks as $block)
+  {{-- 'price_tiers' (Your Budget, Your Bling) and 'newsletter' (Mail Subscription)
+       sections were removed from the site — skipped here rather than deleted from
+       the DB, so any pre-existing rows just stop rendering instead of erroring. --}}
+  @foreach($homepageBlocks->reject(fn ($block) => in_array($block->type, ['price_tiers', 'newsletter'], true)) as $block)
     @includeIf('home.blocks.'.str_replace('_', '-', $block->type), ['block' => $block, 'categories' => $categories])
   @endforeach
 

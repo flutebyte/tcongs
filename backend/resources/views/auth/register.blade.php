@@ -20,6 +20,10 @@
       <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-3.5" id="email" name="email" type="email" value="{{ old('email') }}" required>
       @error('email') <p class="mb-3.5 -mt-2 text-[12px] text-salebadge">{{ $message }}</p> @enderror
 
+      <label class="mb-1.5 block text-[13px] font-medium text-heading" for="phone">Mobile number {{ $prefillPhone ? '' : '(optional)' }}</label>
+      <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-3.5" id="phone" name="phone" type="tel" value="{{ old('phone', $prefillPhone) }}" placeholder="10-digit mobile number" inputmode="numeric">
+      @error('phone') <p class="mb-3.5 -mt-2 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+
       <label class="mb-1.5 block text-[13px] font-medium text-heading" for="password">Password</label>
       <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-3.5" id="password" name="password" type="password" required minlength="8">
       @error('password') <p class="mb-3.5 -mt-2 text-[12px] text-salebadge">{{ $message }}</p> @enderror

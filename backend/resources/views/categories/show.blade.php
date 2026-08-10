@@ -14,23 +14,24 @@
 
   <x-breadcrumb-schema :items="[['label' => $category->name]]" />
 
+  {{-- Page title/subtitle removed by design ask — breadcrumb is the only page
+       identifier now. The product count that used to live in the subtitle is
+       still shown, just folded into the "Showing X–Y of N" line below. --}}
   <nav class="mx-auto w-full max-w-wrapper px-3 md:px-4 flex flex-wrap items-center gap-1.5 py-4 text-[13px] text-muted" aria-label="Breadcrumb">
     <x-breadcrumb :items="[['label' => $category->name]]" />
   </nav>
 
-  <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
-    <header class="pb-6 pt-2 text-center md:pb-[30px]">
-      <h1 class="text-[20px] uppercase tracking-[0.5px] md:text-[26px] mb-2.5">{{ $category->name }}</h1>
-      <p class="mx-auto max-w-[70ch] text-[13.5px] text-muted">
-        @if($category->description)
-          {{ $category->description }}
-        @endif
-        {{ $products->total() }} {{ \Illuminate\Support\Str::plural('product', $products->total()) }}.
-      </p>
-    </header>
-  </div>
-
   <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 pb-10 md:pb-[60px]">
+
+    <x-filter-panel
+      :action="route('categories.show', $category)"
+      :sort="$sort"
+      :min-price="$minPrice"
+      :max-price="$maxPrice"
+      :in-stock="$inStock"
+      :categories="$category->children"
+      :selected-categories="$subcategorySlugs"
+    />
 
     <div class="mb-5 flex flex-wrap items-center gap-3.5 border-b border-line pb-4.5">
       <p class="w-full text-[13px] text-muted md:mr-auto md:w-auto">
@@ -54,7 +55,10 @@
     @if($products->isEmpty())
       <p class="py-16 text-center text-[13px] text-muted">No products in this category yet — check back soon.</p>
     @else
-      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5 xl:grid-cols-4">
+      {{-- 4-up from tablet width up — see collections/show.blade.php's comment
+           on why this is a scoped class + media query, not sm:grid-cols-4. --}}
+      <style>@media (min-width: 640px) { .product-grid-4up { grid-template-columns: repeat(4, minmax(0, 1fr)); } }</style>
+      <div class="product-grid-4up grid grid-cols-2 gap-3 md:gap-5">
         @foreach($products as $product)
           <x-product-card :product="$product" />
         @endforeach

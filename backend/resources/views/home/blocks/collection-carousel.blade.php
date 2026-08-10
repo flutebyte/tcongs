@@ -4,11 +4,17 @@
 
 @if($collections->isNotEmpty())
   <section class="py-10 md:py-[60px] bg-pinksoft">
-    <div class="mx-auto w-full max-w-wrapper px-6 md:px-14 lg:px-20 xl:px-[7vw]">
+    <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
       <div class="mb-5 text-center md:mb-[30px]">
         <h2 class="relative pb-3 after:absolute after:bottom-0 after:left-1/2 after:h-0.5 after:w-[46px] after:-translate-x-1/2 after:bg-accent text-[18px] md:text-[21px] xl:text-[24px] font-medium uppercase tracking-[0.5px] text-heading">{{ $block->title }}</h2>
+        @if($block->subtitle)
+          <p class="mt-1 text-[13px] text-muted">{{ $block->subtitle }}</p>
+        @endif
+        @if($block->cta_label)
+          <a class="mt-2 inline-flex items-center gap-1.5 border-b border-current pb-0.5 text-[13px] font-medium uppercase tracking-[0.5px]" href="{{ $block->cta_url ?? '#' }}">{{ $block->cta_label }}</a>
+        @endif
       </div>
-      <div class="mx-auto grid max-w-[1040px] grid-cols-2 gap-3 px-3 sm:gap-4 sm:px-5 md:max-w-[1100px] md:grid-cols-4 md:gap-5 md:px-8 lg:gap-6 lg:px-10">
+      <div class="mx-auto grid max-w-[1040px] grid-cols-2 gap-3 sm:gap-4 md:max-w-[1100px] md:grid-cols-4 md:gap-5 lg:gap-6">
         @foreach($collections as $collection)
           <a class="block" href="{{ route('collections.show', $collection) }}">
             {{-- aspect-ratio reserves the tile's box before the image loads —

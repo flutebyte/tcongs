@@ -19,13 +19,16 @@ class HomepageContentSeeder extends Seeder
         $this->seedCollectionBanner();
         $this->seedProductCarousel();
         $this->seedNewArrivalsCarousel();
-        $this->seedPriceTiers();
+        // seedPriceTiers() ("Your Budget, Your Bling") and seedNewsletter() ("Mail
+        // Subscription") no longer called — those sections were removed from the
+        // site (see HomepageBlockForm's type Select and home/index.blade.php's
+        // render guard). Methods left below, unused, for the same reason those
+        // two Blade block partials were left in place rather than deleted.
         $this->seedBestsellersCarousel();
         $this->seedCelebrities();
         $this->seedUsp();
         $this->seedTestimonials();
         $this->seedBrandStory();
-        $this->seedNewsletter();
     }
 
     private function seedCollectionBanner(): void

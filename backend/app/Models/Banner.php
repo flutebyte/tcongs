@@ -13,7 +13,17 @@ class Banner extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
+        // 'image' = Desktop Banner (required). 'mobile_image' = Mobile Banner
+        // (optional) — added so admins can upload a differently-cropped/composed
+        // image for mobile instead of just a resized copy of the desktop art.
+        // Kept as two collections, not one with two conversions, since the
+        // whole point is letting them be different source images.
         $this->addMediaCollection('image')
+            ->useDisk('original_images')
+            ->storeConversionsOnDisk('public')
+            ->singleFile();
+
+        $this->addMediaCollection('mobile_image')
             ->useDisk('original_images')
             ->storeConversionsOnDisk('public')
             ->singleFile();
@@ -22,7 +32,23 @@ class Banner extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('desktop')->width(1600)->format('webp')->quality(83);
+        // Still generated on 'image' too: existing banners with no mobile_image
+        // upload fall back to this as their mobile source (see getMobileImageUrl()).
         $this->addMediaConversion('mobile')->width(768)->format('webp')->quality(80);
+    }
+
+    /**
+     * Mobile-optimized image URL: the dedicated mobile upload if the admin
+     * provided one, else the desktop image's 'mobile' conversion (unchanged
+     * behavior for every banner that predates the mobile_image field).
+     */
+    public function getMobileImageUrl(): ?string
+    {
+        if ($this->hasMedia('mobile_image')) {
+            return $this->getFirstMediaUrl('mobile_image', 'mobile');
+        }
+
+        return $this->hasMedia('image') ? $this->getFirstMediaUrl('image', 'mobile') : null;
     }
 
     protected $fillable = [

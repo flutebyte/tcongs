@@ -31,7 +31,11 @@ class HomepageBlockForm
                         'testimonials' => 'Testimonials',
                         'usp' => 'USP / trust badges',
                         'brand_story' => 'Brand story',
-                        'newsletter' => 'Newsletter signup',
+                        // 'price_tiers' (Your Budget, Your Bling) and 'newsletter' (Mail
+                        // Subscription) sections were removed from the site — deliberately
+                        // left out of this list so no new ones can be created. Existing rows
+                        // of those types, if any, are skipped at render time (see
+                        // home/index.blade.php) rather than deleted.
                     ])
                     ->native(false),
                 TextInput::make('title')

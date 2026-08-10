@@ -11,7 +11,9 @@
     relative to this box's padding edge, not its (now smaller) content box,
     so they stay flush in the card's true corners.
   --}}
-  <a class="relative block aspect-square overflow-hidden bg-placeholder" style="padding: 5.3%" href="{{ route('products.show', $product) }}" aria-label="{{ $product->title }}">
+  {{-- No bg-placeholder here (was a light grey #f5f5f5 fill showing through
+       the 5.3% inset padding around every image) — removed per the ask. --}}
+  <a class="relative block aspect-square overflow-hidden" style="padding: 5.3%" href="{{ route('products.show', $product) }}" aria-label="{{ $product->title }}">
     @if($product->hasMedia('gallery'))
       <img class="h-full w-full object-cover" src="{{ $product->getFirstMediaUrl('gallery', 'card') }}" alt="{{ $product->title }}" loading="lazy" width="600" height="600">
       @if($product->getMedia('gallery')->count() > 1)

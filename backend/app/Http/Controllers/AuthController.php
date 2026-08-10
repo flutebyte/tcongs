@@ -38,7 +38,12 @@ class AuthController extends Controller
 
     public function showRegister()
     {
-        return view('auth.register');
+        // Carried over from the OTP login flow (see OtpAuthController::verifyCode)
+        // when a verified phone number isn't tied to an account yet — flashed for
+        // exactly one request, so a plain page refresh doesn't keep re-showing it.
+        return view('auth.register', [
+            'prefillPhone' => session('prefill_phone'),
+        ]);
     }
 
     public function register(Request $request): RedirectResponse
@@ -46,12 +51,14 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['nullable', 'digits_between:10,15', 'unique:users,phone'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
             'password' => Hash::make($validated['password']),
         ]);
 

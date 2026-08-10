@@ -142,8 +142,8 @@ return [
         'index-settings' => [
             'products' => [
                 'searchableAttributes' => ['title', 'categories', 'description', 'sku'],
-                'filterableAttributes' => ['is_featured', 'price'],
-                'sortableAttributes' => ['price'],
+                'filterableAttributes' => ['is_featured', 'price', 'category_ids', 'in_stock'],
+                'sortableAttributes' => ['price', 'created_at'],
             ],
         ],
     ],

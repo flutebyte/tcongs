@@ -11,6 +11,7 @@ use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\OtpAuthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
@@ -52,12 +53,23 @@ Route::post('/products/{product:slug}/reviews', [ReviewController::class, 'store
 // OTP/checkout for rate limiting — generous enough for real typing/browsing,
 // still caps scraping/abuse.
 Route::get('/search', [SearchController::class, 'index'])->name('search')->middleware('throttle:60,1');
+Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest')->middleware('throttle:60,1');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.attempt')->middleware('throttle:10,1');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.attempt')->middleware('throttle:10,1');
+
+    // Phone + OTP login (self-built, see OtpManager/LogOtpGateway). Rate limits
+    // match the security-audit posture already applied to /login above —
+    // code-send and code-verify are throttled separately since they're
+    // different abuse shapes (spamming SMS sends vs brute-forcing a code).
+    Route::get('/login/mobile', [OtpAuthController::class, 'showPhone'])->name('login.mobile');
+    Route::post('/login/mobile', [OtpAuthController::class, 'sendCode'])->name('login.mobile.send')->middleware('throttle:5,1');
+    Route::get('/login/mobile/verify', [OtpAuthController::class, 'showVerify'])->name('login.mobile.verify');
+    Route::post('/login/mobile/verify', [OtpAuthController::class, 'verifyCode'])->name('login.mobile.verify.attempt')->middleware('throttle:10,1');
+    Route::post('/login/mobile/resend', [OtpAuthController::class, 'resend'])->name('login.mobile.resend')->middleware('throttle:3,1');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
@@ -65,6 +77,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/account', [AccountController::class, 'index'])->name('account.index');
     Route::patch('/account/profile', [AccountController::class, 'updateProfile'])->name('account.profile');
     Route::patch('/account/password', [AccountController::class, 'updatePassword'])->name('account.password');
+
+    Route::get('/account/orders/{order:order_number}', [AccountController::class, 'orderShow'])->name('account.orders.show');
+    Route::get('/account/orders/{order:order_number}/invoice', [AccountController::class, 'orderInvoice'])->name('account.orders.invoice');
+    Route::post('/account/orders/{order:order_number}/cancellation-request', [AccountController::class, 'requestCancellation'])
+        ->name('account.orders.cancellation-request')
+        ->middleware('throttle:10,1');
+
+    Route::get('/account/addresses', [AccountController::class, 'addresses'])->name('account.addresses');
+    Route::post('/account/addresses', [AccountController::class, 'addressStore'])->name('account.addresses.store');
+    Route::patch('/account/addresses/{address}', [AccountController::class, 'addressUpdate'])->name('account.addresses.update');
+    Route::delete('/account/addresses/{address}', [AccountController::class, 'addressDestroy'])->name('account.addresses.destroy');
 });
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])

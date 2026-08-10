@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('meta_title', ($siteSettings['site_name'] ?? 'Estele').' — '.($siteSettings['site_tagline'] ?? ''))</title>
   <meta name="description" content="@yield('meta_description', $siteSettings['site_tagline'] ?? '')">
@@ -79,12 +79,13 @@
     </a>
 
     <div class="flex items-center justify-end gap-1 md:gap-2">
-      <form class="hidden items-center overflow-hidden rounded-full border border-line-strong bg-white/70 text-muted lg:flex lg:w-[230px] xl:w-[300px]"
-            action="{{ route('search') }}" method="get" role="search">
-        <input class="w-full min-w-0 border-0 bg-transparent px-3 py-2 text-[13px] text-ink outline-none placeholder:text-muted" type="search" name="q" placeholder="Search for products" aria-label="Search for products">
+      <form class="relative hidden items-center overflow-hidden rounded-full border border-line-strong bg-white/70 text-muted lg:flex lg:w-[230px] xl:w-[300px]"
+            action="{{ route('search') }}" method="get" role="search" data-search-autocomplete>
+        <input class="w-full min-w-0 border-0 bg-transparent px-3 py-2 text-[13px] text-ink outline-none placeholder:text-muted" type="search" name="q" placeholder="Search for products" aria-label="Search for products" autocomplete="off">
         <button class="grid h-[38px] w-[38px] shrink-0 place-items-center text-heading" type="submit" aria-label="Submit search">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
         </button>
+        <div class="absolute left-0 top-full z-20 mt-1 hidden w-full min-w-[280px] overflow-hidden rounded-lg border border-line bg-white text-ink shadow-lg" data-search-suggestions></div>
       </form>
       <button class="relative grid h-[38px] w-[38px] place-items-center text-heading transition-colors hover:[color:var(--nav-hover-color)] lg:hidden" type="button" data-search-open aria-label="Search">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -179,11 +180,12 @@
     </ul>
   </nav>
 
-  <form class="mt-2.5 flex items-center gap-2.5 rounded-lg border border-line-strong bg-white px-3.5 py-2.5 text-muted md:hidden"
-        action="{{ route('search') }}" method="get" role="search">
+  <form class="relative mt-2.5 flex items-center gap-2.5 rounded-lg border border-line-strong bg-white px-3.5 py-2.5 text-muted md:hidden"
+        action="{{ route('search') }}" method="get" role="search" data-search-autocomplete>
     <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <input class="w-full border-0 bg-transparent text-[14px] text-ink outline-none placeholder:text-muted"
-           type="search" name="q" placeholder="Search for products" aria-label="Search for products">
+           type="search" name="q" placeholder="Search for products" aria-label="Search for products" autocomplete="off">
+    <div class="absolute left-0 right-0 top-full z-20 mt-1 hidden overflow-hidden rounded-lg border border-line bg-white shadow-lg" data-search-suggestions></div>
   </form>
 </header>
 
@@ -259,10 +261,11 @@
 <div class="fixed inset-0 z-[200]" data-search hidden>
   <div class="absolute inset-0 bg-black/45" data-search-close></div>
   <div class="relative bg-white py-10">
-    <form class="mx-auto flex max-w-[720px] items-center gap-2.5 px-4" action="{{ route('search') }}" method="get" role="search">
-      <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" type="search" name="q" placeholder="Search for jewellery..." aria-label="Search">
+    <form class="relative mx-auto flex max-w-[720px] items-center gap-2.5 px-4" action="{{ route('search') }}" method="get" role="search" data-search-autocomplete>
+      <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" type="search" name="q" placeholder="Search for jewellery..." aria-label="Search" autocomplete="off">
       <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">Search</button>
       <button class="text-[30px] leading-none text-heading" type="button" data-search-close aria-label="Close search">&times;</button>
+      <div class="absolute left-4 right-[86px] top-full z-20 mt-1 hidden overflow-hidden rounded-lg border border-line bg-white shadow-lg" data-search-suggestions></div>
     </form>
   </div>
 </div>

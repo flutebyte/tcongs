@@ -55,7 +55,18 @@ class Order extends Model
         'tracking_status',
         'tracking_synced_at',
         'admin_notes',
+        'cancellation_requested_at',
+        'cancellation_reason',
     ];
+
+    /**
+     * Statuses a customer can still request cancellation/return from — mirrors
+     * ALLOWED_TRANSITIONS but from the customer's side: once shipped, "cancel"
+     * isn't offered (packed/placed only), "return" only after delivered.
+     */
+    public const CANCELLABLE_STATUSES = ['placed', 'packed'];
+
+    public const RETURNABLE_STATUSES = ['delivered'];
 
     protected function casts(): array
     {
@@ -66,7 +77,19 @@ class Order extends Model
             'total' => 'decimal:2',
             'refunded_amount' => 'decimal:2',
             'tracking_synced_at' => 'datetime',
+            'cancellation_requested_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Whether the customer can currently submit a cancellation/return request
+     * — false once one is already pending (cancellation_requested_at set) or
+     * the order is past the window (see CANCELLABLE_STATUSES/RETURNABLE_STATUSES).
+     */
+    public function canRequestCancellation(): bool
+    {
+        return $this->cancellation_requested_at === null
+            && in_array($this->status, [...self::CANCELLABLE_STATUSES, ...self::RETURNABLE_STATUSES], true);
     }
 
     public function getRouteKeyName(): string

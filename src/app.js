@@ -30,6 +30,36 @@ import './app.css';
   }
 
   /* ------------------------------------------------------------------------
+     ZOOM DISABLE
+     The <meta viewport maximum-scale=1,user-scalable=no> in layouts/app.blade.php
+     covers pinch-zoom on most mobile browsers, but iOS Safari has ignored that
+     meta flag since iOS 10 (accessibility), and neither meta tag touches desktop
+     ctrl+wheel / ctrl+plus/minus/0 zoom. These three listeners close those gaps;
+     always-on, no opt-in data attribute needed since this applies sitewide.
+     ---------------------------------------------------------------------- */
+  document.addEventListener('wheel', function (e) {
+    if (e.ctrlKey) e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && ['=', '+', '-', '_', '0'].indexOf(e.key) !== -1) {
+      e.preventDefault();
+    }
+  });
+
+  // Safari-only pinch-zoom gesture events (non-standard, but the only hook
+  // Safari exposes for this — feature-detected so other browsers no-op here).
+  document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+  document.addEventListener('gesturechange', function (e) { e.preventDefault(); });
+
+  // Fallback for touch pinch-zoom on browsers that honor neither the meta
+  // tag nor gesture events: block multi-touch moves (pinch is 2+ fingers),
+  // single-finger scroll/swipe is left untouched.
+  document.addEventListener('touchmove', function (e) {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+
+  /* ------------------------------------------------------------------------
      CAROUSEL
      Scroll-snap based: CSS does the layout, JS only moves scrollLeft and
      keeps the arrows/dots in sync. Works with touch swipe for free.
@@ -799,6 +829,91 @@ import './app.css';
       var msg = $('[data-newsletter-msg]', form.parentNode);
       if (msg) msg.hidden = false;
       form.reset();
+    });
+  });
+
+  /* ------------------------------------------------------------------------
+     SEARCH AUTOCOMPLETE — every [data-search-autocomplete] form (desktop/
+     mobile header, search overlay, /search page itself) gets a debounced
+     dropdown of live matches from GET /search/suggest, keyed off the same
+     Product::search() call the results page uses. Degrades to a plain GET
+     form submit if JS fails or the endpoint errors — no behavior lost.
+     ---------------------------------------------------------------------- */
+  $$('[data-search-autocomplete]').forEach(function (form) {
+    var input = $('input[name="q"]', form);
+    var box   = $('[data-search-suggestions]', form);
+    if (!input || !box) return;
+
+    var debounceTimer  = null;
+    var activeIndex     = -1;
+    var currentResults  = [];
+    var currentRequest   = 0;
+
+    function hide() {
+      box.hidden = true;
+      box.classList.add('hidden');
+      box.innerHTML = '';
+      activeIndex = -1;
+    }
+
+    function render(results) {
+      currentResults = results;
+      activeIndex = -1;
+      if (!results.length) { hide(); return; }
+
+      box.innerHTML = results.map(function (item, i) {
+        return '<a class="flex items-center gap-3 px-3 py-2.5 text-[13px] text-heading transition-colors hover:bg-pinksoft" href="' + item.url + '" data-suggestion-index="' + i + '">' +
+          (item.thumbnail ? '<img class="h-9 w-9 shrink-0 rounded object-cover" src="' + item.thumbnail + '" alt="" loading="lazy">' : '') +
+          '<span class="min-w-0 flex-1 truncate">' + item.title + '</span>' +
+          '<span class="shrink-0 text-price">₹' + Math.round(item.price).toLocaleString('en-IN') + '</span>' +
+        '</a>';
+      }).join('');
+      box.hidden = false;
+      box.classList.remove('hidden');
+    }
+
+    function fetchSuggestions(query) {
+      var requestId = ++currentRequest;
+      fetch('/search/suggest?q=' + encodeURIComponent(query), { headers: { 'Accept': 'application/json' } })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (requestId !== currentRequest) return; // a newer keystroke's request already landed
+          render(data.results || []);
+        })
+        .catch(function () { /* silent — plain form submit still works */ });
+    }
+
+    input.addEventListener('input', function () {
+      var query = input.value.trim();
+      clearTimeout(debounceTimer);
+      if (query.length < 2) { hide(); return; }
+      debounceTimer = setTimeout(function () { fetchSuggestions(query); }, 200);
+    });
+
+    input.addEventListener('keydown', function (e) {
+      if (box.hidden) return;
+      var links = $$('a', box);
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, links.length - 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, -1);
+      } else if (e.key === 'Enter' && activeIndex >= 0) {
+        e.preventDefault();
+        window.location.href = currentResults[activeIndex].url;
+        return;
+      } else if (e.key === 'Escape') {
+        hide();
+        return;
+      } else {
+        return;
+      }
+      links.forEach(function (a, i) { a.classList.toggle('bg-pinksoft', i === activeIndex); });
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!form.contains(e.target)) hide();
     });
   });
 

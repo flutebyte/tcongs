@@ -10,9 +10,12 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class OrdersTable
@@ -60,8 +63,22 @@ class OrdersTable
                     ->label('Placed')
                     ->dateTime('d M Y, h:i A')
                     ->sortable(),
+                // Customer-submitted via account.orders.cancellation-request (see
+                // AccountController) — a flag for admin review, not a status
+                // change; the actual cancel/return transition still happens via
+                // the normal EditAction/status field below, guarded by
+                // Order::ALLOWED_TRANSITIONS as always.
+                IconColumn::make('cancellation_requested_at')
+                    ->label('Cancel/Return Req.')
+                    ->boolean()
+                    ->tooltip(fn (Order $record) => $record->cancellation_requested_at
+                        ? "Requested {$record->cancellation_requested_at->format('d M Y')}: {$record->cancellation_reason}"
+                        : null),
             ])
             ->filters([
+                Filter::make('cancellation_requested')
+                    ->label('Has cancellation/return request')
+                    ->query(fn (Builder $query) => $query->whereNotNull('cancellation_requested_at')),
                 SelectFilter::make('status')
                     ->options([
                         'placed' => 'Placed',

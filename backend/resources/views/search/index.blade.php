@@ -11,14 +11,37 @@
   <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 pb-10 md:pb-[60px]">
     <h1 class="text-[20px] uppercase tracking-[0.5px] md:text-[26px] mb-5">Search</h1>
 
-    <form class="mb-3.5 flex max-w-[620px] gap-2.5" role="search">
+    <form class="relative mb-3.5 flex max-w-[620px] gap-2.5" role="search" data-search-autocomplete>
       <label class="sr-only-custom" for="q">Search</label>
-      <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading flex-1" id="q" type="search" name="q" value="{{ $query }}" placeholder="Search for jewellery...">
+      <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading flex-1" id="q" type="search" name="q" value="{{ $query }}" placeholder="Search for jewellery..." autocomplete="off">
       <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">Search</button>
+      <div class="absolute left-0 top-full z-20 mt-1 hidden w-full max-w-[460px] overflow-hidden rounded-lg border border-line bg-white shadow-lg" data-search-suggestions></div>
     </form>
 
     @if($query !== '')
-      <p class="mb-6 text-[13px] text-muted">{{ $products->total() }} {{ \Illuminate\Support\Str::plural('result', $products->total()) }} for &ldquo;{{ $query }}&rdquo;</p>
+      <div class="mb-5 flex flex-wrap items-center gap-3.5">
+        <p class="text-[13px] text-muted md:mr-auto">{{ $products->total() }} {{ \Illuminate\Support\Str::plural('result', $products->total()) }} for &ldquo;{{ $query }}&rdquo;</p>
+        <label class="ml-auto">
+          <span class="sr-only-custom">Sort by</span>
+          <select class="border border-line-strong bg-white px-3 py-2 text-[13px] outline-none transition-colors focus:border-heading" onchange="window.location.href=this.value">
+            <option value="{{ request()->fullUrlWithQuery(['sort' => 'relevance']) }}" @selected($sort === 'relevance')>Relevance</option>
+            <option value="{{ request()->fullUrlWithQuery(['sort' => 'price_asc']) }}" @selected($sort === 'price_asc')>Price: Low to High</option>
+            <option value="{{ request()->fullUrlWithQuery(['sort' => 'price_desc']) }}" @selected($sort === 'price_desc')>Price: High to Low</option>
+            <option value="{{ request()->fullUrlWithQuery(['sort' => 'newest']) }}" @selected($sort === 'newest')>Newest</option>
+          </select>
+        </label>
+      </div>
+
+      <x-filter-panel
+        :action="route('search')"
+        :q="$query"
+        :sort="$sort"
+        :min-price="$minPrice"
+        :max-price="$maxPrice"
+        :in-stock="$inStock"
+        :categories="$categories"
+        :selected-categories="$categorySlugs"
+      />
     @endif
 
     @if($products->isEmpty())
@@ -30,7 +53,10 @@
         @endif
       </p>
     @else
-      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5 xl:grid-cols-4">
+      {{-- 4-up from tablet width up — see collections/show.blade.php's comment
+           on why this is a scoped class + media query, not sm:grid-cols-4. --}}
+      <style>@media (min-width: 640px) { .product-grid-4up { grid-template-columns: repeat(4, minmax(0, 1fr)); } }</style>
+      <div class="product-grid-4up grid grid-cols-2 gap-3 md:gap-5">
         @foreach($products as $product)
           <x-product-card :product="$product" />
         @endforeach

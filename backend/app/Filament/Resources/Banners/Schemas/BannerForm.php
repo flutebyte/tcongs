@@ -30,11 +30,21 @@ class BannerForm
                     ->required()
                     ->default(true),
                 SpatieMediaLibraryFileUpload::make('image')
+                    ->label('Desktop Banner')
                     ->collection('image')
-                    ->conversion('mobile')
+                    ->conversion('desktop')
                     ->image()
                     ->maxSize(10240) // 10MB - Phase 6 audit, was unlimited
                     ->required()
+                    ->helperText('Shown on tablet/desktop widths. Used as the mobile fallback too if no Mobile Banner is uploaded below.')
+                    ->columnSpanFull(),
+                SpatieMediaLibraryFileUpload::make('mobile_image')
+                    ->label('Mobile Banner')
+                    ->collection('mobile_image')
+                    ->conversion('mobile')
+                    ->image()
+                    ->maxSize(10240)
+                    ->helperText('Optional — upload a separately cropped/composed image for mobile widths. Falls back to the Desktop Banner if left empty.')
                     ->columnSpanFull(),
                 TextInput::make('image_alt_text')
                     ->label('Image alt text')

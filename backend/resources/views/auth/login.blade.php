@@ -7,7 +7,12 @@
 
   <div class="mx-auto w-full max-w-[420px] px-3 py-12 md:px-4 md:py-16">
     <h1 class="mb-1 text-[22px] uppercase tracking-[0.5px] md:text-[26px]">Login</h1>
-    <p class="mb-7 text-[13px] text-muted">Welcome back — sign in to view your orders.</p>
+    <p class="mb-5 text-[13px] text-muted">Welcome back — sign in to view your orders.</p>
+
+    <div class="mb-6 flex rounded-lg border border-line p-1 text-[12px] font-medium uppercase tracking-[0.3px]">
+      <span class="flex-1 rounded-md bg-black py-2.5 text-center text-white">Email &amp; Password</span>
+      <a class="flex-1 rounded-md py-2.5 text-center text-heading transition-colors hover:bg-pinksoft" href="{{ route('login.mobile') }}">Mobile Number (OTP)</a>
+    </div>
 
     <form action="{{ route('login.attempt') }}" method="post">
       @csrf
