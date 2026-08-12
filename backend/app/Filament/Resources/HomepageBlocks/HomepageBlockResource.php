@@ -20,6 +20,9 @@ class HomepageBlockResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
 
+    // See OrderResource for the sidebar-order rationale.
+    protected static ?int $navigationSort = 70;
+
     public static function form(Schema $schema): Schema
     {
         return HomepageBlockForm::configure($schema);

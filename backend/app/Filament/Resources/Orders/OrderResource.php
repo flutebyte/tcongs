@@ -19,6 +19,14 @@ class OrderResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
+    // Admin sidebar order requested: Dashboard, Orders, Products, Categories,
+    // Collections, Coupons & Offers, Homepage Blocks, Banners, SEO, Settings,
+    // Roles. Dashboard (Filament core default, navigationSort -2) and Roles
+    // (Shield package resource, no navigationSort hook available) sort
+    // themselves — see AdminPanelProvider for why Roles can't be pinned last
+    // without risky vendor changes. Values spaced by 10 for future inserts.
+    protected static ?int $navigationSort = 20;
+
     public static function form(Schema $schema): Schema
     {
         return OrderForm::configure($schema);

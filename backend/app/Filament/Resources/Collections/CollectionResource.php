@@ -20,6 +20,9 @@ class CollectionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;
 
+    // See OrderResource for the sidebar-order rationale.
+    protected static ?int $navigationSort = 50;
+
     public static function form(Schema $schema): Schema
     {
         return CollectionForm::configure($schema);

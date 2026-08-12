@@ -47,4 +47,18 @@ return [
         'webhook_secret' => env('RAZORPAY_WEBHOOK_SECRET'),
     ],
 
+    // Same VAS Multimedia bulk-SMS gateway (vas.themultimedia.in) already
+    // used by the user's other project (ZappDeal) for OTP delivery — env
+    // var names deliberately match ZappDeal's own .env one-for-one so
+    // credentials can be copy-pasted between the two projects once obtained.
+    // See App\Services\Otp\VasMultimediaOtpGateway.
+    'vas_sms' => [
+        'api_key' => env('VAS_SMS_API_KEY'),
+        'sender' => env('VAS_SMS_SENDER', 'TCONGS'),
+        'entity_id' => env('VAS_SMS_ENTITY_ID'),
+        'template_id' => env('VAS_SMS_TEMPLATE_ID'),
+        'template' => env('VAS_SMS_MESSAGE_TEMPLATE', 'Your Estele OTP is %s'),
+        'ca_bundle' => env('SMS_CA_BUNDLE'),
+    ],
+
 ];

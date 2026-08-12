@@ -18,7 +18,22 @@ class OtpManager
 
     private const MAX_ATTEMPTS = 5;
 
-    public function __construct(private readonly LogOtpGateway $gateway) {}
+    public function __construct(
+        private readonly LogOtpGateway $logGateway,
+        private readonly VasMultimediaOtpGateway $vasGateway,
+    ) {}
+
+    /**
+     * Real SMS if VAS Multimedia is configured (same gateway ZappDeal, the
+     * user's other project, already uses), otherwise falls back to logging
+     * the code — same "isConfigured() ? real : fallback" shape as
+     * PaymentManager::isOnlinePaymentEnabled()/ShippingManager's
+     * flat-rate fallback elsewhere in this codebase.
+     */
+    private function gateway(): OtpGateway
+    {
+        return $this->vasGateway->isConfigured() ? $this->vasGateway : $this->logGateway;
+    }
 
     /**
      * Generates and sends a fresh code, invalidating any still-outstanding
@@ -39,7 +54,7 @@ class OtpManager
             'expires_at' => now()->addMinutes(self::EXPIRY_MINUTES),
         ]);
 
-        $this->gateway->send($phone, $code);
+        $this->gateway()->send($phone, $code);
     }
 
     /**

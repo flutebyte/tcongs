@@ -20,6 +20,9 @@ class CategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    // See OrderResource for the sidebar-order rationale.
+    protected static ?int $navigationSort = 40;
+
     public static function form(Schema $schema): Schema
     {
         return CategoryForm::configure($schema);

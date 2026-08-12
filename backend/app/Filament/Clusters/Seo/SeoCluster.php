@@ -11,4 +11,7 @@ class SeoCluster extends Cluster
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlass;
 
     protected static ?string $navigationLabel = 'SEO';
+
+    // See OrderResource for the sidebar-order rationale.
+    protected static ?int $navigationSort = 90;
 }

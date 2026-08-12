@@ -20,6 +20,9 @@ class ProductResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    // See OrderResource for the sidebar-order rationale.
+    protected static ?int $navigationSort = 30;
+
     public static function form(Schema $schema): Schema
     {
         return ProductForm::configure($schema);
