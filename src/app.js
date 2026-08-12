@@ -220,31 +220,50 @@ import './app.css';
 
     var delay = parseInt(root.getAttribute('data-autoplay'), 10);
     if (delay > 0) {
-      var timer = null;
-      function start() {
-        if (timer) return;
-        timer = setInterval(function () {
-          if (!document.hidden) show(i + 1);
-        }, delay);
-      }
-      function stop() {
-        clearInterval(timer);
-        timer = null;
-      }
-      start();
-      /* Pause while the user is actively touching/hovering/focusing the
-         banner, resume once they let go — NOT a permanent one-time kill.
-         The previous version used {once:true} with no resume listener, so
-         on any touch device (real phone or a mobile emulator, which maps
-         clicks to synthetic touch events) the very first tap anywhere on
-         the banner — even just scrolling past it — silently disabled
-         autoplay for the rest of the page's life. */
-      ['mouseenter', 'touchstart', 'focusin'].forEach(function (ev) {
-        root.addEventListener(ev, stop, { passive: true });
-      });
-      ['mouseleave', 'touchend', 'touchcancel', 'focusout'].forEach(function (ev) {
-        root.addEventListener(ev, start, { passive: true });
-      });
+      /* Wrapped in its own IIFE deliberately, not just an `if` block: this
+         whole file runs in non-strict/"sloppy" mode (plain <script src>, no
+         "use strict", not an ES module), where a `function` declared inside
+         an `if{}` block gets hoisted Annex-B-style as a `var` all the way up
+         to the top of the *enclosing function* — not just the block. `root`,
+         `show`, `i` etc. above are declared with the outer hero-IIFE's own
+         `e`/`t`-named helpers in scope; naming a block-local helper the same
+         as something already used earlier in that same outer function body
+         (which is exactly what happened here after minification collapsed
+         `start`/`stop` down to short, reused single-letter names) shadows it
+         for the *entire* outer function, including lines above the
+         declaration — silently breaking that earlier code with a
+         "such-and-such is not a function" throw. A fresh nested IIFE caps
+         `var` hoisting at its own boundary, so nothing here can leak out and
+         shadow anything in the hero carousel's outer scope. Confirmed this
+         exact failure mode by reproducing it directly in Node before
+         settling on this fix. */
+      (function () {
+        var timer = null;
+        var start = function () {
+          if (timer) return;
+          timer = setInterval(function () {
+            if (!document.hidden) show(i + 1);
+          }, delay);
+        };
+        var stop = function () {
+          clearInterval(timer);
+          timer = null;
+        };
+        start();
+        /* Pause while the user is actively touching/hovering/focusing the
+           banner, resume once they let go — NOT a permanent one-time kill.
+           An earlier version used {once:true} with no resume listener, so
+           on any touch device (real phone or a mobile emulator, which maps
+           clicks to synthetic touch events) the very first tap anywhere on
+           the banner — even just scrolling past it — silently disabled
+           autoplay for the rest of the page's life. */
+        ['mouseenter', 'touchstart', 'focusin'].forEach(function (ev) {
+          root.addEventListener(ev, stop, { passive: true });
+        });
+        ['mouseleave', 'touchend', 'touchcancel', 'focusout'].forEach(function (ev) {
+          root.addEventListener(ev, start, { passive: true });
+        });
+      })();
     }
   })();
 
