@@ -220,11 +220,30 @@ import './app.css';
 
     var delay = parseInt(root.getAttribute('data-autoplay'), 10);
     if (delay > 0) {
-      var timer = setInterval(function () {
-        if (!document.hidden) show(i + 1);
-      }, delay);
+      var timer = null;
+      function start() {
+        if (timer) return;
+        timer = setInterval(function () {
+          if (!document.hidden) show(i + 1);
+        }, delay);
+      }
+      function stop() {
+        clearInterval(timer);
+        timer = null;
+      }
+      start();
+      /* Pause while the user is actively touching/hovering/focusing the
+         banner, resume once they let go — NOT a permanent one-time kill.
+         The previous version used {once:true} with no resume listener, so
+         on any touch device (real phone or a mobile emulator, which maps
+         clicks to synthetic touch events) the very first tap anywhere on
+         the banner — even just scrolling past it — silently disabled
+         autoplay for the rest of the page's life. */
       ['mouseenter', 'touchstart', 'focusin'].forEach(function (ev) {
-        root.addEventListener(ev, function () { clearInterval(timer); }, { once: true, passive: true });
+        root.addEventListener(ev, stop, { passive: true });
+      });
+      ['mouseleave', 'touchend', 'touchcancel', 'focusout'].forEach(function (ev) {
+        root.addEventListener(ev, start, { passive: true });
       });
     }
   })();
