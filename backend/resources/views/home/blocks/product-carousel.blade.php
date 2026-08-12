@@ -3,8 +3,8 @@
 @php $products = $block->items->pluck('itemable')->filter(); @endphp
 
 @if($products->isNotEmpty())
-  <section class="mx-auto w-full max-w-wrapper py-10 md:py-[60px]">
-    <div class="w-full max-w-wrapper">
+  <section class="py-10 md:py-[60px]">
+    <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
       @if($block->title || $block->subtitle || $block->cta_label)
         <div class="mb-5 text-center md:mb-[30px]">
           @if($block->title)
