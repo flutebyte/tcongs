@@ -20,7 +20,14 @@ server {
     location = /robots.txt  { access_log off; log_not_found off; }
 
     # Static assets: serve directly, skip PHP entirely.
-    location ~* \.(?:css|js|map|jpg|jpeg|png|gif|ico|svg|webp|woff|woff2|ttf|eot)$ {
+    # Excludes /livewire-{hash}/... — Livewire serves its JS/CSS/maps (and the
+    # update/upload/preview endpoints) dynamically through PHP, they are not
+    # real files under public/, so this regex must not swallow them into a 404
+    # before PHP gets a chance. Without this exclusion Filament's admin login
+    # (and every other Livewire component) silently fails: the page loads,
+    # but livewire.min.js 404s, so no click handler is ever attached and no
+    # request is ever sent when the user submits the form.
+    location ~* ^/(?!livewire-).*\.(?:css|js|map|jpg|jpeg|png|gif|ico|svg|webp|woff|woff2|ttf|eot)$ {
         try_files $uri =404;
         expires 30d;
         add_header Cache-Control "public, immutable";
