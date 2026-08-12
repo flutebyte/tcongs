@@ -69,6 +69,14 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    /* Belt-and-suspenders alongside body's own overflow-x:hidden below: an
+       invisible-but-still-laid-out element (visibility:hidden, not
+       display:none — e.g. a dropdown panel positioned past the viewport
+       edge) can still register as horizontal overflow on the document/html
+       box even when body itself is clipped, in some browsers. Catches any
+       future instance of this same class of bug site-wide, not just the one
+       found and fixed directly (the last nav dropdown, see app.blade.php). */
+    overflow-x: hidden;
   }
 
   body {

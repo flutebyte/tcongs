@@ -170,7 +170,16 @@
           <a class="relative flex items-center gap-1 whitespace-nowrap py-1.5 text-[12px] leading-[14px] uppercase tracking-[0.2px] text-heading transition-colors hover:[color:var(--nav-hover-color)]" href="{{ route('collections.index') }}">COLLECTIONS
             <svg class="h-2.5 w-2.5 shrink-0 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
           </a>
-          <div class="invisible absolute left-1/2 top-full z-20 max-h-[380px] w-56 -translate-x-1/2 translate-y-1 overflow-y-auto rounded-lg border border-line header-gradient p-2 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+          {{-- Right-anchored (not center-anchored like the other two dropdowns
+               above): this is the last item in the nav bar, so a w-56 panel
+               centered under its trigger runs past the right edge of the
+               viewport — invisible (visibility:hidden, not display:none) so
+               nothing looks visually broken, but it still occupies layout
+               space and was forcing a horizontal scrollbar on every single
+               page (this partial is shared by the whole site's header).
+               right-0 keeps the panel's right edge flush with the trigger's
+               own right edge, which is already safely inside the viewport. --}}
+          <div class="invisible absolute right-0 top-full z-20 max-h-[380px] w-56 translate-y-1 overflow-y-auto rounded-lg border border-line header-gradient p-2 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
             @foreach($navCollections as $collection)
               <a class="block rounded-md px-3 py-2 text-[12px] text-heading transition-colors hover:bg-pinksoft hover:text-accent" href="{{ route('collections.show', $collection['slug']) }}">{{ $collection['name'] }}</a>
             @endforeach
