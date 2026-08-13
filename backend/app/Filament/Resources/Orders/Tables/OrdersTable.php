@@ -36,9 +36,17 @@ class OrdersTable
                 TextColumn::make('total')
                     ->money('inr')
                     ->sortable(),
+                // Explicit shorter labels — the auto-generated "Payment method"/
+                // "Payment status" headers were wider than the badge content
+                // they head (e.g. "razorpay", "paid"), and were the last bit
+                // pushing this table past its available width into an
+                // unnecessary horizontal scrollbar. "Pay" prefix keeps them
+                // distinguishable from the unrelated order-status column.
                 TextColumn::make('payment_method')
+                    ->label('Pay Method')
                     ->badge(),
                 TextColumn::make('payment_status')
+                    ->label('Pay Status')
                     ->badge()
                     ->color(fn (string $state) => match ($state) {
                         'paid' => 'success',
