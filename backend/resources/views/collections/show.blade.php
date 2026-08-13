@@ -8,12 +8,6 @@
 
 @section('content')
 
-  @if($collection->hasMedia('image'))
-    <section class="aspect-[16/5] w-full overflow-hidden bg-cream">
-      <img class="h-full w-full object-contain" src="{{ $collection->getFirstMediaUrl('image', 'banner') }}" alt="{{ $collection->name }}">
-    </section>
-  @endif
-
   <x-breadcrumb-schema :items="[['label' => $collection->name]]" />
 
   <nav class="mx-auto w-full max-w-wrapper px-3 md:px-4 flex flex-wrap items-center gap-1.5 py-4 text-[13px] text-muted" aria-label="Breadcrumb">
