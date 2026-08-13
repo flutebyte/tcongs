@@ -302,29 +302,65 @@
   @yield('content')
 </main>
 
-<footer class="border-t border-line bg-white pt-12">
+{{--
+  A few rules below (mobile/desktop split, copyright row layout, social-icon hover) are
+  hand-written instead of Tailwind md:/hover:bg-* utility classes: backend/public/theme has
+  no live Tailwind rebuild, so any utility class not already compiled in silently no-ops on
+  the deployed site (see project memory). Scoped here rather than relying on new classes.
+--}}
+<style>
+  .footer-mobile { display: block; }
+  .footer-desktop { display: none; }
+  .footer-social-icon:hover { background-color: var(--color-accent); color: #fff; }
+  @media (min-width: 768px) {
+    .footer-mobile { display: none; }
+    .footer-desktop { display: block; }
+    .footer-pt { padding-top: 3rem; }
+    .footer-copyright-row { flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+</style>
+
+<footer class="footer-pt border-t border-line bg-white pt-8">
   <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-20 pb-10">
-      <div>
-        <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">EXPLORE</h3>
-        <ul class="space-y-2.5 text-[13px] text-muted">
+
+    {{-- ===== Mobile: Follow Us row + collapsible accordion ===== --}}
+    <div class="footer-mobile">
+      <div class="flex items-center gap-3 border-b border-line pb-5">
+        <h3 class="text-[13px] font-medium uppercase tracking-[0.6px]">Follow Us</h3>
+        <div class="flex gap-2">
+          <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.facebook.com/estelejewelery/" target="_blank" rel="noopener" aria-label="Follow on Facebook">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.75l.41-3.2h-3.16V8.4c0-.93.26-1.56 1.6-1.56h1.7V3.98A22.7 22.7 0 0 0 14.2 3.8c-2.44 0-4.11 1.49-4.11 4.22v2.36H7.3v3.2h2.79V22h3.4Z"/></svg>
+          </a>
+          <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.instagram.com/estele.co/" target="_blank" rel="noopener" aria-label="Follow on Instagram">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.linkedin.com/company/30985476" target="_blank" rel="noopener" aria-label="Follow on LinkedIn">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92A1.96 1.96 0 0 0 5.25 3ZM21 13.9c0-3.6-1.92-5.28-4.48-5.28-2.07 0-2.99 1.14-3.5 1.94V8.5H9.64c.05 1 0 12.5 0 12.5h3.38v-6.98c0-.37.03-.75.14-1.02.3-.75 1-1.53 2.16-1.53 1.52 0 2.13 1.16 2.13 2.85V21H21v-7.1Z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <details class="marker-pm border-b border-line">
+        <summary class="flex items-center justify-between py-4 text-[13px] font-medium uppercase tracking-[0.6px]">Explore</summary>
+        <ul class="space-y-2.5 pb-5 text-[13px] text-muted">
           <li><a class="transition-colors hover:text-accent" href="{{ route('home') }}">Home</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('search') }}">Search</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('blogs.index') }}">Blog</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'about-us') }}">About Us</a></li>
         </ul>
-      </div>
-      <div>
-        <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">CATEGORIES</h3>
-        <ul class="space-y-2.5 text-[13px] text-muted">
-          @foreach(array_slice($navCategories, 0, 6) as $category)
-            <li><a class="transition-colors hover:text-accent" href="{{ route('categories.show', $category['slug']) }}">{{ $category['name'] }}</a></li>
-          @endforeach
+      </details>
+      <details class="marker-pm border-b border-line">
+        <summary class="flex items-center justify-between py-4 text-[13px] font-medium uppercase tracking-[0.6px]">Know Your Jewellery</summary>
+        <ul class="space-y-2.5 pb-5 text-[13px] text-muted">
+          <li><a class="transition-colors hover:text-accent" href="{{ route('collections.show', 'rose-collection') }}">Rose Collection</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ route('categories.show', 'earrings') }}">Earring</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ route('categories.show', 'maang-tikka') }}">Maang Tika</a></li>
+          <li><a class="transition-colors hover:text-accent" href="{{ route('collections.show', 'crystal-blooms') }}">Crystal Blooms</a></li>
         </ul>
-      </div>
-      <div>
-        <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">CUSTOMER SERVICE</h3>
-        <ul class="space-y-2.5 text-[13px] text-muted">
+      </details>
+      <details class="marker-pm border-b border-line">
+        <summary class="flex items-center justify-between py-4 text-[13px] font-medium uppercase tracking-[0.6px]">Customer Service</summary>
+        <ul class="space-y-2.5 pb-5 text-[13px] text-muted">
           <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Find Your Order</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Track Order</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('cart.index') }}">Cart</a></li>
@@ -333,22 +369,85 @@
           <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'return-policy') }}">Return Policy</a></li>
           <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'privacy-policy') }}">Privacy Policy</a></li>
         </ul>
-      </div>
-      <div>
-        <h3 class="mb-6 text-[13px] font-semibold uppercase tracking-[1px]">CONTACT US</h3>
-        <div class="space-y-4 text-[15px] text-muted leading-7">
+      </details>
+      <details class="marker-pm border-b border-line">
+        <summary class="flex items-center justify-between py-4 text-[13px] font-semibold uppercase tracking-[1px]">Contact Us</summary>
+        <div class="space-y-4 pb-5 text-[15px] text-muted leading-7">
           <p>{{ $siteSettings['site_name'] ?? 'Estele' }}</p>
           <p>{{ $siteSettings['contact_phone'] ?? '' }}</p>
           <p>{{ $siteSettings['contact_email'] ?? '' }}</p>
         </div>
-      </div>
-    </div>
+      </details>
 
-    <div class="mt-10 border-t border-line pt-6 text-[13px] text-muted">
-      <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div class="pt-6 pb-6 text-[13px] text-muted">
         <p>{{ $siteSettings['footer_copyright'] ?? '' }}</p>
       </div>
     </div>
+
+    {{-- ===== Desktop: plain 4-column grid, always expanded ===== --}}
+    <div class="footer-desktop">
+      <div class="grid grid-cols-2 gap-y-10 gap-x-20 pb-10 lg:grid-cols-4">
+        <div>
+          <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Explore</h3>
+          <ul class="space-y-2.5 text-[13px] text-muted">
+            <li><a class="transition-colors hover:text-accent" href="{{ route('home') }}">Home</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('search') }}">Search</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('blogs.index') }}">Blog</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'about-us') }}">About Us</a></li>
+          </ul>
+          <div class="mt-8">
+            <h4 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Follow Us</h4>
+            <div class="flex gap-2">
+              <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.facebook.com/estelejewelery/" target="_blank" rel="noopener" aria-label="Follow on Facebook">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.75l.41-3.2h-3.16V8.4c0-.93.26-1.56 1.6-1.56h1.7V3.98A22.7 22.7 0 0 0 14.2 3.8c-2.44 0-4.11 1.49-4.11 4.22v2.36H7.3v3.2h2.79V22h3.4Z"/></svg>
+              </a>
+              <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.instagram.com/estele.co/" target="_blank" rel="noopener" aria-label="Follow on Instagram">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
+              </a>
+              <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.linkedin.com/company/30985476" target="_blank" rel="noopener" aria-label="Follow on LinkedIn">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92A1.96 1.96 0 0 0 5.25 3ZM21 13.9c0-3.6-1.92-5.28-4.48-5.28-2.07 0-2.99 1.14-3.5 1.94V8.5H9.64c.05 1 0 12.5 0 12.5h3.38v-6.98c0-.37.03-.75.14-1.02.3-.75 1-1.53 2.16-1.53 1.52 0 2.13 1.16 2.13 2.85V21H21v-7.1Z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Know Your Jewellery</h3>
+          <ul class="space-y-2.5 text-[13px] text-muted">
+            <li><a class="transition-colors hover:text-accent" href="{{ route('collections.show', 'rose-collection') }}">Rose Collection</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('categories.show', 'earrings') }}">Earring</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('categories.show', 'maang-tikka') }}">Maang Tika</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('collections.show', 'crystal-blooms') }}">Crystal Blooms</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Customer Service</h3>
+          <ul class="space-y-2.5 text-[13px] text-muted">
+            <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Find Your Order</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Track Order</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('cart.index') }}">Cart</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('faq.index') }}">FAQ</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'shipping-policy') }}">Shipping Policy</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'return-policy') }}">Return Policy</a></li>
+            <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'privacy-policy') }}">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="mb-6 text-[13px] font-semibold uppercase tracking-[1px]">Contact Us</h3>
+          <div class="space-y-4 text-[15px] text-muted leading-7">
+            <p>{{ $siteSettings['site_name'] ?? 'Estele' }}</p>
+            <p>{{ $siteSettings['contact_phone'] ?? '' }}</p>
+            <p>{{ $siteSettings['contact_email'] ?? '' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-line pt-6 text-[13px] text-muted">
+        <div class="footer-copyright-row flex flex-col gap-2">
+          <p>{{ $siteSettings['footer_copyright'] ?? '' }}</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 </footer>
 
