@@ -79,12 +79,21 @@
     </a>
 
     <div class="flex items-center justify-end gap-1 md:gap-2">
-      <form class="relative hidden items-center overflow-hidden rounded-full border border-line-strong bg-white/70 text-muted lg:flex lg:w-[230px] xl:w-[300px]"
+      {{-- overflow-hidden used to live on this <form> itself (to round the pill
+           shape), but the suggestions dropdown below is an absolutely-positioned
+           child of the same form sitting at top-full — entirely outside the
+           form's own box — so that overflow-hidden clipped it to invisible even
+           though the JS was populating it correctly. Moved the pill clipping to
+           an inner wrapper around just the input+button row so the dropdown,
+           still a direct child of the form, is no longer inside a clipping box. --}}
+      <form class="relative hidden items-center lg:flex lg:w-[230px] xl:w-[300px]"
             action="{{ route('search') }}" method="get" role="search" data-search-autocomplete>
-        <input class="w-full min-w-0 border-0 bg-transparent px-3 py-2 text-[13px] text-ink outline-none placeholder:text-muted" type="search" name="q" placeholder="Search for products" aria-label="Search for products" autocomplete="off">
-        <button class="grid h-[38px] w-[38px] shrink-0 place-items-center text-heading" type="submit" aria-label="Submit search">
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        </button>
+        <div class="flex w-full items-center overflow-hidden rounded-full border border-line-strong bg-white/70 text-muted">
+          <input class="w-full min-w-0 border-0 bg-transparent px-3 py-2 text-[13px] text-ink outline-none placeholder:text-muted" type="search" name="q" placeholder="Search for products" aria-label="Search for products" autocomplete="off">
+          <button class="grid h-[38px] w-[38px] shrink-0 place-items-center text-heading" type="submit" aria-label="Submit search">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          </button>
+        </div>
         <div class="absolute left-0 top-full z-20 mt-1 hidden w-full min-w-[280px] overflow-hidden rounded-lg border border-line bg-white text-ink shadow-lg" data-search-suggestions></div>
       </form>
       <button class="relative grid h-[38px] w-[38px] place-items-center text-heading transition-colors hover:[color:var(--nav-hover-color)] lg:hidden" type="button" data-search-open aria-label="Search">
