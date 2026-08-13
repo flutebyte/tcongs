@@ -21,18 +21,33 @@ class OtpManager
     public function __construct(
         private readonly LogOtpGateway $logGateway,
         private readonly VasMultimediaOtpGateway $vasGateway,
+        private readonly TwilioOtpGateway $twilioGateway,
     ) {}
 
     /**
-     * Real SMS if VAS Multimedia is configured (same gateway ZappDeal, the
-     * user's other project, already uses), otherwise falls back to logging
-     * the code — same "isConfigured() ? real : fallback" shape as
-     * PaymentManager::isOnlinePaymentEnabled()/ShippingManager's
-     * flat-rate fallback elsewhere in this codebase.
+     * SMS_DRIVER picks explicitly between the two real gateways when both
+     * happen to be configured at once (added after VAS Multimedia's
+     * credentials kept returning "SUCCESS" from the API across three live
+     * test sends without ever actually reaching a phone — Twilio was wired
+     * up as a second real gateway to test against, not a replacement, since
+     * neither one has yet been confirmed to actually deliver to an Indian
+     * number end to end). No driver set (or an unrecognized one) falls back
+     * to "whichever configured gateway comes first", same
+     * "isConfigured() ? real : fallback" shape as
+     * PaymentManager::isOnlinePaymentEnabled()/ShippingManager's flat-rate
+     * fallback elsewhere in this codebase — logging is always the last resort.
      */
     private function gateway(): OtpGateway
     {
-        return $this->vasGateway->isConfigured() ? $this->vasGateway : $this->logGateway;
+        return match (config('services.sms.driver')) {
+            'vas_multimedia' => $this->vasGateway->isConfigured() ? $this->vasGateway : $this->logGateway,
+            'twilio' => $this->twilioGateway->isConfigured() ? $this->twilioGateway : $this->logGateway,
+            default => match (true) {
+                $this->vasGateway->isConfigured() => $this->vasGateway,
+                $this->twilioGateway->isConfigured() => $this->twilioGateway,
+                default => $this->logGateway,
+            },
+        };
     }
 
     /**

@@ -61,4 +61,24 @@ return [
         'ca_bundle' => env('SMS_CA_BUNDLE'),
     ],
 
+    // Explicit gateway pick for OtpManager (see that class) — 'vas_multimedia'
+    // or 'twilio'. Falls back to auto-detecting whichever configured gateway
+    // comes first if unset, so this is optional, not required.
+    'sms' => [
+        'driver' => env('SMS_DRIVER'),
+    ],
+
+    // Alternative OTP gateway (App\Services\Otp\TwilioOtpGateway) — added
+    // alongside VAS Multimedia after VAS's real submissions kept coming back
+    // "SUCCESS" from the API but never actually reaching a phone across
+    // three separate live test sends, which pointed at the VAS account
+    // itself (likely still in trial/test mode) rather than our integration.
+    // SMS_DRIVER picks which configured gateway OtpManager actually uses;
+    // see that class for the selection order.
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_AUTH_TOKEN'),
+        'from' => env('TWILIO_PHONE_NUMBER'),
+    ],
+
 ];
