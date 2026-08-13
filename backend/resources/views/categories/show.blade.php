@@ -55,9 +55,17 @@
     @if($products->isEmpty())
       <p class="py-16 text-center text-[13px] text-muted">No products in this category yet — check back soon.</p>
     @else
-      {{-- 4-up from tablet width up — see collections/show.blade.php's comment
-           on why this is a scoped class + media query, not sm:grid-cols-4. --}}
-      <style>@media (min-width: 640px) { .product-grid-4up { grid-template-columns: repeat(4, minmax(0, 1fr)); } }</style>
+      {{-- Three real tiers now (mobile/tablet/desktop), not just two — see
+           collections/show.blade.php's comment on why this is a scoped class
+           + media query, not sm:grid-cols-4 (no live Tailwind build here, so
+           a brand-new arbitrary utility would compile to nothing). Previously
+           this jumped straight from 2-up to 4-up at 640px, so every tablet
+           width got the same cramped 4-up desktop layout; 768–1023px now
+           gets its own 3-up tier. --}}
+      <style>
+        @media (min-width: 640px) { .product-grid-4up { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (min-width: 1024px) { .product-grid-4up { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+      </style>
       <div class="product-grid-4up grid grid-cols-2 gap-3 md:gap-5">
         @foreach($products as $product)
           <x-product-card :product="$product" />
