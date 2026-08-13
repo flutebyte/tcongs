@@ -69,7 +69,7 @@ class OrdersTable
                 // the normal EditAction/status field below, guarded by
                 // Order::ALLOWED_TRANSITIONS as always.
                 IconColumn::make('cancellation_requested_at')
-                    ->label('Cancel/Return Req.')
+                    ->label('Cancel/Return')
                     ->boolean()
                     ->tooltip(fn (Order $record) => $record->cancellation_requested_at
                         ? "Requested {$record->cancellation_requested_at->format('d M Y')}: {$record->cancellation_reason}"
@@ -98,12 +98,22 @@ class OrdersTable
                     ]),
             ])
             ->recordActions([
+                // Both actions collapsed to icon-only (was label+icon link text) —
+                // the labeled version of just these two actions alone was 161px
+                // wide, the single biggest contributor to the table's own content
+                // area (1298px) overflowing its 1137px column area and forcing an
+                // unnecessary horizontal scrollbar under every Orders list.
+                // Tooltip keeps the action identifiable without the text.
                 Action::make('invoice')
                     ->label('Invoice')
                     ->icon(Heroicon::OutlinedDocumentArrowDown)
                     ->color('gray')
+                    ->iconButton()
+                    ->tooltip('Download invoice')
                     ->action(fn (Order $record) => self::streamInvoice($record)),
-                EditAction::make(),
+                EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Edit'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
