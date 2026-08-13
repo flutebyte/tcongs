@@ -61,7 +61,12 @@ class OrdersTable
                     }),
                 TextColumn::make('created_at')
                     ->label('Placed')
-                    ->dateTime('d M Y, h:i A')
+                    // Year dropped from the visible column (was the single
+                    // widest cell in the table, "27 Jul 2026, 02:24 PM") —
+                    // still available on hover via dateTooltip so nothing is
+                    // actually lost, just not taking up column width by default.
+                    ->dateTime('d M, h:i A')
+                    ->dateTooltip('d M Y, h:i A')
                     ->sortable(),
                 // Customer-submitted via account.orders.cancellation-request (see
                 // AccountController) — a flag for admin review, not a status
