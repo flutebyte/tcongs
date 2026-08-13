@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,7 +32,9 @@ class AuthController extends Controller
             ]);
         }
 
+        $oldSessionId = $request->session()->getId();
         $request->session()->regenerate();
+        Cart::transferSession($oldSessionId, $request->session()->getId());
 
         return redirect()->intended(route('account.index'))->with('success', 'Welcome back!');
     }
@@ -62,10 +65,17 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        $oldSessionId = $request->session()->getId();
         Auth::login($user);
         $request->session()->regenerate();
+        Cart::transferSession($oldSessionId, $request->session()->getId());
 
-        return redirect()->route('account.index')->with('success', 'Account created — welcome!');
+        // ->intended() (not a flat route('account.index')) so Buy It Now →
+        // unregistered phone → OTP-verified → this registration form still
+        // lands back on checkout afterward, same as the login() method above
+        // — url.intended survives the whole hop since nothing here calls
+        // session()->invalidate()/flush(), only regenerate().
+        return redirect()->intended(route('account.index'))->with('success', 'Account created — welcome!');
     }
 
     public function logout(Request $request): RedirectResponse

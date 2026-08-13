@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,8 @@ class VerifyShippingUnserviceableTest extends TestCase
 
     public function test_checkout_is_blocked_when_no_courier_is_serviceable(): void
     {
+        // /checkout now requires login (Buy It Now / ZappDeal-parity ask).
+        $this->actingAs(User::factory()->create());
         $this->withoutMiddleware(ValidateCsrfToken::class);
 
         // phpunit.xml forces SESSION_DRIVER=array, which doesn't persist

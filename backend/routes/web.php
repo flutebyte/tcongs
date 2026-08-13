@@ -109,10 +109,22 @@ Route::post('/cart/{product:slug}', [CartController::class, 'store'])->name('car
 Route::patch('/cart/items/{cartItem}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
 
-Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-// Phase 6 security audit: this was the one order-placing endpoint with no
-// rate limit at all — every other checkout-adjacent route already has one.
-Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('throttle:10,1');
+// Buy It Now / checkout now requires login (ZappDeal parity — mobile OTP
+// login first, then checkout; no more anonymous guest checkout). The 'auth'
+// middleware here + $middleware->redirectGuestsTo(route('login.mobile')) in
+// bootstrap/app.php is what actually gates it — an unauthenticated visit
+// (whether via the cart page's checkout button or product page's Buy It Now,
+// both of which just send the browser to GET /checkout) gets bounced to the
+// mobile OTP login with the current URL saved as the post-login "intended"
+// destination, so login/registration lands the user right back here rather
+// than on /account. See OtpAuthController::verifyCode and
+// AuthController::login/register for the redirect()->intended() side of this.
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    // Phase 6 security audit: this was the one order-placing endpoint with no
+    // rate limit at all — every other checkout-adjacent route already has one.
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('throttle:10,1');
+});
 // Looked up server-side (not straight from the browser) because
 // api.postalpincode.in doesn't send CORS headers, so a direct client fetch
 // is blocked; this also keeps the lookup rate-limited from one place.

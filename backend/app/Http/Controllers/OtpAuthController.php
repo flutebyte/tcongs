@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\User;
 use App\Services\Otp\OtpManager;
 use Illuminate\Http\RedirectResponse;
@@ -68,8 +69,10 @@ class OtpAuthController extends Controller
             return redirect()->route('register')->with('success', 'Number verified — finish creating your account below.');
         }
 
+        $oldSessionId = $request->session()->getId();
         Auth::login($user);
         $request->session()->regenerate();
+        Cart::transferSession($oldSessionId, $request->session()->getId());
 
         return redirect()->intended(route('account.index'))->with('success', 'Welcome back!');
     }

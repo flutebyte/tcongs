@@ -90,6 +90,9 @@ class VerifyAddressBookTest extends TestCase
 
     public function test_guests_are_redirected_to_login(): void
     {
-        $this->get(route('account.addresses'))->assertRedirect(route('login'));
+        // Mobile OTP is the primary login method now (bootstrap/app.php's
+        // redirectGuestsTo) — was route('login') (email/password) before
+        // Buy It Now/checkout gained the same login gate.
+        $this->get(route('account.addresses'))->assertRedirect(route('login.mobile'));
     }
 }

@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +34,12 @@ class VerifyRazorpayCheckoutFlowTest extends TestCase
      */
     public function test_checkout_page_renders_with_online_payment_enabled(): void
     {
+        // /checkout now requires login (Buy It Now / ZappDeal-parity ask) —
+        // actingAs() authenticates the guard for every request this test
+        // makes without needing its own cookie replay, independent of the
+        // manual session-cookie dance below (that's purely for the
+        // session_id-keyed cart, a separate mechanism from auth).
+        $this->actingAs(User::factory()->create());
         config(['session.driver' => 'database']);
         Setting::updateOrCreate(['key' => 'payment_provider'], ['value' => 'razorpay']);
         config(['services.razorpay.key_id' => 'rzp_test_fake', 'services.razorpay.key_secret' => 'fake_secret']);
@@ -64,6 +71,7 @@ class VerifyRazorpayCheckoutFlowTest extends TestCase
 
     public function test_checkout_with_razorpay_creates_a_pending_order_and_redirects_to_payment(): void
     {
+        $this->actingAs(User::factory()->create());
         $this->withoutMiddleware(ValidateCsrfToken::class);
         config(['session.driver' => 'database']);
 
@@ -118,6 +126,7 @@ class VerifyRazorpayCheckoutFlowTest extends TestCase
 
     public function test_checkout_rejects_razorpay_when_online_payment_is_disabled(): void
     {
+        $this->actingAs(User::factory()->create());
         $this->withoutMiddleware(ValidateCsrfToken::class);
         config(['session.driver' => 'database']);
 
