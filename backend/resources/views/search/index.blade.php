@@ -11,13 +11,6 @@
   <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 pb-10 md:pb-[60px]">
     <h1 class="text-[20px] uppercase tracking-[0.5px] md:text-[26px] mb-5">Search</h1>
 
-    <form class="relative mb-3.5 flex max-w-[620px] gap-2.5" role="search" data-search-autocomplete>
-      <label class="sr-only-custom" for="q">Search</label>
-      <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading flex-1" id="q" type="search" name="q" value="{{ $query }}" placeholder="Search for jewellery..." autocomplete="off">
-      <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">Search</button>
-      <div class="absolute left-0 top-full z-20 mt-1 hidden w-full max-w-[460px] overflow-hidden rounded-lg border border-line bg-white shadow-lg" data-search-suggestions></div>
-    </form>
-
     @if($query !== '')
       <div class="mb-5 flex flex-wrap items-center gap-3.5">
         <p class="text-[13px] text-muted md:mr-auto">{{ $products->total() }} {{ \Illuminate\Support\Str::plural('result', $products->total()) }} for &ldquo;{{ $query }}&rdquo;</p>
@@ -47,7 +40,7 @@
     @if($products->isEmpty())
       <p class="py-16 text-center text-[13px] text-muted">
         @if($query === '')
-          Enter a search term above to find products.
+          Use the search bar at the top of the page to find products.
         @else
           No products matched &ldquo;{{ $query }}&rdquo;.
         @endif
