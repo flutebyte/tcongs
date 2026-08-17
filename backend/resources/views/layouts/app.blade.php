@@ -396,6 +396,7 @@
   </span>
   <button class="relative order-2 h-[50px] w-[50px] shrink-0 rounded-full bg-white shadow-lg md:h-[58px] md:w-[58px]"
           type="button" data-chat-open aria-label="Open support chat" aria-expanded="false">
+    <img class="h-full w-full rounded-full object-cover p-1.5" src="{{ asset('assets/images/chat-avatar.svg') }}" alt="" width="56" height="56">
     <span class="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-[#eb001b] text-[11px] font-medium text-white" data-chat-badge>1</span>
     <span class="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full border-2 border-white bg-[#22c55e]"></span>
   </button>
