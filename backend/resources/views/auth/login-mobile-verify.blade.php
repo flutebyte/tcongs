@@ -4,32 +4,38 @@
 
 @section('content')
 
-  <div class="mx-auto w-full max-w-[420px] px-3 py-12 md:px-4 md:py-16">
-    <h1 class="mb-1 text-[22px] uppercase tracking-[0.5px] md:text-[26px]">Enter Code</h1>
-    <p class="mb-7 text-[13px] text-muted">We sent a 6-digit code to <strong class="text-heading">{{ $phone }}</strong>.</p>
+<div class="bg-ivory py-10 md:py-16 min-h-[calc(100vh-220px)]">
+  <div class="mx-auto w-full max-w-[450px] px-4">
+    <div class="rounded-2xl border border-line bg-white p-6 sm:p-8 shadow-md">
 
-    <form action="{{ route('login.mobile.verify.attempt') }}" method="post">
-      @csrf
+      <h1 class="font-serif text-[24px] font-semibold text-heading text-center mb-1">Enter Verification Code</h1>
+      <p class="text-[13px] text-muted text-center mb-6">We sent a 6-digit code to <strong class="text-heading">{{ $phone }}</strong>.</p>
 
-      <label class="mb-1.5 block text-[13px] font-medium text-heading" for="code">One-time code</label>
-      {{-- tracking-[0.5em] has no live Tailwind build to compile it here (see
-           filter-panel/account-layout-grid comments elsewhere) — inline style instead. --}}
-      <input class="w-full border border-line-strong bg-white px-4 py-3 text-center text-[20px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-3.5" style="letter-spacing: 0.5em" id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="&middot;&middot;&middot;&middot;&middot;&middot;" required autofocus>
-      @error('code') <p class="mb-3.5 -mt-2 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+      <form action="{{ route('login.mobile.verify.attempt') }}" method="post" class="space-y-4">
+        @csrf
 
-      <button class="inline-flex w-full items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
-        Verify &amp; Continue
-      </button>
-    </form>
+        <div>
+          <label class="mb-1.5 block text-[13px] font-medium text-heading text-center" for="code">One-Time Code</label>
+          <input class="h-14 w-full rounded-lg border border-line-strong bg-white px-4 text-center text-[22px] font-semibold text-heading outline-none transition-colors placeholder:text-muted focus:border-accent focus:ring-1 focus:ring-accent" style="letter-spacing: 0.5em" id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="••••••" required autofocus>
+          @error('code') <p class="mt-1 text-[12px] text-salebadge text-center">{{ $message }}</p> @enderror
+        </div>
 
-    <form class="mt-4" action="{{ route('login.mobile.resend') }}" method="post">
-      @csrf
-      <button class="w-full text-center text-[13px] text-muted underline hover:text-accent" type="submit">Resend code</button>
-    </form>
+        <button class="mt-2 h-12 w-full rounded-lg bg-accent text-[13px] font-semibold uppercase tracking-[0.6px] text-white shadow-sm transition-colors hover:bg-accent-dark" type="submit">
+          Verify &amp; Continue
+        </button>
+      </form>
 
-    <p class="mt-6 text-center text-[13px] text-muted">
-      Wrong number? <a class="font-medium text-heading underline hover:text-accent" href="{{ route('login.mobile') }}">Start over</a>
-    </p>
+      <form class="mt-4" action="{{ route('login.mobile.resend') }}" method="post">
+        @csrf
+        <button class="w-full text-center text-[13px] font-medium text-accent hover:underline" type="submit">Didn't receive code? Resend</button>
+      </form>
+
+      <p class="mt-6 text-center text-[13px] text-muted">
+        Wrong mobile number? <a class="font-semibold text-accent underline hover:text-accent-dark" href="{{ route('login.mobile') }}">Start over</a>
+      </p>
+
+    </div>
   </div>
+</div>
 
 @endsection

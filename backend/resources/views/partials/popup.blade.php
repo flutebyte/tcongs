@@ -23,11 +23,11 @@
             <input type="hidden" name="popup_id" value="{{ $activePopup['id'] }}">
             <label class="sr-only-custom" for="popup-email">Email address</label>
             <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="popup-email" type="email" name="email" placeholder="Enter your email" required>
-            <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">{{ $activePopup['cta_label'] ?: 'Subscribe' }}</button>
+            <button class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">{{ $activePopup['cta_label'] ?: 'Subscribe' }}</button>
           </form>
           <p class="mt-3 text-[13px] text-[#428445]" data-popup-newsletter-msg hidden>Thanks for subscribing.</p>
         @elseif($activePopup['cta_url'])
-          <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" href="{{ $activePopup['cta_url'] }}">{{ $activePopup['cta_label'] ?: 'Shop Now' }}</a>
+          <a class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" href="{{ $activePopup['cta_url'] }}">{{ $activePopup['cta_label'] ?: 'Shop Now' }}</a>
         @endif
       </div>
     </div>

@@ -36,7 +36,7 @@
                 @csrf
                 @method('PATCH')
                 @include('account._address-fields', ['address' => $address])
-                <button class="mt-3 inline-flex items-center justify-center gap-2 border border-black bg-black px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
+                <button class="mt-3 inline-flex items-center justify-center gap-2 border border-accent bg-accent px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">
                   Save Changes
                 </button>
               </form>
@@ -57,7 +57,7 @@
       <form class="mt-4" action="{{ route('account.addresses.store') }}" method="post">
         @csrf
         @include('account._address-fields')
-        <button class="mt-3 inline-flex items-center justify-center gap-2 border border-black bg-black px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
+        <button class="mt-3 inline-flex items-center justify-center gap-2 border border-accent bg-accent px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">
           Save Address
         </button>
       </form>

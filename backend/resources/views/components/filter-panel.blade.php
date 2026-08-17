@@ -67,7 +67,7 @@
     @endif
 
     <div class="flex items-center gap-4 sm:col-span-2 md:col-span-3">
-      <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
+      <button class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">
         Apply Filters
       </button>
       <a class="text-[12px] text-muted underline hover:text-accent" href="{{ $action }}{{ $q !== null ? '?q='.urlencode($q) : '' }}">Clear filters</a>

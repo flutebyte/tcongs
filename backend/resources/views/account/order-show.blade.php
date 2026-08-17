@@ -74,7 +74,7 @@
             @csrf
             <label class="mb-1.5 block text-[13px] font-medium text-heading" for="reason">Reason</label>
             <textarea class="mb-3 w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="reason" name="reason" rows="2" required maxlength="255"></textarea>
-            <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
+            <button class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">
               Submit Request
             </button>
           </form>

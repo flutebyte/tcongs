@@ -15,7 +15,7 @@
     @if($items->isEmpty())
       <div class="py-16 text-center">
         <p class="mb-5 text-[14px] text-muted">Your bag is empty.</p>
-        <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" href="{{ route('home') }}">Continue Shopping</a>
+        <a class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" href="{{ route('home') }}">Continue Shopping</a>
       </div>
     @else
       <div class="grid grid-cols-1 gap-6 md:grid-cols-[1fr_340px] md:gap-[34px]">
@@ -106,11 +106,11 @@
               <form action="{{ route('cart.coupon.apply') }}" method="post" class="flex gap-2">
                 @csrf
                 <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading flex-1" id="coupon" name="code" type="text" placeholder="Enter code" required>
-                <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent px-5 py-3 text-[12px]" type="submit">Apply</button>
+                <button class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark px-5 py-3 text-[12px]" type="submit">Apply</button>
               </form>
             @endif
           </div>
-          <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent w-full" href="{{ route('checkout.index') }}">Proceed to Checkout</a>
+          <a class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark w-full" href="{{ route('checkout.index') }}">Proceed to Checkout</a>
           <a class="mt-3.5 block w-fit border-b border-current text-[13px] text-muted mx-auto" href="{{ route('home') }}">Continue Shopping</a>
         </aside>
       </div>

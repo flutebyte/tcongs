@@ -37,7 +37,14 @@
       <span class="font-medium text-price">₹{{ number_format($product->price, 0) }}</span>
       @if($product->compare_at_price)
         <span class="text-muted line-through">₹{{ number_format($product->compare_at_price, 0) }}</span>
+        @php $discount = round((($product->compare_at_price - $product->price) / $product->compare_at_price) * 100); @endphp
+        @if($discount > 0)
+          <span class="text-[11px] font-semibold text-gold">{{ $discount }}% OFF</span>
+        @endif
       @endif
+    </div>
+    <div class="mt-1 flex items-center justify-center gap-1 text-[12px] text-gold">
+      ★★★★☆ <span class="text-[11px] text-muted">(4.8)</span>
     </div>
   </div>
 </article>

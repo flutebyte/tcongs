@@ -54,15 +54,13 @@
 <a class="sr-only-custom" href="#main">Skip to content</a>
 
 @php $announcements = json_decode($siteSettings['announcement_messages'] ?? '[]', true) ?: []; @endphp
-@if(count($announcements))
-<div class="px-1.5 pt-0 md:px-[30px]" data-announcement>
-  <div class="relative grid min-h-[34px] place-items-center rounded-lg bg-accent px-3 text-center text-[12px] tracking-[0.3px] text-white mb-2">
-    @foreach($announcements as $i => $message)
-      <p class="absolute m-0 transition-opacity duration-300 {{ $i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' }}" data-announce-item>{{ $message }}</p>
-    @endforeach
-  </div>
+<div class="w-full bg-accent py-2 text-center text-[12px] font-medium tracking-[0.4px] uppercase text-white shadow-sm" data-announcement>
+  @if(count($announcements))
+    <p class="m-0 px-3">{{ $announcements[0] }}</p>
+  @else
+    <p class="m-0 px-3">Free Express Shipping on Orders Above &#8377;1,499 &middot; Use Code <span class="font-semibold text-gold">ESTELE50</span> for Flat 50% Off</p>
+  @endif
 </div>
-@endif
 
 <header class="header-gradient sticky top-0 z-[100] px-3.5 pt-2.5 pb-2.5 md:px-[30px] md:pt-[15px] md:pb-3" data-header>
   <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-5">
@@ -264,9 +262,9 @@
     </ul>
     <div class="p-5">
       @auth
-        <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent w-full" href="{{ route('account.index') }}">My Account</a>
+        <a class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark w-full" href="{{ route('account.index') }}">My Account</a>
       @else
-        <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent w-full" href="{{ route('login') }}">Login / Register</a>
+        <a class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark w-full" href="{{ route('login') }}">Login / Register</a>
       @endauth
     </div>
   </nav>
@@ -281,7 +279,7 @@
   <div class="relative bg-white py-10">
     <form class="relative mx-auto flex max-w-[720px] items-center gap-2.5 px-4" action="{{ route('search') }}" method="get" role="search" data-search-autocomplete>
       <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" type="search" name="q" placeholder="Search for jewellery..." aria-label="Search" autocomplete="off">
-      <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">Search</button>
+      <button class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">Search</button>
       <button class="text-[30px] leading-none text-heading" type="button" data-search-close aria-label="Close search">&times;</button>
       <div class="absolute left-4 right-[86px] top-full z-20 mt-1 hidden overflow-hidden rounded-lg border border-line bg-white shadow-lg" data-search-suggestions></div>
     </form>
@@ -311,143 +309,83 @@
 <style>
   .footer-mobile { display: block; }
   .footer-desktop { display: none; }
-  .footer-social-icon:hover { background-color: var(--color-accent); color: #fff; }
-  @media (min-width: 768px) {
-    .footer-mobile { display: none; }
-    .footer-desktop { display: block; }
-    .footer-pt { padding-top: 3rem; }
-    .footer-copyright-row { flex-direction: row; align-items: center; justify-content: space-between; }
-  }
 </style>
-
-<footer class="footer-pt border-t border-line bg-white pt-8">
-  <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
-
-    {{-- ===== Mobile: Follow Us row + collapsible accordion ===== --}}
-    <div class="footer-mobile">
-      <div class="flex items-center gap-3 border-b border-line pb-5">
-        <h3 class="text-[13px] font-medium uppercase tracking-[0.6px]">Follow Us</h3>
-        <div class="flex gap-2">
-          <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.facebook.com/estelejewelery/" target="_blank" rel="noopener" aria-label="Follow on Facebook">
+<footer class="bg-[#4A0713] text-[#F8F4EC] border-t border-[#3A0610]">
+  <div class="mx-auto w-full max-w-wrapper px-4 md:px-8 pt-12 md:pt-16 pb-10">
+    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 pb-10 border-b border-white/10">
+      
+      <!-- Col 1: About & Socials -->
+      <div>
+        <h3 class="font-serif text-[14px] md:text-[15px] font-semibold uppercase tracking-[0.5px] text-[#B88A4A] mb-4">About {{ $siteSettings['site_name'] ?? 'Estele' }}</h3>
+        <p class="text-[13px] leading-relaxed text-[#F8F4EC]/80 mb-5">India's leading fashion jewellery destination since 1989. Over 100,000 anti-tarnish 24K gold plated designs crafted with care.</p>
+        <div class="flex items-center gap-3">
+          <a class="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-[#F8F4EC] transition-all hover:border-[#B88A4A] hover:bg-[#B88A4A] hover:text-[#4A0713]" href="https://www.facebook.com/estelejewelery/" target="_blank" rel="noopener" aria-label="Facebook">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.75l.41-3.2h-3.16V8.4c0-.93.26-1.56 1.6-1.56h1.7V3.98A22.7 22.7 0 0 0 14.2 3.8c-2.44 0-4.11 1.49-4.11 4.22v2.36H7.3v3.2h2.79V22h3.4Z"/></svg>
           </a>
-          <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.instagram.com/estele.co/" target="_blank" rel="noopener" aria-label="Follow on Instagram">
+          <a class="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-[#F8F4EC] transition-all hover:border-[#B88A4A] hover:bg-[#B88A4A] hover:text-[#4A0713]" href="https://www.instagram.com/estele.co/" target="_blank" rel="noopener" aria-label="Instagram">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
           </a>
-          <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.linkedin.com/company/30985476" target="_blank" rel="noopener" aria-label="Follow on LinkedIn">
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92A1.96 1.96 0 0 0 5.25 3ZM21 13.9c0-3.6-1.92-5.28-4.48-5.28-2.07 0-2.99 1.14-3.5 1.94V8.5H9.64c.05 1 0 12.5 0 12.5h3.38v-6.98c0-.37.03-.75.14-1.02.3-.75 1-1.53 2.16-1.53 1.52 0 2.13 1.16 2.13 2.85V21H21v-7.1Z"/></svg>
+          <a class="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-[#F8F4EC] transition-all hover:border-[#B88A4A] hover:bg-[#B88A4A] hover:text-[#4A0713]" href="https://www.linkedin.com/company/30985476" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92A1.96 1.96 0 0 0 5.25 3ZM21 13.9c0-3.6-1.92-5.28-4.48-5.28-2.07 0-2.99 1.14-3.5 1.94V8.5H9.64c.05 1 0 12.5 0 12.5h3.38v-6.98c0-.37.03-.75.14-1.02.3-.75 1-1.53 2.16-1.53 2.13 1.16 2.13 2.85V21H21v-7.1Z"/></svg>
           </a>
         </div>
       </div>
 
-      <details class="marker-pm border-b border-line">
-        <summary class="flex items-center justify-between py-4 text-[13px] font-medium uppercase tracking-[0.6px]">Explore</summary>
-        <ul class="space-y-2.5 pb-5 text-[13px] text-muted">
-          <li><a class="transition-colors hover:text-accent" href="{{ route('home') }}">Home</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('search') }}">Search</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('blogs.index') }}">Blog</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'about-us') }}">About Us</a></li>
+      <!-- Col 2: Know Your Jewellery -->
+      <div>
+        <h3 class="font-serif text-[14px] md:text-[15px] font-semibold uppercase tracking-[0.5px] text-[#B88A4A] mb-4">Know Your Jewellery</h3>
+        <ul class="space-y-2.5 text-[13px] text-[#F8F4EC]/85">
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ route('collections.show', 'rose-collection') }}">Rose Collection</a></li>
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ route('categories.show', 'earrings') }}">Earrings</a></li>
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ route('categories.show', 'maang-tikka') }}">Maang Tikka</a></li>
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ route('collections.show', 'crystal-blooms') }}">Crystal Blooms</a></li>
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ route('collections.show', 'hasli-collection') }}">Hasli Collection</a></li>
         </ul>
-      </details>
-      <details class="marker-pm border-b border-line">
-        <summary class="flex items-center justify-between py-4 text-[13px] font-medium uppercase tracking-[0.6px]">Know Your Jewellery</summary>
-        <ul class="space-y-2.5 pb-5 text-[13px] text-muted">
-          <li><a class="transition-colors hover:text-accent" href="{{ route('collections.show', 'rose-collection') }}">Rose Collection</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('categories.show', 'earrings') }}">Earring</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('categories.show', 'maang-tikka') }}">Maang Tika</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('collections.show', 'crystal-blooms') }}">Crystal Blooms</a></li>
-        </ul>
-      </details>
-      <details class="marker-pm border-b border-line">
-        <summary class="flex items-center justify-between py-4 text-[13px] font-medium uppercase tracking-[0.6px]">Customer Service</summary>
-        <ul class="space-y-2.5 pb-5 text-[13px] text-muted">
-          <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Find Your Order</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Track Order</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('cart.index') }}">Cart</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('faq.index') }}">FAQ</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'shipping-policy') }}">Shipping Policy</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'return-policy') }}">Return Policy</a></li>
-          <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'privacy-policy') }}">Privacy Policy</a></li>
-        </ul>
-      </details>
-      <details class="marker-pm border-b border-line">
-        <summary class="flex items-center justify-between py-4 text-[13px] font-semibold uppercase tracking-[1px]">Contact Us</summary>
-        <div class="space-y-4 pb-5 text-[15px] text-muted leading-7">
-          <p>{{ $siteSettings['site_name'] ?? 'Estele' }}</p>
-          <p>{{ $siteSettings['contact_phone'] ?? '' }}</p>
-          <p>{{ $siteSettings['contact_email'] ?? '' }}</p>
-        </div>
-      </details>
-
-      <div class="pt-6 pb-6 text-[13px] text-muted">
-        <p>{{ $siteSettings['footer_copyright'] ?? '' }}</p>
       </div>
-    </div>
 
-    {{-- ===== Desktop: plain 4-column grid, always expanded ===== --}}
-    <div class="footer-desktop">
-      <div class="grid grid-cols-2 gap-y-10 gap-x-20 pb-10 lg:grid-cols-4">
-        <div>
-          <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Explore</h3>
-          <ul class="space-y-2.5 text-[13px] text-muted">
-            <li><a class="transition-colors hover:text-accent" href="{{ route('home') }}">Home</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('search') }}">Search</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('blogs.index') }}">Blog</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'about-us') }}">About Us</a></li>
-          </ul>
-          <div class="mt-8">
-            <h4 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Follow Us</h4>
-            <div class="flex gap-2">
-              <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.facebook.com/estelejewelery/" target="_blank" rel="noopener" aria-label="Follow on Facebook">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.75l.41-3.2h-3.16V8.4c0-.93.26-1.56 1.6-1.56h1.7V3.98A22.7 22.7 0 0 0 14.2 3.8c-2.44 0-4.11 1.49-4.11 4.22v2.36H7.3v3.2h2.79V22h3.4Z"/></svg>
-              </a>
-              <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.instagram.com/estele.co/" target="_blank" rel="noopener" aria-label="Follow on Instagram">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
-              </a>
-              <a class="footer-social-icon grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors" href="https://www.linkedin.com/company/30985476" target="_blank" rel="noopener" aria-label="Follow on LinkedIn">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92A1.96 1.96 0 0 0 5.25 3ZM21 13.9c0-3.6-1.92-5.28-4.48-5.28-2.07 0-2.99 1.14-3.5 1.94V8.5H9.64c.05 1 0 12.5 0 12.5h3.38v-6.98c0-.37.03-.75.14-1.02.3-.75 1-1.53 2.16-1.53 1.52 0 2.13 1.16 2.13 2.85V21H21v-7.1Z"/></svg>
-              </a>
-            </div>
-          </div>
+      <!-- Col 3: Customer Service -->
+      <div>
+        <h3 class="font-serif text-[14px] md:text-[15px] font-semibold uppercase tracking-[0.5px] text-[#B88A4A] mb-4">Customer Service</h3>
+        <ul class="space-y-2.5 text-[13px] text-[#F8F4EC]/85">
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ auth()->check() ? route('account.index') : route('login') }}">Track Order</a></li>
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ route('pages.show', 'return-policy') }}">Return &amp; Exchange Policy</a></li>
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ route('pages.show', 'shipping-policy') }}">Shipping &amp; Delivery</a></li>
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ route('faq.index') }}">Help &amp; FAQ</a></li>
+          <li><a class="transition-colors hover:text-[#B88A4A]" href="{{ route('pages.show', 'privacy-policy') }}">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Contact Us & Download -->
+      <div>
+        <h3 class="font-serif text-[14px] md:text-[15px] font-semibold uppercase tracking-[0.5px] text-[#B88A4A] mb-4">Contact Us</h3>
+        <div class="space-y-2 text-[13px] text-[#F8F4EC]/85">
+          <p class="font-semibold text-[#F8F4EC]">Estele Accessories Pvt. Ltd.</p>
+          <p class="leading-normal">9-47, Keshav Nagar, Boduppal, Hyderabad, Telangana 500092</p>
+          <p>Phone: <a href="tel:+918247476318" class="underline hover:text-[#B88A4A]">+91 8247476318</a></p>
+          <p>Email: <a href="mailto:info@estele.co" class="underline hover:text-[#B88A4A]">info@estele.co</a></p>
         </div>
-        <div>
-          <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Know Your Jewellery</h3>
-          <ul class="space-y-2.5 text-[13px] text-muted">
-            <li><a class="transition-colors hover:text-accent" href="{{ route('collections.show', 'rose-collection') }}">Rose Collection</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('categories.show', 'earrings') }}">Earring</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('categories.show', 'maang-tikka') }}">Maang Tika</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('collections.show', 'crystal-blooms') }}">Crystal Blooms</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Customer Service</h3>
-          <ul class="space-y-2.5 text-[13px] text-muted">
-            <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Find Your Order</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ auth()->check() ? route('account.index') : route('login') }}">Track Order</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('cart.index') }}">Cart</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('faq.index') }}">FAQ</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'shipping-policy') }}">Shipping Policy</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'return-policy') }}">Return Policy</a></li>
-            <li><a class="transition-colors hover:text-accent" href="{{ route('pages.show', 'privacy-policy') }}">Privacy Policy</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="mb-6 text-[13px] font-semibold uppercase tracking-[1px]">Contact Us</h3>
-          <div class="space-y-4 text-[15px] text-muted leading-7">
-            <p>{{ $siteSettings['site_name'] ?? 'Estele' }}</p>
-            <p>{{ $siteSettings['contact_phone'] ?? '' }}</p>
-            <p>{{ $siteSettings['contact_email'] ?? '' }}</p>
+        <div class="mt-4">
+          <h4 class="text-[11px] font-semibold uppercase tracking-[0.5px] text-[#F8F4EC]/70 mb-2">Download App</h4>
+          <div class="flex gap-2.5">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" class="h-8" alt="App Store" width="100" height="32" />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" class="h-8" alt="Google Play" width="100" height="32" />
           </div>
         </div>
       </div>
 
-      <div class="border-t border-line pt-6 text-[13px] text-muted">
-        <div class="footer-copyright-row flex flex-col gap-2">
-          <p>{{ $siteSettings['footer_copyright'] ?? '' }}</p>
-        </div>
+    </div>
+  </div>
+
+  <!-- Bottom Darker Burgundy Strip (#3A0610 per doc4.pdf) -->
+  <div class="bg-[#3A0610] pt-4 pb-[160px] md:pb-20 text-[12px] text-[#D8CDC0]">
+    <div class="mx-auto w-full max-w-wrapper px-4 md:px-8 flex flex-col items-center justify-between gap-2.5 sm:flex-row">
+      <p>{{ $siteSettings['footer_copyright'] ?? 'Copyright © 2026 ESTELE Accessories Pvt. Ltd. All rights reserved.' }}</p>
+      <div class="flex gap-4">
+        <a class="hover:text-[#B88A4A] transition-colors" href="{{ route('pages.show', 'privacy-policy') }}">Privacy Policy</a>
+        <a class="hover:text-[#B88A4A] transition-colors" href="{{ route('pages.show', 'return-policy') }}">Terms &amp; Conditions</a>
+        <a class="hover:text-[#B88A4A] transition-colors" href="{{ route('pages.show', 'shipping-policy') }}">Shipping Policy</a>
       </div>
     </div>
-
   </div>
 </footer>
 

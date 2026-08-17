@@ -5,30 +5,41 @@
 
 @section('content')
 
-  <div class="mx-auto w-full max-w-[420px] px-3 py-12 md:px-4 md:py-16">
-    <h1 class="mb-1 text-[22px] uppercase tracking-[0.5px] md:text-[26px]">Login</h1>
-    <p class="mb-5 text-[13px] text-muted">We'll text a one-time code to verify your number.</p>
+<div class="bg-ivory py-10 md:py-16 min-h-[calc(100vh-220px)]">
+  <div class="mx-auto w-full max-w-[450px] px-4">
+    <div class="rounded-2xl border border-line bg-white p-6 sm:p-8 shadow-md">
 
-    <div class="mb-6 flex rounded-lg border border-line p-1 text-[12px] font-medium uppercase tracking-[0.3px]">
-      <a class="flex-1 rounded-md py-2.5 text-center text-heading transition-colors hover:bg-pinksoft" href="{{ route('login') }}">Email &amp; Password</a>
-      <span class="flex-1 rounded-md bg-black py-2.5 text-center text-white">Mobile Number (OTP)</span>
+      <h1 class="font-serif text-[24px] font-semibold text-heading text-center mb-1">Welcome Back</h1>
+      <p class="text-[13px] text-muted text-center mb-6">We'll text a one-time verification code to your phone.</p>
+
+      <div class="mb-6 flex rounded-lg border border-line p-1 text-[12px] font-medium uppercase tracking-[0.3px]">
+        <a class="flex-1 rounded-md py-2.5 text-center text-muted transition-colors hover:text-heading" href="{{ route('login') }}">Email &amp; Password</a>
+        <span class="flex-1 rounded-md bg-accent py-2.5 text-center text-white font-semibold">Mobile Number (OTP)</span>
+      </div>
+
+      <form action="{{ route('login.mobile.send') }}" method="post" class="space-y-4">
+        @csrf
+
+        <div>
+          <label class="mb-1.5 block text-[13px] font-medium text-heading" for="phone">Mobile Number</label>
+          <div class="flex">
+            <span class="inline-flex h-12 items-center rounded-l-lg border border-r-0 border-line-strong bg-warmbeige/30 px-3.5 text-[13px] font-semibold text-heading">+91</span>
+            <input class="h-12 w-full rounded-r-lg border border-line-strong bg-white px-4 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-accent focus:ring-1 focus:ring-accent" id="phone" name="phone" type="tel" value="{{ old('phone') }}" placeholder="10-digit mobile number" inputmode="numeric" pattern="[0-9]*" maxlength="10" required autofocus>
+          </div>
+          @error('phone') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
+        </div>
+
+        <button class="mt-2 h-12 w-full rounded-lg bg-accent text-[13px] font-semibold uppercase tracking-[0.6px] text-white shadow-sm transition-colors hover:bg-accent-dark" type="submit">
+          Send OTP
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-[12.5px] text-muted leading-relaxed">
+        New here? You'll be guided to finish creating an account right after your number is verified.
+      </p>
+
     </div>
-
-    <form action="{{ route('login.mobile.send') }}" method="post">
-      @csrf
-
-      <label class="mb-1.5 block text-[13px] font-medium text-heading" for="phone">Mobile number</label>
-      <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-3.5" id="phone" name="phone" type="tel" value="{{ old('phone') }}" placeholder="10-digit mobile number" inputmode="numeric" required autofocus>
-      @error('phone') <p class="mb-3.5 -mt-2 text-[12px] text-salebadge">{{ $message }}</p> @enderror
-
-      <button class="inline-flex w-full items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
-        Send OTP
-      </button>
-    </form>
-
-    <p class="mt-6 text-center text-[13px] text-muted">
-      New here? You'll be guided to finish creating an account right after your number is verified.
-    </p>
   </div>
+</div>
 
 @endsection

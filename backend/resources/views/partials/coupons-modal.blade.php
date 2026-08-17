@@ -16,7 +16,7 @@
                 <p class="text-[13.5px] font-medium tracking-[0.3px] text-heading">{{ $coupon['code'] }}</p>
                 <p class="mt-0.5 text-[12px] text-muted">{{ $coupon['summary'] }}</p>
               </div>
-              <button class="shrink-0 border border-black bg-black px-3.5 py-2 text-[11px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent disabled:opacity-50" type="button" data-coupons-modal-apply="{{ $coupon['code'] }}">Apply</button>
+              <button class="shrink-0 border border-accent bg-accent px-3.5 py-2 text-[11px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark disabled:opacity-50" type="button" data-coupons-modal-apply="{{ $coupon['code'] }}">Apply</button>
             </li>
           @endforeach
         </ul>

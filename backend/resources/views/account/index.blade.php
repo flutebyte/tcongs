@@ -14,7 +14,7 @@
       <h1 class="text-[20px] uppercase tracking-[0.5px] md:text-[26px]">My Account</h1>
       <form action="{{ route('logout') }}" method="post">
         @csrf
-        <button class="inline-flex items-center justify-center gap-2 border border-black bg-transparent px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-black transition-colors hover:bg-black hover:text-white" type="submit">
+        <button class="inline-flex items-center justify-center gap-2 border border-accent bg-transparent px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-accent transition-colors hover:bg-accent hover:text-white" type="submit">
           Logout
         </button>
       </form>
@@ -82,7 +82,7 @@
             <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-3.5" id="email" name="email" type="email" value="{{ old('email', auth()->user()->email) }}" required>
             @error('email') <p class="mb-3.5 -mt-2 text-[12px] text-salebadge">{{ $message }}</p> @enderror
 
-            <button class="inline-flex w-full items-center justify-center gap-2 border border-black bg-black px-6 py-3 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
+            <button class="inline-flex w-full items-center justify-center gap-2 border border-accent bg-accent px-6 py-3 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">
               Save Changes
             </button>
           </form>
@@ -104,7 +104,7 @@
             <label class="mb-1.5 block text-[13px] font-medium text-heading" for="password_confirmation">Confirm new password</label>
             <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading mb-5" id="password_confirmation" name="password_confirmation" type="password" required minlength="8">
 
-            <button class="inline-flex w-full items-center justify-center gap-2 border border-black bg-black px-6 py-3 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
+            <button class="inline-flex w-full items-center justify-center gap-2 border border-accent bg-accent px-6 py-3 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">
               Update Password
             </button>
           </form>

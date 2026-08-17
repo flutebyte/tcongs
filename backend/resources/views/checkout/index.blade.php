@@ -96,7 +96,7 @@
           <textarea class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" id="order_note" name="order_note" rows="3">{{ old('order_note') }}</textarea>
         </div>
 
-        <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent w-full" type="submit">Place Order</button>
+        <button class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark w-full" type="submit">Place Order</button>
       </form>
 
       <aside class="rounded bg-pinksoft p-6 md:sticky md:top-[100px]">
@@ -141,7 +141,7 @@
             <form action="{{ route('cart.coupon.apply') }}" method="post" class="flex gap-2">
               @csrf
               <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading flex-1" id="checkout-coupon" name="code" type="text" placeholder="Enter code" required>
-              <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-5 py-3 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">Apply</button>
+              <button class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-5 py-3 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">Apply</button>
             </form>
           @endif
         </div>

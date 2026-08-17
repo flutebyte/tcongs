@@ -436,7 +436,7 @@ import './app.css';
         if (facetsEl) {
           $('[data-collection-facet-total]', facetsEl).textContent = collection.facetTotal;
           $('[data-collection-facet-pills]', facetsEl).innerHTML = collection.facets.map(function (f) {
-            return '<span class="rounded-md border border-line-strong bg-pinksoft px-3 py-1.5 text-[12px] text-accent-dark">' + f.label + ' (' + f.count + ')</span>';
+            return '<span class="rounded-md border border-line-strong bg-warmbeige/60 px-3 py-1.5 text-[12px] text-accent-dark font-medium">' + f.label + ' (' + f.count + ')</span>';
           }).join('');
           /* Stays hidden until "Filter" is clicked — see the FILTER DRAWER
              block below, which reveals it alongside the filter sidebar. */
@@ -900,7 +900,7 @@ import './app.css';
       if (!results.length) { hide(); return; }
 
       box.innerHTML = results.map(function (item, i) {
-        return '<a class="flex items-center gap-3 px-3 py-2.5 text-[13px] text-heading transition-colors hover:bg-pinksoft" href="' + item.url + '" data-suggestion-index="' + i + '">' +
+        return '<a class="flex items-center gap-3 px-3 py-2.5 text-[13px] text-heading transition-colors hover:bg-warmbeige" href="' + item.url + '" data-suggestion-index="' + i + '">' +
           (item.thumbnail ? '<img class="h-9 w-9 shrink-0 rounded object-cover" src="' + item.thumbnail + '" alt="" loading="lazy">' : '') +
           '<span class="min-w-0 flex-1 truncate">' + item.title + '</span>' +
           '<span class="shrink-0 text-price">₹' + Math.round(item.price).toLocaleString('en-IN') + '</span>' +
@@ -947,7 +947,7 @@ import './app.css';
       } else {
         return;
       }
-      links.forEach(function (a, i) { a.classList.toggle('bg-pinksoft', i === activeIndex); });
+      links.forEach(function (a, i) { a.classList.toggle('bg-warmbeige', i === activeIndex); });
     });
 
     document.addEventListener('click', function (e) {
@@ -1198,6 +1198,33 @@ import './app.css';
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !panel.hidden) close();
     });
+  })();
+
+  /* ------------------------------------------------------------------------
+     STICKY PURCHASE BAR — shows floating purchase bar on mobile when scrolled past main CTA
+     ---------------------------------------------------------------------- */
+  (function () {
+    var stickyBar = $('[data-sticky-buy]');
+    var mainCta = $('[data-add-to-cart]');
+    if (!stickyBar || !mainCta) return;
+
+    function updateStickyBar() {
+      if (window.innerWidth >= 768) {
+        stickyBar.classList.add('hidden');
+        return;
+      }
+      var ctaRect = mainCta.getBoundingClientRect();
+      // Show sticky bar when main CTA moves towards/above the top of viewport
+      if (ctaRect.bottom < 120) {
+        stickyBar.classList.remove('hidden');
+      } else {
+        stickyBar.classList.add('hidden');
+      }
+    }
+
+    window.addEventListener('scroll', updateStickyBar, { passive: true });
+    window.addEventListener('resize', updateStickyBar);
+    updateStickyBar();
   })();
 
   /* ------------------------------------------------------------------------

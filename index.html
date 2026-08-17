@@ -21,17 +21,8 @@
 <a class="sr-only-custom" href="#main">Skip to content</a>
 
 <!-- ========================= ANNOUNCEMENT BAR ========================= -->
-<div class="px-1.5 pt-0 md:px-[30px]" data-announcement>
-  <div class="relative grid min-h-[34px] place-items-center rounded-lg bg-accent px-3 text-center text-[12px] tracking-[0.3px] text-white mb-2">
-    <p class="absolute m-0 opacity-100 transition-opacity duration-300" data-announce-item>Free gift on orders above &#8377;1,499</p>
-    <p class="absolute m-0 opacity-0 pointer-events-none transition-opacity duration-300" data-announce-item>7-Day Return &amp; Exchange</p>
-    <p class="absolute m-0 opacity-0 pointer-events-none transition-opacity duration-300" data-announce-item>Trusted since 1989 &middot; 5M+ happy customers</p>
-  </div>
-</div>
-<div class="bg-price text-white">
-  <div class="grid min-h-[34px] place-items-center px-3 text-center text-[12px] tracking-[0.3px]">
-    <p class="m-0">GRAND ESTELE SALE &ndash; FLAT 50% OFF SITEWIDE <a class="font-semibold underline" href="collection.html">SHOP NOW</a></p>
-  </div>
+<div class="w-full bg-accent py-2 text-center text-[12px] font-medium tracking-[0.4px] uppercase text-white shadow-sm" data-announcement>
+  <p class="m-0 px-3">Free Express Shipping on Orders Above &#8377;1,499 &middot; Use Code <span class="font-semibold text-gold">ESTELE50</span> for Flat 50% Off</p>
 </div>
 
 <!-- ================================ HEADER =========================== -->
@@ -315,7 +306,7 @@
       <li class="border-b border-line"><a class="flex items-center gap-2 px-5 py-3.5 text-[13px] uppercase tracking-[0.3px] text-heading transition-colors hover:text-accent" href="collection.html"><span>Morbagh Collection</span></a></li>
     </ul>
     <div class="p-5">
-      <a class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent w-full" href="account.html">Login / Register</a>
+      <a class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark w-full" href="account.html">Login / Register</a>
     </div>
   </nav>
 </div>
@@ -326,7 +317,7 @@
   <div class="relative bg-white py-10">
     <form class="mx-auto flex max-w-[720px] items-center gap-2.5 px-4" action="search.html" role="search">
       <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading" type="search" name="q" placeholder="Search for jewellery..." aria-label="Search">
-      <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">Search</button>
+      <button class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">Search</button>
       <button class="text-[30px] leading-none text-heading" type="button" data-search-close aria-label="Close search">&times;</button>
     </form>
   </div>
@@ -404,111 +395,85 @@
   </div>
 
   <!-- ========================= SHOP BY CATEGORY ========================= -->
-  <section class="bg-greysoft py-10 md:py-[60px]">
+  <section class="bg-warmbeige/50 py-10 md:py-[60px]">
     <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
-      <div class="mb-5 text-center md:mb-[30px]">
-        <h2 class="text-[18px] md:text-[21px] xl:text-[24px] font-medium uppercase tracking-[0.5px] text-heading">Shop by Category</h2>
+      <div class="mb-6 text-center md:mb-[36px]">
+        <h2 class="text-[20px] md:text-[24px] font-serif font-semibold tracking-[0.5px] text-heading">Shop by Category</h2>
+        <div class="mx-auto mt-2 h-0.5 w-12 bg-gold"></div>
       </div>
       <div class="relative" data-carousel>
         <button class="absolute top-1/2 z-[3] hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white shadow-md transition-colors hover:bg-accent hover:text-white disabled:pointer-events-none disabled:opacity-0 md:grid -left-2 xl:-left-[18px]" type="button" data-carousel-prev aria-label="Previous">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <div class="carousel-track gap-2 md:gap-3" data-carousel-track>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=necklace-sets">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/NECKLACE_SETS_jpg.jpg?width=600" srcset="https://estele.co/cdn/shop/files/NECKLACE_SETS_jpg.jpg?width=300 300w, https://estele.co/cdn/shop/files/NECKLACE_SETS_jpg.jpg?width=500 500w, https://estele.co/cdn/shop/files/NECKLACE_SETS_jpg.jpg?width=700 700w, https://estele.co/cdn/shop/files/NECKLACE_SETS_jpg.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Necklace Sets" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=pendant-sets">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/Pendant_Sets_jpg.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Pendant_Sets_jpg.jpg?width=300 300w, https://estele.co/cdn/shop/files/Pendant_Sets_jpg.jpg?width=500 500w, https://estele.co/cdn/shop/files/Pendant_Sets_jpg.jpg?width=700 700w, https://estele.co/cdn/shop/files/Pendant_Sets_jpg.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Pendant Sets" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=earrings">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/Earrings_jpg.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Earrings_jpg.jpg?width=300 300w, https://estele.co/cdn/shop/files/Earrings_jpg.jpg?width=500 500w, https://estele.co/cdn/shop/files/Earrings_jpg.jpg?width=700 700w, https://estele.co/cdn/shop/files/Earrings_jpg.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Earrings" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=rings">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/Finger_Rings.jpg_1.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Finger_Rings.jpg_1.jpg?width=300 300w, https://estele.co/cdn/shop/files/Finger_Rings.jpg_1.jpg?width=500 500w, https://estele.co/cdn/shop/files/Finger_Rings.jpg_1.jpg?width=700 700w, https://estele.co/cdn/shop/files/Finger_Rings.jpg_1.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Rings" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=bracelets">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/Bracelets_jpg.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Bracelets_jpg.jpg?width=300 300w, https://estele.co/cdn/shop/files/Bracelets_jpg.jpg?width=500 500w, https://estele.co/cdn/shop/files/Bracelets_jpg.jpg?width=700 700w, https://estele.co/cdn/shop/files/Bracelets_jpg.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Bracelets" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=bangles">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/Bangles_jpg.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Bangles_jpg.jpg?width=300 300w, https://estele.co/cdn/shop/files/Bangles_jpg.jpg?width=500 500w, https://estele.co/cdn/shop/files/Bangles_jpg.jpg?width=700 700w, https://estele.co/cdn/shop/files/Bangles_jpg.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Bangles" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=brooch">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/Brooch_Pin_jpg.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Brooch_Pin_jpg.jpg?width=300 300w, https://estele.co/cdn/shop/files/Brooch_Pin_jpg.jpg?width=500 500w, https://estele.co/cdn/shop/files/Brooch_Pin_jpg.jpg?width=700 700w, https://estele.co/cdn/shop/files/Brooch_Pin_jpg.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Brooch" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=chokers">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/Choker_Set.jpg_1.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Choker_Set.jpg_1.jpg?width=300 300w, https://estele.co/cdn/shop/files/Choker_Set.jpg_1.jpg?width=500 500w, https://estele.co/cdn/shop/files/Choker_Set.jpg_1.jpg?width=700 700w, https://estele.co/cdn/shop/files/Choker_Set.jpg_1.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Chokers" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=maang-tikka">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/Maang_Tikka_jpg.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Maang_Tikka_jpg.jpg?width=300 300w, https://estele.co/cdn/shop/files/Maang_Tikka_jpg.jpg?width=500 500w, https://estele.co/cdn/shop/files/Maang_Tikka_jpg.jpg?width=700 700w, https://estele.co/cdn/shop/files/Maang_Tikka_jpg.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Maang Tikka" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
-        <div class="flex-[0_0_calc((100%-8px)/2)] md:flex-[0_0_calc((100%-2*12px)/3)] xl:flex-[0_0_calc((100%-7*12px)/8)]">
-        <a class="block" href="collection.html?cat=mangalsutra">
-          <span class="block overflow-hidden bg-placeholder rounded-[8%]" style="aspect-ratio: 2/3;">
-            <img class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                 src="https://estele.co/cdn/shop/files/Mangalsutra_jpg.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Mangalsutra_jpg.jpg?width=300 300w, https://estele.co/cdn/shop/files/Mangalsutra_jpg.jpg?width=500 500w, https://estele.co/cdn/shop/files/Mangalsutra_jpg.jpg?width=700 700w, https://estele.co/cdn/shop/files/Mangalsutra_jpg.jpg?width=900 900w" sizes="(max-width: 768px) 50vw, 12vw"
-                 alt="Mangalsutra Collection" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        </div>
+        <div class="carousel-track gap-4 md:gap-6" data-carousel-track>
+          <div class="flex-[0_0_calc((100%-3*16px)/4)] sm:flex-[0_0_calc((100%-4*16px)/5)] md:flex-[0_0_calc((100%-5*20px)/6)] xl:flex-[0_0_calc((100%-7*24px)/8)] text-center">
+            <a class="group block" href="collection.html?cat=necklace-sets">
+              <span class="mx-auto block aspect-square w-24 sm:w-28 md:w-32 overflow-hidden rounded-full border-2 border-gold/40 bg-white p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:border-accent">
+                <img class="h-full w-full rounded-full object-cover" src="https://estele.co/cdn/shop/files/NECKLACE_SETS_jpg.jpg?width=600" alt="Necklace Sets" loading="lazy" width="200" height="200">
+              </span>
+              <span class="mt-2.5 block text-[13px] font-medium text-heading transition-colors group-hover:text-accent">Necklace Sets</span>
+            </a>
+          </div>
+          <div class="flex-[0_0_calc((100%-3*16px)/4)] sm:flex-[0_0_calc((100%-4*16px)/5)] md:flex-[0_0_calc((100%-5*20px)/6)] xl:flex-[0_0_calc((100%-7*24px)/8)] text-center">
+            <a class="group block" href="collection.html?cat=pendant-sets">
+              <span class="mx-auto block aspect-square w-24 sm:w-28 md:w-32 overflow-hidden rounded-full border-2 border-gold/40 bg-white p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:border-accent">
+                <img class="h-full w-full rounded-full object-cover" src="https://estele.co/cdn/shop/files/Pendant_Sets_jpg.jpg?width=600" alt="Pendant Sets" loading="lazy" width="200" height="200">
+              </span>
+              <span class="mt-2.5 block text-[13px] font-medium text-heading transition-colors group-hover:text-accent">Pendant Sets</span>
+            </a>
+          </div>
+          <div class="flex-[0_0_calc((100%-3*16px)/4)] sm:flex-[0_0_calc((100%-4*16px)/5)] md:flex-[0_0_calc((100%-5*20px)/6)] xl:flex-[0_0_calc((100%-7*24px)/8)] text-center">
+            <a class="group block" href="collection.html?cat=earrings">
+              <span class="mx-auto block aspect-square w-24 sm:w-28 md:w-32 overflow-hidden rounded-full border-2 border-gold/40 bg-white p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:border-accent">
+                <img class="h-full w-full rounded-full object-cover" src="https://estele.co/cdn/shop/files/Earrings_jpg.jpg?width=600" alt="Earrings" loading="lazy" width="200" height="200">
+              </span>
+              <span class="mt-2.5 block text-[13px] font-medium text-heading transition-colors group-hover:text-accent">Earrings</span>
+            </a>
+          </div>
+          <div class="flex-[0_0_calc((100%-3*16px)/4)] sm:flex-[0_0_calc((100%-4*16px)/5)] md:flex-[0_0_calc((100%-5*20px)/6)] xl:flex-[0_0_calc((100%-7*24px)/8)] text-center">
+            <a class="group block" href="collection.html?cat=rings">
+              <span class="mx-auto block aspect-square w-24 sm:w-28 md:w-32 overflow-hidden rounded-full border-2 border-gold/40 bg-white p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:border-accent">
+                <img class="h-full w-full rounded-full object-cover" src="https://estele.co/cdn/shop/files/Finger_Rings.jpg_1.jpg?width=600" alt="Finger Rings" loading="lazy" width="200" height="200">
+              </span>
+              <span class="mt-2.5 block text-[13px] font-medium text-heading transition-colors group-hover:text-accent">Finger Rings</span>
+            </a>
+          </div>
+          <div class="flex-[0_0_calc((100%-3*16px)/4)] sm:flex-[0_0_calc((100%-4*16px)/5)] md:flex-[0_0_calc((100%-5*20px)/6)] xl:flex-[0_0_calc((100%-7*24px)/8)] text-center">
+            <a class="group block" href="collection.html?cat=bracelets">
+              <span class="mx-auto block aspect-square w-24 sm:w-28 md:w-32 overflow-hidden rounded-full border-2 border-gold/40 bg-white p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:border-accent">
+                <img class="h-full w-full rounded-full object-cover" src="https://estele.co/cdn/shop/files/Bracelets_jpg.jpg?width=600" alt="Bracelets" loading="lazy" width="200" height="200">
+              </span>
+              <span class="mt-2.5 block text-[13px] font-medium text-heading transition-colors group-hover:text-accent">Bracelets</span>
+            </a>
+          </div>
+          <div class="flex-[0_0_calc((100%-3*16px)/4)] sm:flex-[0_0_calc((100%-4*16px)/5)] md:flex-[0_0_calc((100%-5*20px)/6)] xl:flex-[0_0_calc((100%-7*24px)/8)] text-center">
+            <a class="group block" href="collection.html?cat=bangles">
+              <span class="mx-auto block aspect-square w-24 sm:w-28 md:w-32 overflow-hidden rounded-full border-2 border-gold/40 bg-white p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:border-accent">
+                <img class="h-full w-full rounded-full object-cover" src="https://estele.co/cdn/shop/files/Bangles_jpg.jpg?width=600" alt="Bangles" loading="lazy" width="200" height="200">
+              </span>
+              <span class="mt-2.5 block text-[13px] font-medium text-heading transition-colors group-hover:text-accent">Bangles</span>
+            </a>
+          </div>
+          <div class="flex-[0_0_calc((100%-3*16px)/4)] sm:flex-[0_0_calc((100%-4*16px)/5)] md:flex-[0_0_calc((100%-5*20px)/6)] xl:flex-[0_0_calc((100%-7*24px)/8)] text-center">
+            <a class="group block" href="collection.html?cat=brooch">
+              <span class="mx-auto block aspect-square w-24 sm:w-28 md:w-32 overflow-hidden rounded-full border-2 border-gold/40 bg-white p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:border-accent">
+                <img class="h-full w-full rounded-full object-cover" src="https://estele.co/cdn/shop/files/Brooch_Pin_jpg.jpg?width=600" alt="Brooch Pin" loading="lazy" width="200" height="200">
+              </span>
+              <span class="mt-2.5 block text-[13px] font-medium text-heading transition-colors group-hover:text-accent">Brooch Pin</span>
+            </a>
+          </div>
+          <div class="flex-[0_0_calc((100%-3*16px)/4)] sm:flex-[0_0_calc((100%-4*16px)/5)] md:flex-[0_0_calc((100%-5*20px)/6)] xl:flex-[0_0_calc((100%-7*24px)/8)] text-center">
+            <a class="group block" href="collection.html?cat=chokers">
+              <span class="mx-auto block aspect-square w-24 sm:w-28 md:w-32 overflow-hidden rounded-full border-2 border-gold/40 bg-white p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:border-accent">
+                <img class="h-full w-full rounded-full object-cover" src="https://estele.co/cdn/shop/files/Choker_Set.jpg_1.jpg?width=600" alt="Choker Sets" loading="lazy" width="200" height="200">
+              </span>
+              <span class="mt-2.5 block text-[13px] font-medium text-heading transition-colors group-hover:text-accent">Choker Sets</span>
+            </a>
+          </div>
         </div>
         <button class="absolute top-1/2 z-[3] hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white shadow-md transition-colors hover:bg-accent hover:text-white disabled:pointer-events-none disabled:opacity-0 md:grid -right-2 xl:-right-[18px]" type="button" data-carousel-next aria-label="Next">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         </button>
-        <div class="mt-4 flex justify-center gap-1.5" data-carousel-dots></div>
       </div>
     </div>
   </section>
@@ -860,40 +825,65 @@
   </section>
 
   <!-- ======================== SHOP BY COLLECTION ======================== -->
-  <section class="py-10 md:py-[60px] bg-pinksoft">
-    <div class="mx-auto w-full max-w-wrapper px-6 md:px-14 lg:px-20 xl:px-[7vw]">
-      <div class="mb-5 text-center md:mb-[30px]">
-        <h2 class="relative pb-3 after:absolute after:bottom-0 after:left-1/2 after:h-0.5 after:w-[46px] after:-translate-x-1/2 after:bg-accent text-[18px] md:text-[21px] xl:text-[24px] font-medium uppercase tracking-[0.5px] text-heading">Shop by Collection</h2>
+  <section class="py-10 md:py-[60px] bg-warmbeige/40">
+    <div class="mx-auto w-full max-w-wrapper px-4 md:px-8">
+      <div class="mb-6 text-center md:mb-[36px]">
+        <h2 class="text-[20px] md:text-[24px] font-serif font-semibold tracking-[0.5px] text-heading">Shop by Collection</h2>
+        <div class="mx-auto mt-2 h-0.5 w-12 bg-gold"></div>
       </div>
-      <div class="mx-auto grid max-w-[1040px] grid-cols-2 gap-3 px-3 sm:gap-4 sm:px-5 md:max-w-[1100px] md:grid-cols-4 md:gap-5 md:px-8 lg:gap-6 lg:px-10">
-        <a class="block" href="collection.html">
-          <span class="block overflow-hidden rounded-[8%]">
-            <img class="h-auto w-full object-contain transition-transform duration-700 hover:scale-[1.03]"
-                 src="https://estele.co/cdn/shop/files/Coloure_Pop.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Coloure_Pop.jpg?width=300 300w, https://estele.co/cdn/shop/files/Coloure_Pop.jpg?width=500 500w, https://estele.co/cdn/shop/files/Coloure_Pop.jpg?width=700 700w, https://estele.co/cdn/shop/files/Coloure_Pop.jpg?width=900 900w" sizes="(max-width: 768px) 42vw, 220px"
-                 alt="Colour Pop Collection" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        <a class="block" href="collection.html">
-          <span class="block overflow-hidden rounded-[8%]">
-            <img class="h-auto w-full object-contain transition-transform duration-700 hover:scale-[1.03]"
-                 src="https://estele.co/cdn/shop/files/Mor_Bagh.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Mor_Bagh.jpg?width=300 300w, https://estele.co/cdn/shop/files/Mor_Bagh.jpg?width=500 500w, https://estele.co/cdn/shop/files/Mor_Bagh.jpg?width=700 700w, https://estele.co/cdn/shop/files/Mor_Bagh.jpg?width=900 900w" sizes="(max-width: 768px) 42vw, 220px"
-                 alt="Mor Bagh Collection" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        <a class="block" href="collection.html">
-          <span class="block overflow-hidden rounded-[8%]">
-            <img class="h-auto w-full object-contain transition-transform duration-700 hover:scale-[1.03]"
-                 src="https://estele.co/cdn/shop/files/Rose_Collection_22f60169-9004-4f13-b13c-4cf7e2a0e06b.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Rose_Collection_22f60169-9004-4f13-b13c-4cf7e2a0e06b.jpg?width=300 300w, https://estele.co/cdn/shop/files/Rose_Collection_22f60169-9004-4f13-b13c-4cf7e2a0e06b.jpg?width=500 500w, https://estele.co/cdn/shop/files/Rose_Collection_22f60169-9004-4f13-b13c-4cf7e2a0e06b.jpg?width=700 700w, https://estele.co/cdn/shop/files/Rose_Collection_22f60169-9004-4f13-b13c-4cf7e2a0e06b.jpg?width=900 900w" sizes="(max-width: 768px) 42vw, 220px"
-                 alt="Rose Collection" loading="lazy" width="500" height="750">
-          </span>
-        </a>
-        <a class="block" href="collection.html">
-          <span class="block overflow-hidden rounded-[8%]">
-            <img class="h-auto w-full object-contain transition-transform duration-700 hover:scale-[1.03]"
-                 src="https://estele.co/cdn/shop/files/Crystal_Bloom_cade702c-fad5-49fa-a5dd-d4ef01106081.jpg?width=600" srcset="https://estele.co/cdn/shop/files/Crystal_Bloom_cade702c-fad5-49fa-a5dd-d4ef01106081.jpg?width=300 300w, https://estele.co/cdn/shop/files/Crystal_Bloom_cade702c-fad5-49fa-a5dd-d4ef01106081.jpg?width=500 500w, https://estele.co/cdn/shop/files/Crystal_Bloom_cade702c-fad5-49fa-a5dd-d4ef01106081.jpg?width=700 700w, https://estele.co/cdn/shop/files/Crystal_Bloom_cade702c-fad5-49fa-a5dd-d4ef01106081.jpg?width=900 900w" sizes="(max-width: 768px) 42vw, 220px"
-                 alt="Crystal Bloom Collection" loading="lazy" width="500" height="750">
-          </span>
-        </a>
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+        <div class="group flex flex-col overflow-hidden rounded-xl border border-line bg-white shadow-sm transition-all duration-300 hover:shadow-md">
+          <a class="relative block aspect-[4/5] w-full overflow-hidden bg-placeholder" href="collection.html">
+            <img class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                 src="https://estele.co/cdn/shop/files/Coloure_Pop.jpg?width=600" alt="Colour Pop Collection" loading="lazy" width="500" height="625">
+          </a>
+          <div class="flex flex-1 flex-col justify-between p-4 text-center">
+            <div>
+              <h3 class="font-serif text-[15px] font-semibold text-heading">Colour Pop Collection</h3>
+              <p class="mt-1 text-[12px] text-muted">Vibrant statement pieces</p>
+            </div>
+            <a class="mt-4 block w-full rounded-md bg-accent py-2 text-center text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:bg-accent-dark" href="collection.html">Explore Collection</a>
+          </div>
+        </div>
+        <div class="group flex flex-col overflow-hidden rounded-xl border border-line bg-white shadow-sm transition-all duration-300 hover:shadow-md">
+          <a class="relative block aspect-[4/5] w-full overflow-hidden bg-placeholder" href="collection.html">
+            <img class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                 src="https://estele.co/cdn/shop/files/Mor_Bagh.jpg?width=600" alt="Mor Bagh Collection" loading="lazy" width="500" height="625">
+          </a>
+          <div class="flex flex-1 flex-col justify-between p-4 text-center">
+            <div>
+              <h3 class="font-serif text-[15px] font-semibold text-heading">Mor Bagh Collection</h3>
+              <p class="mt-1 text-[12px] text-muted">Royal peacock motifs</p>
+            </div>
+            <a class="mt-4 block w-full rounded-md bg-accent py-2 text-center text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:bg-accent-dark" href="collection.html">Explore Collection</a>
+          </div>
+        </div>
+        <div class="group flex flex-col overflow-hidden rounded-xl border border-line bg-white shadow-sm transition-all duration-300 hover:shadow-md">
+          <a class="relative block aspect-[4/5] w-full overflow-hidden bg-placeholder" href="collection.html?collection=rose">
+            <img class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                 src="https://estele.co/cdn/shop/files/Rose_Collection_22f60169-9004-4f13-b13c-4cf7e2a0e06b.jpg?width=600" alt="Rose Collection" loading="lazy" width="500" height="625">
+          </a>
+          <div class="flex flex-1 flex-col justify-between p-4 text-center">
+            <div>
+              <h3 class="font-serif text-[15px] font-semibold text-heading">Rose Collection</h3>
+              <p class="mt-1 text-[12px] text-muted">Signature rose gold plating</p>
+            </div>
+            <a class="mt-4 block w-full rounded-md bg-accent py-2 text-center text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:bg-accent-dark" href="collection.html?collection=rose">Explore Collection</a>
+          </div>
+        </div>
+        <div class="group flex flex-col overflow-hidden rounded-xl border border-line bg-white shadow-sm transition-all duration-300 hover:shadow-md">
+          <a class="relative block aspect-[4/5] w-full overflow-hidden bg-placeholder" href="collection.html">
+            <img class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                 src="https://estele.co/cdn/shop/files/Crystal_Bloom_cade702c-fad5-49fa-a5dd-d4ef01106081.jpg?width=600" alt="Crystal Bloom Collection" loading="lazy" width="500" height="625">
+          </a>
+          <div class="flex flex-1 flex-col justify-between p-4 text-center">
+            <div>
+              <h3 class="font-serif text-[15px] font-semibold text-heading">Crystal Bloom</h3>
+              <p class="mt-1 text-[12px] text-muted">Floral crystal elegance</p>
+            </div>
+            <a class="mt-4 block w-full rounded-md bg-accent py-2 text-center text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:bg-accent-dark" href="collection.html">Explore Collection</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1250,7 +1240,7 @@
               <span class="text-[11px] uppercase tracking-[0.5px] text-muted">Under</span>
               <span class="text-[22px] font-semibold leading-tight md:text-[26px] text-heading">&#8377;999</span>
             </span>
-            <span class="absolute bottom-[12%] left-1/2 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full text-white transition-colors bg-[#f7c7d4] group-hover:bg-accent">
+            <span class="absolute bottom-[12%] left-1/2 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full text-white transition-colors bg-gold group-hover:bg-accent">
               <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
             </span>
           </a>
@@ -1261,7 +1251,7 @@
               <span class="text-[11px] uppercase tracking-[0.5px] text-muted">Under</span>
               <span class="text-[22px] font-semibold leading-tight md:text-[26px] text-heading">&#8377;1,499</span>
             </span>
-            <span class="absolute bottom-[12%] left-1/2 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full text-white transition-colors bg-[#f7c7d4] group-hover:bg-accent">
+            <span class="absolute bottom-[12%] left-1/2 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full text-white transition-colors bg-gold group-hover:bg-accent">
               <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
             </span>
           </a>
@@ -1272,7 +1262,7 @@
               <span class="text-[11px] uppercase tracking-[0.5px] text-muted">Under</span>
               <span class="text-[22px] font-semibold leading-tight md:text-[26px] text-heading">&#8377;2,999</span>
             </span>
-            <span class="absolute bottom-[12%] left-1/2 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full text-white transition-colors bg-[#f7c7d4] group-hover:bg-accent">
+            <span class="absolute bottom-[12%] left-1/2 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full text-white transition-colors bg-gold group-hover:bg-accent">
               <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
             </span>
           </a>
@@ -1671,82 +1661,89 @@
     </div>
   </section>
 
-  <!-- ================================ USP =============================== -->
-  <section class="py-10 md:py-[60px]">
-    <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div class="p-2.5 text-center">
-          <img class="mx-auto mb-3 h-[46px] w-[46px] md:h-14 md:w-14" src="https://estele.co/cdn/shop/files/Group_84315_322e64b9-d8f9-4607-ba06-df0d00fd2057.svg" alt="" loading="lazy" width="56" height="56">
-          <h3 class="mb-1.5 text-[15px] font-medium">100% Anti-Tarnish</h3>
-          <a class="border-b border-current text-[12px] tracking-[0.3px] text-muted transition-colors hover:text-accent" href="pages/return-policy.html">know more</a>
+  <!-- ================================ TRUST STRIP =============================== -->
+  <section class="bg-warmbeige/60 py-8 md:py-10 border-y border-line">
+    <div class="mx-auto w-full max-w-wrapper px-4 md:px-8">
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+        <div class="flex items-center gap-3 rounded-lg bg-white p-3.5 shadow-sm border border-line">
+          <div class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-[14px] font-semibold text-heading">100% Anti-Tarnish</h3>
+            <p class="text-[11px] text-muted leading-tight">24K gold & silver plating</p>
+          </div>
         </div>
-        <div class="p-2.5 text-center">
-          <img class="mx-auto mb-3 h-[46px] w-[46px] md:h-14 md:w-14" src="https://estele.co/cdn/shop/files/Group_84316_4837361c-23dc-4d26-bcce-c5291e0ef970.svg" alt="" loading="lazy" width="56" height="56">
-          <h3 class="mb-1.5 text-[15px] font-medium">7-Day Return &amp; Exchange</h3>
-          <a class="border-b border-current text-[12px] tracking-[0.3px] text-muted transition-colors hover:text-accent" href="pages/return-policy.html">know more</a>
+        <div class="flex items-center gap-3 rounded-lg bg-white p-3.5 shadow-sm border border-line">
+          <div class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-[14px] font-semibold text-heading">7-Day Returns</h3>
+            <p class="text-[11px] text-muted leading-tight">Hassle-free exchange policy</p>
+          </div>
         </div>
-        <div class="p-2.5 text-center">
-          <img class="mx-auto mb-3 h-[46px] w-[46px] md:h-14 md:w-14" src="https://estele.co/cdn/shop/files/Group_84317_17a6c78b-4af9-43fa-8f70-e176587a2e6a.svg" alt="" loading="lazy" width="56" height="56">
-          <h3 class="mb-1.5 text-[15px] font-medium">Free Shipping Available</h3>
-          <a class="border-b border-current text-[12px] tracking-[0.3px] text-muted transition-colors hover:text-accent" href="pages/shipping-and-handling.html">know more</a>
+        <div class="flex items-center gap-3 rounded-lg bg-white p-3.5 shadow-sm border border-line">
+          <div class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-[14px] font-semibold text-heading">Free Express Delivery</h3>
+            <p class="text-[11px] text-muted leading-tight">On all orders above &#8377;1,499</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 rounded-lg bg-white p-3.5 shadow-sm border border-line">
+          <div class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-[14px] font-semibold text-heading">35+ Years Legacy</h3>
+            <p class="text-[11px] text-muted leading-tight">5M+ satisfied customers</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- =========================== TESTIMONIALS =========================== -->
-  <section class="py-10 md:py-[60px] bg-pinksoft">
+  <section class="py-10 md:py-[60px] bg-ivory">
     <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
-      <div class="mb-5 text-center md:mb-[30px]">
-        <h2 class="text-[18px] md:text-[21px] xl:text-[24px] font-medium uppercase tracking-[0.5px] text-heading">5M+ Happy Customers</h2>
+      <div class="mb-6 text-center md:mb-[36px]">
+        <h2 class="text-[20px] md:text-[24px] font-serif font-semibold tracking-[0.5px] text-heading">Loved by 5M+ Customers</h2>
+        <div class="mx-auto mt-2 h-0.5 w-12 bg-gold"></div>
       </div>
       <div class="relative" data-carousel>
         <button class="absolute top-1/2 z-[3] hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white shadow-md transition-colors hover:bg-accent hover:text-white disabled:pointer-events-none disabled:opacity-0 md:grid -left-2 xl:-left-[18px]" type="button" data-carousel-prev aria-label="Previous">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <div class="carousel-track gap-3.5" data-carousel-track>
-        <div class="flex-[0_0_88%] md:flex-[0_0_calc((100%-2*14px)/3)] xl:flex-[0_0_calc((100%-4*14px)/5)]">
-          <blockquote class="flex h-full flex-col rounded-md bg-cream p-4">
-            <div class="mb-2.5 text-[13px] tracking-wider"><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span></div>
-            <p class="mb-3.5 flex-1 text-[12.5px] leading-relaxed text-ink"><strong class="block">Soooooo comfortable</strong> Soooooooo beautiful Sooooooooo comfortable Soooooooo nice 😊</p>
-            <cite class="text-[12px] not-italic text-muted">- Samadi</cite>
-          </blockquote>
-        </div>
-        <div class="flex-[0_0_88%] md:flex-[0_0_calc((100%-2*14px)/3)] xl:flex-[0_0_calc((100%-4*14px)/5)]">
-          <blockquote class="flex h-full flex-col rounded-md bg-cream p-4">
-            <div class="mb-2.5 text-[13px] tracking-wider"><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span></div>
-            <p class="mb-3.5 flex-1 text-[12.5px] leading-relaxed text-ink">Absolutely love the set. What I liked especially was the size of the back clip which secures easily and gives a good support to the earrings.</p>
-            <cite class="text-[12px] not-italic text-muted">- V J</cite>
-          </blockquote>
-        </div>
-        <div class="flex-[0_0_88%] md:flex-[0_0_calc((100%-2*14px)/3)] xl:flex-[0_0_calc((100%-4*14px)/5)]">
-          <blockquote class="flex h-full flex-col rounded-md bg-cream p-4">
-            <div class="mb-2.5 text-[13px] tracking-wider"><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-line-strong">&#9733;</span></div>
-            <p class="mb-3.5 flex-1 text-[12.5px] leading-relaxed text-ink">It's very beautiful but it's little bit loose. Quality is good, value for money. Shinning is also good look like real gold.</p>
-            <cite class="text-[12px] not-italic text-muted">- Jyotsna</cite>
-          </blockquote>
-        </div>
-        <div class="flex-[0_0_88%] md:flex-[0_0_calc((100%-2*14px)/3)] xl:flex-[0_0_calc((100%-4*14px)/5)]">
-          <blockquote class="flex h-full flex-col rounded-md bg-cream p-4">
-            <div class="mb-2.5 text-[13px] tracking-wider"><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span></div>
-            <p class="mb-3.5 flex-1 text-[12.5px] leading-relaxed text-ink">Very nice and cute product I had purchased this to gift my sister for her birthday and she loved this a lot.</p>
-            <cite class="text-[12px] not-italic text-muted">- Swapnanjali</cite>
-          </blockquote>
-        </div>
-        <div class="flex-[0_0_88%] md:flex-[0_0_calc((100%-2*14px)/3)] xl:flex-[0_0_calc((100%-4*14px)/5)]">
-          <blockquote class="flex h-full flex-col rounded-md bg-cream p-4">
-            <div class="mb-2.5 text-[13px] tracking-wider"><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span></div>
-            <p class="mb-3.5 flex-1 text-[12.5px] leading-relaxed text-ink"><strong class="block">Amazing Product.</strong> Very beautiful earings, loved so much.</p>
-            <cite class="text-[12px] not-italic text-muted">- Charu</cite>
-          </blockquote>
-        </div>
-        <div class="flex-[0_0_88%] md:flex-[0_0_calc((100%-2*14px)/3)] xl:flex-[0_0_calc((100%-4*14px)/5)]">
-          <blockquote class="flex h-full flex-col rounded-md bg-cream p-4">
-            <div class="mb-2.5 text-[13px] tracking-wider"><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span><span class="text-star">&#9733;</span></div>
-            <p class="mb-3.5 flex-1 text-[12.5px] leading-relaxed text-ink">I love how Estele's daily wear pieces add a touch of elegance and glamour to my outfits.</p>
-            <cite class="text-[12px] not-italic text-muted">- Meera</cite>
-          </blockquote>
-        </div>
+        <div class="carousel-track gap-4 md:gap-6" data-carousel-track>
+          <div class="flex-[0_0_85%] sm:flex-[0_0_45%] md:flex-[0_0_calc((100%-2*24px)/3)]">
+            <blockquote class="flex h-full flex-col justify-between rounded-xl border border-line bg-white p-5 shadow-sm">
+              <div>
+                <div class="mb-3 text-[14px] text-gold">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="text-[13px] leading-relaxed text-heading">&ldquo;So beautiful and comfortable! The finish is exactly like real gold jewellery. Got so many compliments at my friend's wedding!&rdquo;</p>
+              </div>
+              <cite class="mt-4 block text-[12px] font-medium not-italic text-accent">&mdash; Samadi K.</cite>
+            </blockquote>
+          </div>
+          <div class="flex-[0_0_85%] sm:flex-[0_0_45%] md:flex-[0_0_calc((100%-2*24px)/3)]">
+            <blockquote class="flex h-full flex-col justify-between rounded-xl border border-line bg-white p-5 shadow-sm">
+              <div>
+                <div class="mb-3 text-[14px] text-gold">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="text-[13px] leading-relaxed text-heading">&ldquo;Absolutely love the set. The back clip secures easily and gives excellent support to the earrings. Premium packaging too.&rdquo;</p>
+              </div>
+              <cite class="mt-4 block text-[12px] font-medium not-italic text-accent">&mdash; V. J. Sharma</cite>
+            </blockquote>
+          </div>
+          <div class="flex-[0_0_85%] sm:flex-[0_0_45%] md:flex-[0_0_calc((100%-2*24px)/3)]">
+            <blockquote class="flex h-full flex-col justify-between rounded-xl border border-line bg-white p-5 shadow-sm">
+              <div>
+                <div class="mb-3 text-[14px] text-gold">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="text-[13px] leading-relaxed text-heading">&ldquo;Very nice product. I purchased this to gift my sister for her birthday and she loved it! Worth every rupee.&rdquo;</p>
+              </div>
+              <cite class="mt-4 block text-[12px] font-medium not-italic text-accent">&mdash; Swapnanjali M.</cite>
+            </blockquote>
+          </div>
         </div>
         <button class="absolute top-1/2 z-[3] hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white shadow-md transition-colors hover:bg-accent hover:text-white disabled:pointer-events-none disabled:opacity-0 md:grid -right-2 xl:-right-[18px]" type="button" data-carousel-next aria-label="Next">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -1755,203 +1752,107 @@
     </div>
   </section>
 
-  <!-- =========================== BRAND STORY ============================ -->
-  <section class="py-10 md:py-[60px] bg-pinksoft">
-    <div class="mx-auto w-full max-w-wrapper px-3 md:px-4 text-center">
-      <h2 class="font-serif text-[24px] uppercase tracking-[3px] md:text-[34px]"><span>&mdash;</span> Estele <span>&mdash;</span></h2>
-      <p class="mb-5 text-[15px] tracking-[0.5px] text-accent">&#10022; Sparkle That Stays With You</p>
-      <div class="mx-auto max-w-[900px] overflow-hidden text-left text-[13.5px] leading-[1.9] text-muted [&.is-clamped]:max-h-24 [&.is-clamped]:[mask-image:linear-gradient(#000_55%,transparent)]" data-clamp>
-          <p class="mb-4">Estele is a leading Indian fashion jewellery brand since 1989, offering over 100,000 unique designs crafted with elegance and quality. With 95% in-house manufacturing in Hyderabad and a 75% women workforce,
-      </div>
+  <!-- =========================== BRAND STATEMENT & NEWSLETTER ============================ -->
+  <section class="bg-warmbeige/50 py-12 md:py-16 text-center border-t border-line">
+    <div class="mx-auto w-full max-w-wrapper px-4 md:px-8">
+      <div class="mx-auto max-w-2xl">
+        <span class="text-[12px] uppercase tracking-[2px] font-semibold text-gold">&mdash; Crafted Since 1989 &mdash;</span>
+        <h2 class="mt-2 font-serif text-[24px] md:text-[30px] font-semibold text-heading">Sparkle That Stays With You</h2>
+        <p class="mt-3 text-[13px] md:text-[14px] leading-relaxed text-muted">
+          Estele has been India's trusted fashion jewellery brand for over 35 years. Manufactured in Hyderabad with a 75% women workforce, we bring you over 100,000 unique designs plated in 24K gold with anti-tarnish protection.
+        </p>
 
-      <div class="mt-10 grid grid-cols-3 gap-3 md:grid-cols-6 md:gap-[18px]">
-          <div class="transition-transform hover:-translate-y-1">
-            <img class="mx-auto h-auto w-full max-w-[150px]" src="https://estele.co/cdn/shop/files/Group_84953.svg" alt="24 Gold-Plated Jewellery" loading="lazy" width="150" height="150">
-          </div>
-          <div class="transition-transform hover:-translate-y-1">
-            <img class="mx-auto h-auto w-full max-w-[150px]" src="https://estele.co/cdn/shop/files/Group_84954.svg" alt="Designed in Hyderabad" loading="lazy" width="150" height="150">
-          </div>
-          <div class="transition-transform hover:-translate-y-1">
-            <img class="mx-auto h-auto w-full max-w-[150px]" src="https://estele.co/cdn/shop/files/Group_84955.svg" alt="Handcrafted Skin Friendly" loading="lazy" width="150" height="150">
-          </div>
-          <div class="transition-transform hover:-translate-y-1">
-            <img class="mx-auto h-auto w-full max-w-[150px]" src="https://estele.co/cdn/shop/files/Group_84956.svg" alt="35+ Years Legacy" loading="lazy" width="150" height="150">
-          </div>
-          <div class="transition-transform hover:-translate-y-1">
-            <img class="mx-auto h-auto w-full max-w-[150px]" src="https://estele.co/cdn/shop/files/Group_84957.svg" alt="1 Year Warranty" loading="lazy" width="150" height="150">
-          </div>
-          <div class="transition-transform hover:-translate-y-1">
-            <img class="mx-auto h-auto w-full max-w-[150px]" src="https://estele.co/cdn/shop/files/Group_84958.svg" alt="Lifetime Service" loading="lazy" width="150" height="150">
-          </div>
+        <form class="mx-auto mt-8 flex max-w-md flex-col gap-2.5 sm:flex-row" data-newsletter>
+          <label class="sr-only-custom" for="nl-email">Email address</label>
+          <input class="w-full rounded-md border border-line-strong bg-white px-4 py-2.5 text-[13px] outline-none placeholder:text-muted focus:border-accent flex-1" id="nl-email" type="email" name="email" placeholder="Enter your email for 10% off" required>
+          <button class="rounded-md bg-accent px-6 py-2.5 text-[12px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:bg-accent-dark shrink-0" type="submit">Subscribe</button>
+        </form>
+        <p class="mt-2 text-[12px] text-gold" data-newsletter-msg hidden>Thank you for subscribing to Estele updates!</p>
       </div>
-    </div>
-  </section>
-
-  <!-- ============================ NEWSLETTER ============================ -->
-  <section class="bg-pinksoft py-10 text-center md:py-[60px]">
-    <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
-      <h2 class="mb-2 text-[19px] md:text-[28px]">Get the Glow &ndash; Exclusive Access Awaits</h2>
-      <p class="mb-[22px] text-[13px] uppercase tracking-[0.5px] text-muted">Subscribe to our emailer and get 5% off your first purchase</p>
-      <form class="mx-auto flex max-w-[520px] flex-col gap-2.5 sm:flex-row" data-newsletter>
-        <label class="sr-only-custom" for="nl-email">Email address</label>
-        <input class="w-full border border-line-strong bg-white px-4 py-3 text-[14px] outline-none transition-colors placeholder:text-muted focus:border-heading flex-1" id="nl-email" type="email" name="email" placeholder="Enter your email" required>
-        <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">Subscribe</button>
-      </form>
-      <p class="mt-3 text-[13px] text-[#428445]" data-newsletter-msg hidden>Thanks for subscribing.</p>
     </div>
   </section>
 
 </main>
 
 <!-- ================================ FOOTER =========================== -->
-<footer class="border-t border-line bg-white pt-8 md:pt-12">
-  <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
-
-    <!-- ===== Mobile: Follow Us row + collapsible accordion ===== -->
-    <div class="md:hidden">
-      <div class="flex items-center gap-3 border-b border-line pb-5">
-        <h3 class="text-[13px] font-medium uppercase tracking-[0.6px]">Follow Us</h3>
-        <div class="flex gap-2">
-          <a class="grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors hover:bg-accent hover:text-white" href="https://www.facebook.com/estelejewelery/" target="_blank" rel="noopener" aria-label="Follow on Facebook">
+<footer class="bg-accent text-white border-t border-accent-dark">
+  <div class="mx-auto w-full max-w-wrapper px-4 md:px-8 pt-12 md:pt-16 pb-10">
+    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 pb-10 border-b border-white/10">
+      
+      <!-- Col 1: About & Socials -->
+      <div>
+        <h3 class="font-serif text-[14px] md:text-[15px] font-semibold uppercase tracking-[0.5px] text-gold mb-4">About Estele</h3>
+        <p class="text-[13px] leading-relaxed text-[#F8F4EC]/80 mb-5">India's leading fashion jewellery destination since 1989. Over 100,000 anti-tarnish 24K gold plated designs crafted with care.</p>
+        <div class="flex items-center gap-3">
+          <a class="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-[#F8F4EC] transition-all hover:border-gold hover:bg-gold hover:text-accent" href="https://www.facebook.com/estelejewelery/" target="_blank" rel="noopener" aria-label="Facebook">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.75l.41-3.2h-3.16V8.4c0-.93.26-1.56 1.6-1.56h1.7V3.98A22.7 22.7 0 0 0 14.2 3.8c-2.44 0-4.11 1.49-4.11 4.22v2.36H7.3v3.2h2.79V22h3.4Z"/></svg>
           </a>
-          <a class="grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors hover:bg-accent hover:text-white" href="https://www.instagram.com/estele.co/" target="_blank" rel="noopener" aria-label="Follow on Instagram">
+          <a class="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-[#F8F4EC] transition-all hover:border-gold hover:bg-gold hover:text-accent" href="https://www.instagram.com/estele.co/" target="_blank" rel="noopener" aria-label="Instagram">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
           </a>
-          <a class="grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors hover:bg-accent hover:text-white" href="https://www.linkedin.com/company/30985476" target="_blank" rel="noopener" aria-label="Follow on LinkedIn">
+          <a class="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-[#F8F4EC] transition-all hover:border-gold hover:bg-gold hover:text-accent" href="https://www.linkedin.com/company/30985476" target="_blank" rel="noopener" aria-label="LinkedIn">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92A1.96 1.96 0 0 0 5.25 3ZM21 13.9c0-3.6-1.92-5.28-4.48-5.28-2.07 0-2.99 1.14-3.5 1.94V8.5H9.64c.05 1 0 12.5 0 12.5h3.38v-6.98c0-.37.03-.75.14-1.02.3-.75 1-1.53 2.16-1.53 1.52 0 2.13 1.16 2.13 2.85V21H21v-7.1Z"/></svg>
           </a>
         </div>
       </div>
 
-      <details class="marker-pm border-b border-line">
-        <summary class="flex items-center justify-between py-4 text-[13px] font-medium uppercase tracking-[0.6px]">Explore</summary>
-        <ul class="space-y-2.5 pb-5 text-[13px] text-muted">
-          <li><a class="transition-colors hover:text-accent" href="pages/about-us.html">About Estele</a></li>
-          <li><a class="transition-colors hover:text-accent" href="pages/privacy-policy.html">Privacy Policy</a></li>
-          <li><a class="transition-colors hover:text-accent" href="pages/faq-s.html">FAQ</a></li>
-          <li><a class="transition-colors hover:text-accent" href="pages/franchise.html">Franchise</a></li>
-          <li><a class="transition-colors hover:text-accent" href="pages/sitemap.html">Sitemap</a></li>
-          <li><a class="transition-colors hover:text-accent" href="blog.html">Blogs</a></li>
+      <!-- Col 2: Know Your Jewellery -->
+      <div>
+        <h3 class="font-serif text-[14px] md:text-[15px] font-semibold uppercase tracking-[0.5px] text-gold mb-4">Know Your Jewellery</h3>
+        <ul class="space-y-2.5 text-[13px] text-[#F8F4EC]/85">
+          <li><a class="transition-colors hover:text-gold" href="collection.html?collection=rose">Rose Collection</a></li>
+          <li><a class="transition-colors hover:text-gold" href="collection.html?cat=earrings">Earrings</a></li>
+          <li><a class="transition-colors hover:text-gold" href="collection.html?cat=maang-tikka">Maang Tikka</a></li>
+          <li><a class="transition-colors hover:text-gold" href="collection.html?collection=crystal-blooms">Crystal Blooms</a></li>
+          <li><a class="transition-colors hover:text-gold" href="collection.html?collection=hasli">Hasli Collection</a></li>
         </ul>
-      </details>
-      <details class="marker-pm border-b border-line">
-        <summary class="flex items-center justify-between py-4 text-[13px] font-medium uppercase tracking-[0.6px]">Know Your Jewellery</summary>
-        <ul class="space-y-2.5 pb-5 text-[13px] text-muted">
-          <li><a class="transition-colors hover:text-accent" href="collection.html?collection=rose">Rose Collection</a></li>
-          <li><a class="transition-colors hover:text-accent" href="collection.html?cat=earrings">Earring</a></li>
-          <li><a class="transition-colors hover:text-accent" href="collection.html?cat=maang-tikka">Maang Tika</a></li>
-          <li><a class="transition-colors hover:text-accent" href="collection.html?collection=crystal-blooms">Crystal Blooms</a></li>
+      </div>
+
+      <!-- Col 3: Customer Service -->
+      <div>
+        <h3 class="font-serif text-[14px] md:text-[15px] font-semibold uppercase tracking-[0.5px] text-gold mb-4">Customer Service</h3>
+        <ul class="space-y-2.5 text-[13px] text-[#F8F4EC]/85">
+          <li><a class="transition-colors hover:text-gold" href="account.html">Track Order</a></li>
+          <li><a class="transition-colors hover:text-gold" href="pages/return-policy.html">Return &amp; Exchange Policy</a></li>
+          <li><a class="transition-colors hover:text-gold" href="pages/shipping-and-handling.html">Shipping &amp; Delivery</a></li>
+          <li><a class="transition-colors hover:text-gold" href="pages/faq-s.html">Help &amp; FAQ</a></li>
+          <li><a class="transition-colors hover:text-gold" href="pages/contact.html">Contact Us</a></li>
+          <li><a class="transition-colors hover:text-gold" href="pages/storelocator.html">Store Locator</a></li>
         </ul>
-      </details>
-      <details class="marker-pm border-b border-line">
-        <summary class="flex items-center justify-between py-4 text-[13px] font-medium uppercase tracking-[0.6px]">Customer Service</summary>
-        <ul class="space-y-2.5 pb-5 text-[13px] text-muted">
-          <li><a class="transition-colors hover:text-accent" href="account.html">Find Your Order</a></li>
-          <li><a class="transition-colors hover:text-accent" href="pages/return-policy.html">Return Exchange Policy</a></li>
-          <li><a class="transition-colors hover:text-accent" href="pages/shipping-and-handling.html">Shipping & Delivery</a></li>
-          <li><a class="transition-colors hover:text-accent" href="account.html">Track Order</a></li>
-          <li><a class="transition-colors hover:text-accent" href="pages/contact.html">Contact Us</a></li>
-          <li><a class="transition-colors hover:text-accent" href="pages/storelocator.html">Store Locator</a></li>
-        </ul>
-      </details>
-      <details class="marker-pm border-b border-line">
-        <summary class="flex items-center justify-between py-4 text-[13px] font-semibold uppercase tracking-[1px]">Contact Us</summary>
-        <div class="space-y-4 pb-5 text-[15px] text-muted leading-7">
-          <p>Estele Accessories Pvt. Ltd.</p>
-          <p>9-47, Keshav Nagar, West Hanuman Nagar, Boduppal, Hyderabad, Telangana 500092</p>
-          <p>+91 8247476318</p>
-          <p>info@estele.co</p>
-          <div class="pt-2">
-            <h4 class="mb-3 text-[13px] font-semibold uppercase tracking-[1px] text-heading">Download</h4>
-            <div class="flex gap-3">
-              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" class="h-10" alt="App Store" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" class="h-10" alt="Google Play" />
-            </div>
+      </div>
+
+      <!-- Col 4: Contact Us & Download -->
+      <div>
+        <h3 class="font-serif text-[14px] md:text-[15px] font-semibold uppercase tracking-[0.5px] text-gold mb-4">Contact Us</h3>
+        <div class="space-y-2 text-[13px] text-[#F8F4EC]/85">
+          <p class="font-semibold text-[#F8F4EC]">Estele Accessories Pvt. Ltd.</p>
+          <p class="leading-normal">9-47, Keshav Nagar, Boduppal, Hyderabad, Telangana 500092</p>
+          <p>Phone: <a href="tel:+918247476318" class="underline hover:text-gold">+91 8247476318</a></p>
+          <p>Email: <a href="mailto:info@estele.co" class="underline hover:text-gold">info@estele.co</a></p>
+        </div>
+        <div class="mt-4">
+          <h4 class="text-[11px] font-semibold uppercase tracking-[0.5px] text-[#F8F4EC]/70 mb-2">Download App</h4>
+          <div class="flex gap-2.5">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" class="h-8" alt="App Store" width="100" height="32" />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" class="h-8" alt="Google Play" width="100" height="32" />
           </div>
         </div>
-      </details>
+      </div>
 
-      <div class="pt-6 pb-6 text-[13px] text-muted">
-        <p>Copyright © 2026 - ESTELe</p>
-        <p class="mt-2">Download Our App For Exclusive Collection, Offers & Discounts</p>
+    </div>
+  </div>
+
+  <!-- Bottom Darker Burgundy Strip (#3A0610 per doc4.pdf) -->
+  <!-- Extra bottom padding reserves clearance for the fixed support-chat widget (+ mobile bottom nav) so it never overlaps this row -->
+  <div class="bg-[#3A0610] pt-4 pb-[160px] md:pb-20 text-[12px] text-[#D8CDC0]">
+    <div class="mx-auto w-full max-w-wrapper px-4 md:px-8 flex flex-col items-center justify-between gap-2.5 sm:flex-row">
+      <p>Copyright &copy; 2026 ESTELE Accessories Pvt. Ltd. All rights reserved.</p>
+      <div class="flex gap-4">
+        <a class="hover:text-gold transition-colors" href="pages/privacy-policy.html">Privacy Policy</a>
+        <a class="hover:text-gold transition-colors" href="pages/return-policy.html">Terms &amp; Conditions</a>
+        <a class="hover:text-gold transition-colors" href="pages/shipping-and-handling.html">Shipping Policy</a>
       </div>
     </div>
-
-    <!-- ===== Desktop: plain 4-column grid, always expanded ===== -->
-    <div class="hidden md:block">
-      <div class="grid grid-cols-2 gap-y-10 gap-x-20 pb-10 lg:grid-cols-4">
-        <div>
-          <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Explore</h3>
-          <ul class="space-y-2.5 text-[13px] text-muted">
-            <li><a class="transition-colors hover:text-accent" href="pages/about-us.html">About Estele</a></li>
-            <li><a class="transition-colors hover:text-accent" href="pages/privacy-policy.html">Privacy Policy</a></li>
-            <li><a class="transition-colors hover:text-accent" href="pages/faq-s.html">FAQ</a></li>
-            <li><a class="transition-colors hover:text-accent" href="pages/franchise.html">Franchise</a></li>
-            <li><a class="transition-colors hover:text-accent" href="pages/sitemap.html">Sitemap</a></li>
-            <li><a class="transition-colors hover:text-accent" href="blog.html">Blogs</a></li>
-          </ul>
-          <div class="mt-8">
-            <h4 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Follow Us</h4>
-            <div class="flex gap-2">
-              <a class="grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors hover:bg-accent hover:text-white" href="https://www.facebook.com/estelejewelery/" target="_blank" rel="noopener" aria-label="Follow on Facebook">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.75l.41-3.2h-3.16V8.4c0-.93.26-1.56 1.6-1.56h1.7V3.98A22.7 22.7 0 0 0 14.2 3.8c-2.44 0-4.11 1.49-4.11 4.22v2.36H7.3v3.2h2.79V22h3.4Z"/></svg>
-              </a>
-              <a class="grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors hover:bg-accent hover:text-white" href="https://www.instagram.com/estele.co/" target="_blank" rel="noopener" aria-label="Follow on Instagram">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
-              </a>
-              <a class="grid h-8 w-8 place-items-center rounded-full bg-pinksoft text-accent-dark transition-colors hover:bg-accent hover:text-white" href="https://www.linkedin.com/company/30985476" target="_blank" rel="noopener" aria-label="Follow on LinkedIn">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92A1.96 1.96 0 0 0 5.25 3ZM21 13.9c0-3.6-1.92-5.28-4.48-5.28-2.07 0-2.99 1.14-3.5 1.94V8.5H9.64c.05 1 0 12.5 0 12.5h3.38v-6.98c0-.37.03-.75.14-1.02.3-.75 1-1.53 2.16-1.53 1.52 0 2.13 1.16 2.13 2.85V21H21v-7.1Z"/></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Know Your Jewellery</h3>
-          <ul class="space-y-2.5 text-[13px] text-muted">
-            <li><a class="transition-colors hover:text-accent" href="collection.html?collection=rose">Rose Collection</a></li>
-            <li><a class="transition-colors hover:text-accent" href="collection.html?cat=earrings">Earring</a></li>
-            <li><a class="transition-colors hover:text-accent" href="collection.html?cat=maang-tikka">Maang Tika</a></li>
-            <li><a class="transition-colors hover:text-accent" href="collection.html?collection=crystal-blooms">Crystal Blooms</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="mb-4 text-[13px] font-medium uppercase tracking-[0.6px]">Customer Service</h3>
-          <ul class="space-y-2.5 text-[13px] text-muted">
-            <li><a class="transition-colors hover:text-accent" href="account.html">Find Your Order</a></li>
-            <li><a class="transition-colors hover:text-accent" href="pages/return-policy.html">Return Exchange Policy</a></li>
-            <li><a class="transition-colors hover:text-accent" href="pages/shipping-and-handling.html">Shipping & Delivery</a></li>
-            <li><a class="transition-colors hover:text-accent" href="account.html">Track Order</a></li>
-            <li><a class="transition-colors hover:text-accent" href="pages/contact.html">Contact Us</a></li>
-            <li><a class="transition-colors hover:text-accent" href="pages/storelocator.html">Store Locator</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="mb-6 text-[13px] font-semibold uppercase tracking-[1px]">Contact Us</h3>
-          <div class="space-y-4 text-[15px] text-muted leading-7">
-            <p>Estele Accessories Pvt. Ltd.</p>
-            <p>9-47, Keshav Nagar, West Hanuman Nagar, Boduppal, Hyderabad, Telangana 500092</p>
-            <p>+91 8247476318</p>
-            <p>info@estele.co</p>
-          </div>
-          <div class="mt-8">
-            <h4 class="mb-3 text-[13px] font-semibold uppercase tracking-[1px]">Download</h4>
-            <div class="flex gap-3">
-              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" class="h-10" alt="App Store" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" class="h-10" alt="Google Play" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="border-t border-line pt-6 text-[13px] text-muted">
-        <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <p>Copyright © 2026 - ESTELe</p>
-          <p>Download Our App For Exclusive Collection, Offers & Discounts</p>
-        </div>
-      </div>
-    </div>
-
   </div>
 </footer>
 

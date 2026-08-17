@@ -19,7 +19,7 @@
                 <span class="text-[11px] uppercase tracking-[0.5px] {{ $loop->last ? 'text-white/80' : 'text-muted' }}">{{ $item->title }}</span>
                 <span class="text-[22px] font-semibold leading-tight md:text-[26px] {{ $loop->last ? 'text-white' : 'text-heading' }}">{{ $item->body }}</span>
               </span>
-              <span class="absolute bottom-[12%] left-1/2 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full text-white transition-colors {{ $loop->last ? 'bg-white/35' : 'bg-[#f7c7d4] group-hover:bg-accent' }}">
+              <span class="absolute bottom-[12%] left-1/2 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full text-white transition-colors {{ $loop->last ? 'bg-white/35' : 'bg-gold group-hover:bg-accent' }}">
                 <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
               </span>
             </a>

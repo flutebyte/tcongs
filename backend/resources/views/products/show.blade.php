@@ -62,7 +62,7 @@
 
   <x-breadcrumb-schema :items="$breadcrumbItems" />
 
-  <nav class="mx-auto w-full max-w-wrapper px-3 md:px-4 flex flex-wrap items-center gap-1.5 py-4 text-[13px] text-muted" aria-label="Breadcrumb">
+  <nav class="mx-auto w-full max-w-wrapper px-4 flex flex-wrap items-center gap-1.5 py-4 text-[13px] text-muted" aria-label="Breadcrumb">
     <x-breadcrumb :items="$breadcrumbItems" />
   </nav>
 
@@ -155,7 +155,7 @@
     <img> for its localStorage key — resolves to this product's own image here too,
     same as it does for product cards on listing pages.
   --}}
-  <article class="mx-auto w-full max-w-wrapper px-3 md:px-4 grid grid-cols-1 gap-8 pb-10 md:grid-cols-2 md:gap-[46px] md:pb-[60px]">
+  <article class="mx-auto w-full max-w-wrapper px-4 grid grid-cols-1 gap-8 pb-10 md:grid-cols-2 md:gap-[46px] md:pb-[60px]">
 
     <div class="pdp-gallery">
       @if($galleryImages->count() > 1)
@@ -191,7 +191,7 @@
 
     <div>
       <div class="pdp-title-row mb-1.5">
-        <h1 class="text-[20px] md:text-[28px]">{{ $product->title }}</h1>
+        <h1 class="font-serif text-[24px] md:text-[30px] font-semibold text-heading leading-tight">{{ $product->title }}</h1>
         <div class="pdp-icon-group">
           <button class="pdp-icon-btn" type="button" aria-label="Add to wishlist">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.2l7.7-7.7 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
@@ -202,38 +202,47 @@
         </div>
       </div>
       @if($product->sku)
-        <p class="mb-2.5 text-[12px] text-muted">SKU: {{ $product->sku }}</p>
+        <p class="mb-2.5 text-[12px] font-medium tracking-wider text-muted uppercase">SKU: {{ $product->sku }}</p>
       @endif
 
       @if($ratingCount > 0)
-        <a class="mb-2.5 inline-flex items-center gap-2" href="#reviews">
+        <a class="mb-3 inline-flex items-center gap-2" href="#reviews">
           <x-review-stars :rating="$ratingAverage" :count="$ratingCount" />
         </a>
       @endif
 
-      <div class="mb-1 flex flex-wrap items-center gap-2.5 text-[21px]">
-        <span class="font-medium text-price">₹{{ number_format($product->price, 0) }}</span>
+      <div class="mb-1 flex flex-wrap items-baseline gap-3">
+        <span class="font-serif text-[26px] md:text-[30px] font-semibold text-accent">₹{{ number_format($product->price, 0) }}</span>
         @if($product->compare_at_price)
-          <span class="text-muted line-through">₹{{ number_format($product->compare_at_price, 0) }}</span>
-          <span class="inline-block bg-salebadge px-2.5 py-1 text-[11px] font-medium uppercase leading-none text-white">{{ $discountPercent }}% OFF</span>
+          <span class="text-[16px] text-muted line-through">₹{{ number_format($product->compare_at_price, 0) }}</span>
+          <span class="rounded-md bg-gold/15 px-2.5 py-1 text-[11px] font-semibold text-gold uppercase tracking-[0.5px]">{{ $discountPercent }}% OFF</span>
         @endif
       </div>
-      <p class="mb-4 text-[12px] text-muted">Inclusive of all taxes</p>
+      <p class="mb-5 text-[12px] text-muted">Inclusive of all taxes &middot; Free shipping available</p>
 
-      {{-- Trust badge row, matching real Estele's icon strip placed right after the price. --}}
-      <div class="mb-4 flex flex-wrap items-center gap-4 text-[12px] text-muted">
-        <span class="flex items-center gap-1.5">
-          <svg class="h-4 w-4 shrink-0 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
-          100% Anti-Tarnish
-        </span>
-        <span class="flex items-center gap-1.5">
-          <svg class="h-4 w-4 shrink-0 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-          7-Day Return &amp; Exchange
-        </span>
-        <span class="flex items-center gap-1.5">
-          <svg class="h-4 w-4 shrink-0 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
-          Free Shipping Available
-        </span>
+      {{-- Trust badge row --}}
+      <div class="mb-6 grid grid-cols-3 gap-2 rounded-xl bg-warmbeige/40 p-3.5 border border-line text-center">
+        <div>
+          <div class="mx-auto mb-1 grid h-8 w-8 place-items-center rounded-full bg-white text-accent shadow-sm">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <p class="text-[11px] font-semibold text-heading">Skin Friendly</p>
+          <p class="text-[10px] text-muted">24K Gold Plated</p>
+        </div>
+        <div>
+          <div class="mx-auto mb-1 grid h-8 w-8 place-items-center rounded-full bg-white text-accent shadow-sm">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </div>
+          <p class="text-[11px] font-semibold text-heading">Easy Returns</p>
+          <p class="text-[10px] text-muted">7-Day Guarantee</p>
+        </div>
+        <div>
+          <div class="mx-auto mb-1 grid h-8 w-8 place-items-center rounded-full bg-white text-accent shadow-sm">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>
+          </div>
+          <p class="text-[11px] font-semibold text-heading">Free Shipping</p>
+          <p class="text-[10px] text-muted">Orders > ₹1,499</p>
+        </div>
       </div>
 
       @include('partials.offers-banner')
@@ -243,10 +252,10 @@
 
         @if($product->variants->isNotEmpty())
           <div class="mb-5">
-            <span class="mb-2 block text-[13px] font-medium uppercase tracking-[0.4px]">Options</span>
-            <div class="flex flex-wrap gap-2">
+            <span class="mb-2 block text-[13px] font-medium uppercase tracking-[0.4px]">Select Option</span>
+            <div class="flex flex-wrap gap-2.5">
               @foreach($product->variants as $index => $variant)
-                <label class="cursor-pointer border px-4 py-2 text-[13px] font-medium transition-colors has-[:checked]:border-heading has-[:checked]:text-heading border-line-strong text-muted hover:border-heading hover:text-heading {{ $variant->stock_quantity <= 0 ? 'opacity-40' : '' }}">
+                <label class="cursor-pointer rounded-md border-2 border-line-strong px-4 py-2 text-[13px] font-medium transition-colors has-[:checked]:border-accent has-[:checked]:bg-accent/5 has-[:checked]:text-accent text-heading hover:border-accent {{ $variant->stock_quantity <= 0 ? 'opacity-40' : '' }}">
                   <input class="sr-only" type="radio" name="product_variant_id" value="{{ $variant->id }}" {{ $index === 0 ? 'checked' : '' }} {{ $variant->stock_quantity <= 0 ? 'disabled' : '' }}>
                   {{ collect($variant->attributes ?? [])->map(fn($v, $k) => "{$k}: {$v}")->implode(', ') ?: $variant->sku }}
                 </label>
@@ -255,55 +264,63 @@
           </div>
         @endif
 
-        <div class="mb-2.5 flex gap-2.5">
-          <div class="inline-flex items-center border border-line-strong">
-            <input class="h-11 w-[64px] border-0 text-center text-[14px]" type="number" name="quantity" value="1" min="1" aria-label="Quantity">
+        <div class="mb-3 flex flex-col sm:flex-row gap-3">
+          <div class="inline-flex h-12 w-32 shrink-0 items-center justify-between rounded-md border border-line-strong bg-white px-2 shadow-sm" data-qty>
+            <button class="grid h-8 w-8 place-items-center rounded text-[16px] font-semibold text-heading transition-colors hover:bg-warmbeige" type="button" data-qty-minus aria-label="Decrease quantity">&minus;</button>
+            <input class="w-10 border-0 text-center font-medium text-[14px] text-heading outline-none" type="number" name="quantity" value="1" min="1" aria-label="Quantity">
+            <button class="grid h-8 w-8 place-items-center rounded text-[16px] font-semibold text-heading transition-colors hover:bg-warmbeige" type="button" data-qty-plus aria-label="Increase quantity">+</button>
           </div>
-          <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent flex-1 py-3.5" type="submit"
+          <button class="flex-1 rounded-md bg-accent py-3.5 px-6 text-center text-[13px] font-semibold uppercase tracking-[0.6px] text-white shadow-sm transition-colors hover:bg-accent-dark" type="submit"
                   {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
             {{ $product->stock_quantity > 0 ? 'Add to Cart' : 'Out of Stock' }}
           </button>
         </div>
-        <button class="inline-flex items-center justify-center gap-2 border border-black bg-transparent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-black transition-colors hover:bg-black hover:text-white w-full py-3.5" type="submit" name="buy_now" value="1"
+        <button class="w-full rounded-md border-2 border-accent bg-transparent py-3 px-6 text-center text-[13px] font-semibold uppercase tracking-[0.6px] text-accent transition-colors hover:bg-accent hover:text-white" type="submit" name="buy_now" value="1"
                 {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
           Buy It Now
         </button>
       </form>
 
-      <div class="mt-7">
+      <div class="mt-7 border-t border-line">
         @if($product->description)
-          <details class="marker-pm" open>
-            <summary class="flex items-center justify-between border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Description</summary>
-            <div class="pb-4.5 text-[13.5px] leading-[1.85] text-muted">
+          <details class="group border-b border-line" open>
+            <summary class="flex items-center justify-between py-4 text-[13px] font-semibold uppercase tracking-[0.4px] text-heading cursor-pointer">
+              <span>Description</span>
+              <span class="text-[16px] text-accent transition-transform group-open:rotate-180">&minus;</span>
+            </summary>
+            <div class="pb-4 text-[13.5px] leading-[1.8] text-muted">
               <p>{{ $product->description }}</p>
             </div>
           </details>
         @endif
-        <details class="marker-pm">
-          <summary class="flex items-center justify-between border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Return &amp; Exchange Policy</summary>
-          <div class="pb-4.5 text-[13.5px] leading-[1.85] text-muted">
-            <p>Free shipping on all prepaid orders across India. Orders are dispatched within
-               24&ndash;48 hours. Returns and exchanges accepted within 7 days of delivery,
-               provided the product is unused and in original packaging.</p>
+        <details class="group border-b border-line">
+          <summary class="flex items-center justify-between py-4 text-[13px] font-semibold uppercase tracking-[0.4px] text-heading cursor-pointer">
+            <span>Shipping &amp; 7-Day Returns</span>
+            <span class="text-[16px] text-accent transition-transform group-open:rotate-180">+</span>
+          </summary>
+          <div class="pb-4 text-[13.5px] leading-[1.8] text-muted">
+            <p>Free shipping on all prepaid orders across India. Orders are dispatched within 24-48 hours. Returns and exchanges accepted within 7 days of delivery, provided the product is unused and in original packaging.</p>
           </div>
         </details>
-        <details class="marker-pm">
-          <summary class="flex items-center justify-between border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Manufacturing Details</summary>
-          <div class="pb-4.5 text-[13.5px] leading-[1.85] text-muted">
-            <p>Adorn yourself with the allure of anti-tarnish jewelry, exuding beauty and durability.
-               @if($product->sku) SKU: {{ $product->sku }}. @endif
-               Every piece is quality-checked before dispatch.</p>
+        <details class="group border-b border-line">
+          <summary class="flex items-center justify-between py-4 text-[13px] font-semibold uppercase tracking-[0.4px] text-heading cursor-pointer">
+            <span>Manufacturing Details</span>
+            <span class="text-[16px] text-accent transition-transform group-open:rotate-180">+</span>
+          </summary>
+          <div class="pb-4 text-[13.5px] leading-[1.8] text-muted">
+            <p>Adorn yourself with the allure of anti-tarnish jewelry, exuding beauty and durability. @if($product->sku) SKU: {{ $product->sku }}. @endif Every piece is quality-checked before dispatch.</p>
           </div>
         </details>
-        <details class="marker-pm border-b border-line">
-          <summary class="flex items-center justify-between border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Care &amp; Maintenance</summary>
-          <ul class="pb-4.5 space-y-2">
-            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Keep jewellery away from water &amp; humidity</li>
-            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Remove jewellery before sleeping or physical activities</li>
-            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Remove jewellery before bathing, showering or swimming</li>
-            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Avoid direct contact with perfume, body lotions or other chemicals</li>
-            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Clean the piece occasionally and wipe with a soft cloth</li>
-            <li class="relative pl-5 text-[13px] text-muted before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Store separately in an air-tight jewellery box</li>
+        <details class="group border-b border-line">
+          <summary class="flex items-center justify-between py-4 text-[13px] font-semibold uppercase tracking-[0.4px] text-heading cursor-pointer">
+            <span>Jewellery Care &amp; Maintenance</span>
+            <span class="text-[16px] text-accent transition-transform group-open:rotate-180">+</span>
+          </summary>
+          <ul class="pb-4 space-y-2 text-[13px] text-muted">
+            <li class="relative pl-5 before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Keep jewellery away from water &amp; humidity</li>
+            <li class="relative pl-5 before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Remove jewellery before sleeping or physical activities</li>
+            <li class="relative pl-5 before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Avoid direct contact with perfume, body lotions or chemicals</li>
+            <li class="relative pl-5 before:absolute before:left-0 before:top-[7px] before:h-2 before:w-2 before:rounded-full before:bg-accent">Store separately in an air-tight jewellery box</li>
           </ul>
         </details>
       </div>
@@ -318,10 +335,10 @@
   @endif
 
   @if($relatedProducts->isNotEmpty())
-    <section class="py-10 md:py-[60px]">
-      <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
+    <section class="py-12 md:py-16 bg-warmbeige/30 border-t border-line">
+      <div class="mx-auto w-full max-w-wrapper px-4 md:px-8">
         <x-section-header title="You May Also Like" />
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5 xl:grid-cols-4">
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
           @foreach($relatedProducts as $related)
             <x-product-card :product="$related" />
           @endforeach
@@ -330,14 +347,37 @@
     </section>
   @endif
 
-  {{-- "Our Promise to You" trust strip, matching real Estele's PDP (customer-count claim dropped — that figure is Estele's own, not this store's). --}}
-  <section class="border-t border-line py-10 md:py-[60px]">
-    <div class="mx-auto w-full max-w-wrapper px-3 md:px-4">
+  {{--
+    "Our Promise to You" trust strip. Uses a scoped grid (not the
+    sm:grid-cols-3/md:grid-cols-5 Tailwind utilities) because in this
+    backend's static-copy theme CSS (see the pdp-gallery note above),
+    .sm\:grid-cols-3 happens to be emitted after .md\:grid-cols-5 in
+    source order — so at desktop widths the sm: rule was winning the
+    cascade and the grid never reached 5 equal columns, leaving an
+    unbalanced 3+2 layout. Plain scoped CSS sidesteps that ordering
+    landmine entirely.
+  --}}
+  <style>
+    .promise-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    @media (min-width: 640px) { .promise-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (min-width: 768px) { .promise-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; } }
+    .promise-card-icon { margin: 0 auto 10px; color: var(--color-accent); }
+  </style>
+  <section class="py-12 md:py-16 bg-ivory border-t border-line">
+    <div class="mx-auto w-full max-w-wrapper px-4 md:px-8">
       <x-section-header title="Our Promise to You" />
-      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5">
-        @foreach(['One Year Warranty', 'Unparalleled Quality', 'Brilliant Designs', 'Made in India', 'Free Shipping'] as $promise)
-          <div class="rounded-lg border border-line p-4 text-center">
-            <p class="text-[11px] font-medium uppercase tracking-[0.3px] text-heading">{{ $promise }}</p>
+      <div class="promise-grid">
+        @foreach([
+          ['title' => '24K Gold Plated', 'subtitle' => 'Precious long-lasting shine', 'icon' => 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'],
+          ['title' => 'Skin Friendly', 'subtitle' => 'Nickel & lead free formula', 'icon' => 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'],
+          ['title' => '35+ Years Legacy', 'subtitle' => 'Trusted by 5M+ happy women', 'icon' => 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'],
+          ['title' => '7-Day Easy Returns', 'subtitle' => '100% exchange guarantee', 'icon' => 'M1 4v6h6M3.51 15a9 9 0 1 0 2.13-9.36L1 10'],
+          ['title' => 'Free Shipping', 'subtitle' => 'Express Pan-India delivery', 'icon' => 'M1 3h15v13H1zM16 8h4l3 3v5h-7z'],
+        ] as $promise)
+          <div class="rounded-xl border border-line bg-white p-4 text-center shadow-sm">
+            <svg class="promise-card-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="{{ $promise['icon'] }}"/></svg>
+            <h3 class="font-serif text-[13px] font-semibold text-heading">{{ $promise['title'] }}</h3>
+            <p class="mt-1 text-[11px] text-muted">{{ $promise['subtitle'] }}</p>
           </div>
         @endforeach
       </div>
@@ -345,7 +385,7 @@
   </section>
 
   <section class="border-t border-line py-10 md:py-[60px]" id="reviews">
-    <div class="mx-auto w-full max-w-[760px] px-3 md:px-4">
+    <div class="mx-auto w-full max-w-[760px] px-4">
       <x-section-header
         title="Customer Reviews"
         :subtitle="$ratingCount > 0 ? number_format($ratingAverage, 1).' out of 5, based on '.$ratingCount.' review'.($ratingCount === 1 ? '' : 's') : 'No reviews yet — be the first to write one'"
@@ -386,8 +426,8 @@
         </div>
       @endif
 
-      <details class="marker-pm" {{ $errors->any() ? 'open' : '' }}>
-        <summary class="cursor-pointer border-t border-line py-4 text-[13px] font-medium uppercase tracking-[0.4px] text-heading">Write a Review</summary>
+      <details {{ $errors->any() ? 'open' : '' }}>
+        <summary class="mt-4 inline-flex items-center justify-center rounded-md border-2 border-accent px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.6px] text-accent transition-colors hover:bg-accent hover:text-white">Write a Review</summary>
         <form class="pb-4.5" action="{{ route('products.reviews.store', $product) }}" method="post" enctype="multipart/form-data">
           @csrf
           <input class="hidden" type="text" name="website" tabindex="-1" autocomplete="off">
@@ -435,7 +475,7 @@
             @error('photos.*') <p class="mt-1 text-[12px] text-salebadge">{{ $message }}</p> @enderror
           </div>
 
-          <button class="inline-flex items-center justify-center gap-2 border border-black bg-black px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent hover:bg-accent" type="submit">
+          <button class="inline-flex items-center justify-center gap-2 border border-accent bg-accent px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:border-accent-dark hover:bg-accent-dark" type="submit">
             Submit Review
           </button>
         </form>

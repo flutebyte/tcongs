@@ -18,44 +18,50 @@
    `text-accent`, `border-accent`, and so on.
    -------------------------------------------------------------------------- */
 @theme {
-  /* ---- Fonts — change these two lines to reskin the whole site ---- */
+  /* ---- Fonts — Libre Baskerville serif headings + Poppins sans body ---- */
   --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
   --font-serif: 'Libre Baskerville', ui-serif, Georgia, serif;
 
-  /* ---- Brand ---- */
-  --color-accent: #cb6b88;
-  --color-accent-dark: #ad3d5f;
+  /* ---- Brand (Deep Burgundy + Warm Ivory + Muted Gold) ---- */
+  --color-accent: #4A0713;
+  --color-accent-dark: #650D1C;
+  --color-burgundy: #4A0713;
+  --color-burgundy-hover: #650D1C;
+  --color-gold: #B88A4A;
+  --color-gold-hover: #9E743B;
 
   /* ---- Text ---- */
-  --color-ink: #000000;
-  --color-heading: #222222;
-  --color-muted: #878787;
+  --color-ink: #1F1918;
+  --color-heading: #2C1810;
+  --color-muted: #736763;
 
   /* ---- Surfaces ---- */
-  --color-pinksoft: #fff1f4;
-  --color-greysoft: #f2f2f2;
-  --color-cream: #fbf3ee;
-  --color-placeholder: #f5f5f5;
+  --color-ivory: #F8F4EC;
+  --color-warmbeige: #EEE4D8;
+  --color-pinksoft: #F4EDE4;
+  --color-greysoft: #F0EAE1;
+  --color-cream: #F8F4EC;
+  --color-placeholder: #F4EDE4;
 
   /* ---- Lines ---- */
-  --color-line: #e6e6e6;
-  --color-line-strong: #dddddd;
+  --color-line: #E6DDD3;
+  --color-line-strong: #D5C9BC;
 
   /* ---- Commerce ---- */
-  --color-price: #ec0101;
-  --color-salebadge: #ff4e00;
-  --color-newbadge: #109533;
-  --color-soldout: #999999;
-  --color-star: #f5a623;
+  --color-price: #4A0713;
+  --color-salebadge: #B88A4A;
+  --color-newbadge: #4A0713;
+  --color-soldout: #8C807B;
+  --color-star: #B88A4A;
 
-  /* ---- Header + announcement (from the live theme's gh.css) ---- */
-  --color-headergold: #e9d7be;
-  --color-announce: #ffe3ec;
+  /* ---- Header + announcement ---- */
+  --color-headergold: #F8F4EC;
+  --color-announce: #4A0713;
 
   /* ---- Layout ---- */
-  --container-wrapper: 1420px;
+  --container-wrapper: 1360px;
 
-  /* ---- Breakpoints (live theme uses 768 / 1024 / 1200) ---- */
+  /* ---- Breakpoints ---- */
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1200px;
@@ -69,23 +75,16 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    /* Belt-and-suspenders alongside body's own overflow-x:hidden below: an
-       invisible-but-still-laid-out element (visibility:hidden, not
-       display:none — e.g. a dropdown panel positioned past the viewport
-       edge) can still register as horizontal overflow on the document/html
-       box even when body itself is clipped, in some browsers. Catches any
-       future instance of this same class of bug site-wide, not just the one
-       found and fixed directly (the last nav dropdown, see app.blade.php). */
     overflow-x: hidden;
   }
 
   body {
-    @apply bg-white font-sans text-[14px] leading-relaxed text-ink antialiased;
+    @apply bg-ivory font-sans text-[14px] leading-relaxed text-ink antialiased;
     overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-medium leading-tight text-heading;
+    @apply font-serif font-medium leading-tight text-heading;
   }
 
   img {
@@ -101,23 +100,21 @@
 
 /* --------------------------------------------------------------------------
    COMPONENTS
-   Only for things utilities genuinely cannot express: scroll-snap carousels,
-   pseudo-element markers, and the golden header fade.
-   Everything else is utility classes in the markup.
    -------------------------------------------------------------------------- */
 @layer components {
 
-  /* ---- Header golden fade (live theme: #E9D7BEB3 -> #fff) ---- */
+  /* ---- Header: Warm Ivory background with subtle bottom border ---- */
   .header-gradient {
-    background: linear-gradient(to bottom, #e9d7beb3 0%, #ffffff 100%);
+    background-color: #F8F4EC;
+    border-bottom: 1px solid #E6DDD3;
   }
 
-  /* ---- Header nav/icon hover: cyan at top, black once stuck (matches live theme's --h-text-color-hover) ---- */
+  /* ---- Header nav/icon hover: Deep Burgundy on hover ---- */
   [data-header] {
-    --nav-hover-color: #56cfe1;
+    --nav-hover-color: #4A0713;
   }
   [data-header].is-stuck {
-    --nav-hover-color: #000000;
+    --nav-hover-color: #4A0713;
   }
 
   /* ---- Carousel: CSS does the layout, JS only moves scrollLeft ---- */

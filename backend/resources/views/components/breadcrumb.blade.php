@@ -7,7 +7,7 @@
     @if(!empty($item['url']))
       <a class="hover:text-accent" href="{{ $item['url'] }}">{{ $item['label'] }}</a>
     @else
-      <span class="text-heading" aria-current="page">{{ $item['label'] }}</span>
+      <span class="text-accent" aria-current="page">{{ $item['label'] }}</span>
     @endif
   @endforeach
 </nav>
