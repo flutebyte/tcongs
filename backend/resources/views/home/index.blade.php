@@ -104,10 +104,7 @@
     </div>
   @endif
 
-  {{-- 'price_tiers' (Your Budget, Your Bling) and 'newsletter' (Mail Subscription)
-       sections were removed from the site — skipped here rather than deleted from
-       the DB, so any pre-existing rows just stop rendering instead of erroring. --}}
-  @foreach($homepageBlocks->reject(fn ($block) => in_array($block->type, ['price_tiers', 'newsletter'], true)) as $block)
+  @foreach($homepageBlocks as $block)
     @includeIf('home.blocks.'.str_replace('_', '-', $block->type), ['block' => $block, 'categories' => $categories])
   @endforeach
 
