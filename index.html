@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Fashion Jewellery Online India | Trusted Since 1989 | Estele</title>
   <meta name="description" content="Discover stylish fashion jewellery online in India at Estele. Shop trendy earrings, necklace sets &amp; more. Starting Rs.299 with easy returns.">
   <link rel="canonical" href="/">
@@ -16,6 +16,20 @@
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
   <link rel="stylesheet" href="dist/app.css">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Estele",
+      "url": "https://estele.co",
+      "logo": "https://estele.co/cdn/shop/files/estele-logo-200--80_160x_160x_5902a255-6c63-4705-af1e-836e5585dedb.png",
+      "sameAs": [
+        "https://www.instagram.com/estele.co/",
+        "https://www.facebook.com/estelejewelery/",
+        "https://www.linkedin.com/company/30985476"
+      ]
+    }
+  </script>
 </head>
 <body>
 <a class="sr-only-custom" href="#main">Skip to content</a>
@@ -327,8 +341,9 @@
   <h1 class="sr-only-custom">Fashion Jewellery Online in India &ndash; Estele</h1>
 
   <!-- ================================ HERO (cross-fade) ================ -->
-  <div class="mx-auto w-full  px-8 md:px-9">
-    <section class="hero-fade relative overflow-hidden rounded-[1.25rem] mb-2 aspect-[1800/700] w-full md:aspect-[1800/700] aspect-[750/1000]" aria-label="Featured collections" data-carousel data-autoplay="5000" data-fade>
+  <div class="mx-auto w-full">
+    <style>@media (min-width: 768px) { .hero-banner-shortened { aspect-ratio: 1800 / 420 !important; } }</style>
+    <section class="hero-fade hero-banner-shortened relative overflow-hidden mb-2 w-full" style="aspect-ratio: 750 / 600" aria-label="Featured collections" data-carousel data-autoplay="5000" data-fade>
       <div class="hero-slide is-active" data-carousel-slide>
         <a href="collection.html?collection=grand-sale" aria-label="Grand Sale — Flat 50% Off">
           <picture>
@@ -373,10 +388,10 @@
           </picture>
         </a>
       </div>
-    <button class="absolute left-3 top-1/2 z-[3] hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 shadow-md md:grid" type="button" data-hero-prev aria-label="Previous slide">
+    <button class="absolute left-3 top-1/2 z-[3] grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 shadow-md" type="button" data-hero-prev aria-label="Previous slide">
       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
-    <button class="absolute right-3 top-1/2 z-[3] hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 shadow-md md:grid" type="button" data-hero-next aria-label="Next slide">
+    <button class="absolute right-3 top-1/2 z-[3] grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 shadow-md" type="button" data-hero-next aria-label="Next slide">
       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
     </button>
   </section>

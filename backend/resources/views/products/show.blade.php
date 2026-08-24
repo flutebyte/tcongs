@@ -147,6 +147,30 @@
       white-space: nowrap; background: var(--color-heading); color: var(--color-white);
       font-size: 11px; padding: 4px 8px; border-radius: 4px;
     }
+
+    {{--
+      Sticky buy box: on mobile the qty/Add-to-Cart/Buy-It-Now group pins to
+      the bottom of the viewport while the rest of the page scrolls (standard
+      PDP pattern — otherwise the purchase actions scroll away under the
+      description/accordion content). Desktop keeps the normal in-flow
+      layout since there's room beside the gallery already. The chat bubble
+      and back-to-top button (both fixed bottom-right, see layouts/app.blade.php)
+      get pushed up on mobile only here so the new bar doesn't sit under them —
+      inline/scoped-CSS per this app's no-live-Tailwind-build constraint,
+      matching the pattern already used for back-to-top's own offset.
+    --}}
+    .pdp-buy-box-spacer { display: none; }
+    @media (max-width: 767px) {
+      .pdp-buy-box {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
+        margin: 0; background: var(--color-white);
+        padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, .08); border-top: 1px solid var(--color-line);
+      }
+      .pdp-buy-box-spacer { display: block; height: 132px; }
+      [data-chat] { bottom: 200px !important; }
+      .back-to-top-btn { bottom: 260px !important; }
+    }
   </style>
 
   {{--
@@ -264,21 +288,24 @@
           </div>
         @endif
 
-        <div class="mb-3 flex flex-col sm:flex-row gap-3">
-          <div class="inline-flex h-12 w-32 shrink-0 items-center justify-between rounded-md border border-line-strong bg-white px-2 shadow-sm" data-qty>
-            <button class="grid h-8 w-8 place-items-center rounded text-[16px] font-semibold text-heading transition-colors hover:bg-warmbeige" type="button" data-qty-minus aria-label="Decrease quantity">&minus;</button>
-            <input class="w-10 border-0 text-center font-medium text-[14px] text-heading outline-none" type="number" name="quantity" value="1" min="1" aria-label="Quantity">
-            <button class="grid h-8 w-8 place-items-center rounded text-[16px] font-semibold text-heading transition-colors hover:bg-warmbeige" type="button" data-qty-plus aria-label="Increase quantity">+</button>
+        <div class="pdp-buy-box mb-3 flex flex-col gap-3">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="inline-flex h-12 w-32 shrink-0 items-center justify-between rounded-md border border-line-strong bg-white px-2 shadow-sm" data-qty>
+              <button class="grid h-8 w-8 place-items-center rounded text-[16px] font-semibold text-heading transition-colors hover:bg-warmbeige" type="button" data-qty-minus aria-label="Decrease quantity">&minus;</button>
+              <input class="w-10 border-0 text-center font-medium text-[14px] text-heading outline-none" type="number" name="quantity" value="1" min="1" aria-label="Quantity">
+              <button class="grid h-8 w-8 place-items-center rounded text-[16px] font-semibold text-heading transition-colors hover:bg-warmbeige" type="button" data-qty-plus aria-label="Increase quantity">+</button>
+            </div>
+            <button class="flex-1 rounded-md bg-accent py-3.5 px-6 text-center text-[13px] font-semibold uppercase tracking-[0.6px] text-white shadow-sm transition-colors hover:bg-accent-dark" type="submit"
+                    {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
+              {{ $product->stock_quantity > 0 ? 'Add to Cart' : 'Out of Stock' }}
+            </button>
           </div>
-          <button class="flex-1 rounded-md bg-accent py-3.5 px-6 text-center text-[13px] font-semibold uppercase tracking-[0.6px] text-white shadow-sm transition-colors hover:bg-accent-dark" type="submit"
+          <button class="w-full rounded-md border-2 border-accent bg-transparent py-3 px-6 text-center text-[13px] font-semibold uppercase tracking-[0.6px] text-accent transition-colors hover:bg-accent hover:text-white" type="submit" name="buy_now" value="1"
                   {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
-            {{ $product->stock_quantity > 0 ? 'Add to Cart' : 'Out of Stock' }}
+            Buy It Now
           </button>
         </div>
-        <button class="w-full rounded-md border-2 border-accent bg-transparent py-3 px-6 text-center text-[13px] font-semibold uppercase tracking-[0.6px] text-accent transition-colors hover:bg-accent hover:text-white" type="submit" name="buy_now" value="1"
-                {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
-          Buy It Now
-        </button>
+        <div class="pdp-buy-box-spacer" aria-hidden="true"></div>
       </form>
 
       <div class="mt-7 border-t border-line">

@@ -12,6 +12,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OtpAuthController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
@@ -34,7 +35,7 @@ Route::get('/robots.txt', function () {
     $content = $settings['robots_txt'] ?? null;
 
     if (! $content) {
-        $content = "User-agent: *\nAllow: /\nDisallow: /cart\nDisallow: /checkout\nDisallow: /account\nDisallow: /login\nDisallow: /register\nDisallow: /payment\nDisallow: /search\n\nSitemap: ".url('/sitemap.xml');
+        $content = "User-agent: *\nAllow: /\nDisallow: /cart\nDisallow: /checkout\nDisallow: /account\nDisallow: /login\nDisallow: /register\nDisallow: /forgot-password\nDisallow: /reset-password\nDisallow: /payment\nDisallow: /search\n\nSitemap: ".url('/sitemap.xml');
     }
 
     return response($content, 200)->header('Content-Type', 'text/plain');
@@ -60,6 +61,15 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.attempt')->middleware('throttle:10,1');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.attempt')->middleware('throttle:10,1');
+
+    // Forgot/reset password — plain Laravel Password broker (password_reset_tokens
+    // table, already in the base migration). Throttled the same as login/register
+    // above; sendResetLink() itself doesn't leak whether the email exists, so this
+    // can't be used to enumerate accounts either.
+    Route::get('/forgot-password', [PasswordResetController::class, 'showRequest'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email')->middleware('throttle:5,1');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'showReset'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'update'])->name('password.update')->middleware('throttle:5,1');
 
     // Phone + OTP login (self-built, see OtpManager/LogOtpGateway). Rate limits
     // match the security-audit posture already applied to /login above —
